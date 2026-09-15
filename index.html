@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-43-0.css?v=67.43.0">
+<link rel="stylesheet" href="styles-v67-45-0.css?v=67.45.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash">
@@ -74,7 +74,7 @@
         <span class="feature-icon">🔥</span><span><b>MEU TAF</b><small>Índices, pontuação e metas</small></span><span class="chev">›</span>
       </button>
       <button class="feature-card ranking-home-card" onclick="openV55Ranking()">
-        <span class="feature-icon">🏆</span><span><b>RANKING DE FREQUÊNCIA</b><small>Treinos válidos realizados em dias de serviço</small></span><span class="chev">›</span>
+        <span class="feature-icon">🏆</span><span><b>RANKING DE FREQUÊNCIA</b><small>Treinos válidos com presença confirmada na unidade</small></span><span class="chev">›</span>
       </button>
       <button class="feature-card official-taf-home-card" onclick="openOfficialTafRanking()">
         <span class="feature-icon">🎖️</span><span><b>RANKING OFICIAL TAF</b><small>Índices oficiais • classificação da tropa</small></span><span class="chev">›</span>
@@ -147,12 +147,12 @@
     <div id="serviceValidationCard" class="card service-validation-card pending">
       <span class="eyebrow">SITUAÇÃO DO TREINO</span>
       <h3 id="serviceValidationTitle">Verificando validação…</h3>
-      <p id="serviceValidationText">Escolha se este treino será durante serviço operacional ou fora dele.</p>
+      <p id="serviceValidationText">Valide sua presença na unidade para o app verificar automaticamente se o treino pode pontuar.</p>
       <div class="service-mode-grid">
-        <button id="serviceValidationOperational" class="service-mode-btn operational" type="button" onclick="chooseOperationalService()">🚒 VALIDAR SERVIÇO OPERACIONAL</button>
-        <button id="serviceValidationOff" class="service-mode-btn off" type="button" onclick="chooseOffDutyTraining()">🏠 NÃO ESTOU DE SERVIÇO OPERACIONAL</button>
+        <button id="serviceValidationOperational" class="service-mode-btn operational" type="button" onclick="chooseOperationalService()">📍 VALIDAR PRESENÇA DE HOJE</button>
+        <button id="serviceValidationOff" class="service-mode-btn off" type="button" onclick="chooseOffDutyTraining()">CONTINUAR SEM VALIDAR</button>
       </div>
-      <small id="serviceValidationHint">Somente o modo operacional validado pode gerar pontos no ranking.</small>
+      <small id="serviceValidationHint">A pontuação é definida automaticamente pela presença validada e pelos critérios do treino.</small>
     </div>
 
     <div class="section-label">ESCOLHA O TIPO DE TREINO</div>
@@ -181,7 +181,7 @@
     <div class="card cardio-intro-card">
       <span class="eyebrow">CARDIO DA ACADEMIA</span>
       <h3>Escolha o equipamento</h3>
-      <p>Para gerar ponto no Ranking de Frequência, a atividade precisa ter pelo menos <b>30 minutos</b> e ser realizada durante uma validação de serviço ativa.</p>
+      <p>Para gerar ponto no Ranking de Frequência, a atividade precisa ter pelo menos <b>30 minutos</b> e ser realizada com presença validada na unidade.</p>
       <div class="cardio-machine-grid">
         <button type="button" class="cardio-machine" data-cardio="treadmill" onclick="selectCardioMachine('treadmill')"><span>🏃</span><b>ESTEIRA</b><small>Tempo, distância e calorias</small></button>
         <button type="button" class="cardio-machine" data-cardio="bike" onclick="selectCardioMachine('bike')"><span>🚴</span><b>BICICLETA</b><small>Tempo</small></button>
@@ -224,7 +224,7 @@
       <label>Tempo de treino (minutos)
         <input id="freeWorkoutMinutes" type="number" min="1" max="600" inputmode="numeric" placeholder="Ex.: 60">
       </label>
-      <p class="free-note">O treino livre registra somente grupos musculares e duração. Para valer no ranking, além de ser realizado em dia de serviço, deve atender ao critério mínimo definido para treino livre.</p>
+      <p class="free-note">O treino livre registra somente grupos musculares e duração. Para valer no ranking, para pontuar, precisa ter presença validada na unidade e atender ao critério mínimo definido para treino livre.</p>
       <div id="freeWorkoutSavedMessage" class="free-workout-saved-message" role="status" aria-live="assertive" style="display:none">
         ✓ Treino salvo.
       </div>
@@ -442,9 +442,9 @@
       <div id="adminMessage" class="admin-message"></div>
 
       <div class="card admin-service-card">
-        <span class="eyebrow">VALIDAÇÃO DE SERVIÇO</span>
+        <span class="eyebrow">VALIDAÇÃO DE TREINO</span>
         <h3>QR fixo da academia</h3>
-        <p>O QR é permanente e também funciona como atalho para abrir o aplicativo. Ao ler com a câmera do celular, o militar escolhe entre validar o serviço operacional ou apenas entrar no app. A localização da unidade é definida uma única vez pelo administrador e pode ser atualizada quando necessário.</p>
+        <p>O QR é permanente e também funciona como atalho para abrir o aplicativo. Ao ler com a câmera do celular, o militar pode validar o treino de hoje. O app confirma a presença pela localização da unidade e aplica automaticamente as regras de pontuação.</p>
         <div id="adminServiceConfigStatus" class="admin-service-status">Carregando configuração…</div>
         <div class="admin-form-grid">
           <label>Raio permitido (m)
@@ -456,14 +456,14 @@
         </div>
         <button class="admin-primary" type="button" onclick="adminConfigureServiceLocation()">📍 DEFINIR LOCAL USANDO ESTE CELULAR</button>
         <div class="service-qr-admin">
-          <img src="assets/service/qr-validacao-servico.png" alt="QR fixo de validação de serviço">
-          <div><b>Imprima e distribua este QR nas unidades</b><small>Ele abre o app/site. Se o militar escolher validar serviço, a localização será confirmada naquele momento. Se estiver de folga, poderá apenas entrar normalmente no aplicativo.</small></div>
+          <img src="assets/service/qr-validacao-servico.png" alt="QR fixo de validação de treino">
+          <div><b>Imprima e distribua este QR nas unidades</b><small>Ele abre o app/site. Ao escolher validar o treino, a localização será confirmada naquele momento. A validação pode ser feita tanto por quem está de serviço quanto por quem veio à unidade para treinar.</small></div>
         </div>
 
         <div class="admin-service-validations-head">
           <div>
             <span class="eyebrow">PRESENÇAS VALIDADAS</span>
-            <h4>Militares com validação de serviço</h4>
+            <h4>Militares com presença validada</h4>
           </div>
           <button type="button" class="admin-service-refresh" onclick="adminLoadServiceValidations()">ATUALIZAR</button>
         </div>
@@ -541,9 +541,21 @@
 </main>
 
 
+<div id="presenceTodayModal" class="service-qr-modal presence-today-modal" style="display:none" aria-hidden="true">
+  <div class="service-qr-sheet presence-today-sheet">
+    <div class="service-qr-head"><b>Validar presença de hoje</b><button type="button" onclick="closePresenceTodayChoice()">✕</button></div>
+    <p>Você está na unidade neste momento?</p>
+    <small class="presence-today-note">Se estiver na unidade, o app confirmará sua presença usando QR + localização. A resposta sozinha não libera pontuação.</small>
+    <div class="presence-today-actions">
+      <button class="service-mode-btn operational" type="button" onclick="confirmPresenceAtUnit()">📍 SIM, ESTOU NA UNIDADE</button>
+      <button class="service-mode-btn off" type="button" onclick="confirmPresenceOutsideUnit()">NÃO ESTOU NA UNIDADE</button>
+    </div>
+  </div>
+</div>
+
 <div id="serviceQrModal" class="service-qr-modal" style="display:none" aria-hidden="true">
   <div class="service-qr-sheet">
-    <div class="service-qr-head"><b>Validar serviço</b><button type="button" onclick="closeServiceValidationScanner()">✕</button></div>
+    <div class="service-qr-head"><b>Validar treino de hoje</b><button type="button" onclick="closeServiceValidationScanner()">✕</button></div>
     <p>Leia o QR fixado na academia. Em seguida, o app verificará sua localização somente neste momento.</p>
     <video id="serviceQrVideo" playsinline muted></video>
     <div id="serviceQrScanStatus" class="service-qr-status">Preparando câmera…</div>
@@ -565,7 +577,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-43-0.js?v=67.43.0"></script>
-<div id="buildVersion" style="display:none">v67.43.0</div>
+<script src="app-v67-45-0.js?v=67.45.0"></script>
+<div id="buildVersion" style="display:none">v67.45.0</div>
 </body>
 </html>
