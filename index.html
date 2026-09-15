@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-42-0.css?v=67.42.0">
+<link rel="stylesheet" href="styles-v67-43-0.css?v=67.43.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash">
@@ -113,6 +113,17 @@
             <input id="feedLocationText" maxlength="80" placeholder="Ex.: 2ª CIA — Currais Novos/RN" oninput="v6738SaveFeedLocationPrefs()">
           </label>
           <small>A localização é opcional e fica registrada individualmente em cada atividade. Alterar este campo depois não muda atividades anteriores. Não são enviadas coordenadas GPS.</small>
+        </div>
+      </details>
+
+      <details class="sports-feed-settings push-settings">
+        <summary>🔔 Notificações no celular</summary>
+        <div class="sports-feed-settings-body">
+          <div class="push-settings-row">
+            <div><b>Push do Feed</b><small id="pushNotificationStatus">Verificando este aparelho…</small></div>
+            <button id="pushNotificationButton" type="button" onclick="v6743TogglePush(this)">VERIFICAR</button>
+          </div>
+          <small>Receba no celular avisos quando outro militar apoiar 💪 ou comentar 💬 em uma atividade sua, mesmo com o app fechado.</small>
         </div>
       </details>
 
@@ -554,7 +565,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-42-0.js?v=67.42.0"></script>
-<div id="buildVersion" style="display:none">v67.40.0</div>
+<script src="app-v67-43-0.js?v=67.43.0"></script>
+<div id="buildVersion" style="display:none">v67.43.0</div>
 </body>
 </html>
