@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-45-0.css?v=67.45.0">
+<link rel="stylesheet" href="styles-v67-46-0.css?v=67.46.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash">
@@ -171,7 +171,7 @@
       </button>
       <button class="workout-type-card cardio-type-card" onclick="openCardioWorkout()">
         <span class="workout-type-icon">❤️</span><b>CARDIO</b>
-        <small>Esteira, bicicleta ergométrica ou simulador de remo</small>
+        <small>Esteira, bicicleta, remo ou natação</small>
       </button>
     </div>
   </section>
@@ -186,6 +186,7 @@
         <button type="button" class="cardio-machine" data-cardio="treadmill" onclick="selectCardioMachine('treadmill')"><span>🏃</span><b>ESTEIRA</b><small>Tempo, distância e calorias</small></button>
         <button type="button" class="cardio-machine" data-cardio="bike" onclick="selectCardioMachine('bike')"><span>🚴</span><b>BICICLETA</b><small>Tempo</small></button>
         <button type="button" class="cardio-machine" data-cardio="rower" onclick="selectCardioMachine('rower')"><span>🚣</span><b>SIMULADOR DE REMO</b><small>Tempo</small></button>
+        <button type="button" class="cardio-machine" data-cardio="swim" onclick="selectCardioMachine('swim')"><span>🏊</span><b>NATAÇÃO</b><small>Distância e tempo • não pontua</small></button>
       </div>
     </div>
     <div id="cardioFormCard" class="card cardio-form-card" style="display:none">
@@ -204,6 +205,16 @@
         <div class="cardio-pace-box">
           <span>PACE MÉDIO</span>
           <strong id="cardioPace">--:-- min/km</strong>
+          <small>Calculado automaticamente pelo tempo e distância.</small>
+        </div>
+      </div>
+      <div id="cardioSwimFields" style="display:none">
+        <label>Distância nadada (metros)
+          <input id="cardioSwimDistance" type="number" min="1" step="1" inputmode="numeric" placeholder="Ex.: 1000">
+        </label>
+        <div class="cardio-pace-box">
+          <span>RITMO MÉDIO</span>
+          <strong id="cardioSwimPace">--:-- /100 m</strong>
           <small>Calculado automaticamente pelo tempo e distância.</small>
         </div>
       </div>
@@ -577,7 +588,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-45-0.js?v=67.45.0"></script>
-<div id="buildVersion" style="display:none">v67.45.0</div>
+<script src="app-v67-46-0.js?v=67.46.0"></script>
+<div id="buildVersion" style="display:none">v67.46.0</div>
 </body>
 </html>
