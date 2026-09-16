@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-51-0.css?v=67.51.0">
+<link rel="stylesheet" href="styles-v67-52-0.css?v=67.52.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash">
@@ -174,7 +174,7 @@
       </button>
       <button class="workout-type-card cardio-type-card" onclick="openCardioWorkout()">
         <span class="workout-type-icon">❤️</span><b>CARDIO</b>
-        <small>Esteira, bicicleta, remo ou natação</small>
+        <small>Corrida, esteira, bicicleta, remo ou natação</small>
       </button>
     </div>
   </section>
@@ -184,8 +184,9 @@
     <div class="card cardio-intro-card">
       <span class="eyebrow">CARDIO DA ACADEMIA</span>
       <h3>Escolha o equipamento</h3>
-      <p>Para gerar ponto no Ranking de Frequência, a atividade precisa ter pelo menos <b>30 minutos</b> e ser realizada com presença validada na unidade.</p>
+      <p>Esteira, bicicleta e remo podem pontuar com pelo menos <b>30 minutos</b> e presença validada. <b>Corrida e natação são registros esportivos e não pontuam.</b></p>
       <div class="cardio-machine-grid">
+        <button type="button" class="cardio-machine" data-cardio="run" onclick="selectCardioMachine('run')"><span>🏃‍♂️</span><b>CORRIDA</b><small>Tempo, distância e pace • não pontua</small></button>
         <button type="button" class="cardio-machine" data-cardio="treadmill" onclick="selectCardioMachine('treadmill')"><span>🏃</span><b>ESTEIRA</b><small>Tempo, distância e calorias</small></button>
         <button type="button" class="cardio-machine" data-cardio="bike" onclick="selectCardioMachine('bike')"><span>🚴</span><b>BICICLETA</b><small>Tempo</small></button>
         <button type="button" class="cardio-machine" data-cardio="rower" onclick="selectCardioMachine('rower')"><span>🚣</span><b>SIMULADOR DE REMO</b><small>Tempo</small></button>
@@ -208,6 +209,16 @@
         <div class="cardio-pace-box">
           <span>PACE MÉDIO</span>
           <strong id="cardioPace">--:-- min/km</strong>
+          <small>Calculado automaticamente pelo tempo e distância.</small>
+        </div>
+      </div>
+      <div id="cardioRunFields" style="display:none">
+        <label>Distância percorrida (km)
+          <input id="cardioRunDistance" type="number" min="0.1" step="0.01" inputmode="decimal" placeholder="Ex.: 5,00">
+        </label>
+        <div class="cardio-pace-box">
+          <span>PACE MÉDIO</span>
+          <strong id="cardioRunPace">--:-- min/km</strong>
           <small>Calculado automaticamente pelo tempo e distância.</small>
         </div>
       </div>
@@ -591,7 +602,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-51-0.js?v=67.51.0"></script>
-<div id="buildVersion" style="display:none">v67.51.0</div>
+<script src="app-v67-52-0.js?v=67.52.0"></script>
+<div id="buildVersion" style="display:none">v67.52.0</div>
 </body>
 </html>
