@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-58-2.css?v=67.58.2">
+<link rel="stylesheet" href="styles-v67-59-0.css?v=67.59.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -557,6 +557,22 @@
         <div id="adminMilitaryList" class="admin-military-list"></div>
       </div>
 
+      <div id="adminEditMilitaryOverlay" class="admin-edit-overlay" hidden onclick="if(event.target===this)adminCloseEditMilitary()">
+        <div class="admin-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="adminEditMilitaryTitle">
+          <div class="admin-edit-head"><div><span class="eyebrow">ADMINISTRAÇÃO</span><h3 id="adminEditMilitaryTitle">Editar militar</h3></div><button type="button" class="admin-edit-close" onclick="adminCloseEditMilitary()" aria-label="Fechar">×</button></div>
+          <p class="admin-edit-note">A matrícula é o vínculo do histórico e não pode ser alterada.</p>
+          <label>Matrícula<input id="adminEditMatricula" readonly aria-readonly="true"></label>
+          <label>Nome<input id="adminEditNome" maxlength="120" placeholder="Nome do militar"></label>
+          <label>Graduação
+            <select id="adminEditGraduacao">
+              <option value="">Selecione</option><option>SD BM</option><option>CB BM</option><option>3º SGT BM</option><option>2º SGT BM</option><option>1º SGT BM</option><option>ST BM</option><option>2º TEN BM</option><option>1º TEN BM</option><option>CAP BM</option><option>MAJ BM</option><option>TC BM</option><option>CEL BM</option>
+            </select>
+          </label>
+          <div id="adminEditMilitaryMessage" class="admin-message"></div>
+          <div class="admin-edit-buttons"><button type="button" onclick="adminCloseEditMilitary()">CANCELAR</button><button type="button" class="admin-primary" onclick="adminSaveMilitaryEdit()">SALVAR ALTERAÇÕES</button></div>
+        </div>
+      </div>
+
       <details class="card admin-security-card">
         <summary>Segurança administrativa</summary>
         <p>Troque o código administrativo sempre que necessário.</p>
@@ -615,7 +631,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-58-2.js?v=67.58.2"></script>
-<div id="buildVersion" style="display:none">v67.58.2</div>
+<script src="app-v67-59-0.js?v=67.59.0"></script>
+<div id="buildVersion" style="display:none">v67.59.0</div>
 </body>
 </html>
