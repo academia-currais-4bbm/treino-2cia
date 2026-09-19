@@ -1,10 +1,10 @@
-const CACHE='t2cia-v67.59.9';
-const RUNTIME='t2cia-runtime-v67.59.9';
+const CACHE='t2cia-v67.60.0';
+const RUNTIME='t2cia-runtime-v67.60.0';
 const SHELL=[
   './',
   'index.html',
-  'styles-v67-59-9.css',
-  'app-v67-59-9.js',
+  'styles-v67-60-0.css',
+  'app-v67-60-0.js',
   'data.js',
   'cloud-config.js',
   'manifest.json'
@@ -31,8 +31,8 @@ self.addEventListener('activate',event=>{
 function isAppShell(url){
   return url.pathname.endsWith('/') ||
     url.pathname.endsWith('/index.html') ||
-    url.pathname.endsWith('/app-v67-59-9.js') ||
-    url.pathname.endsWith('/styles-v67-59-9.css') ||
+    url.pathname.endsWith('/app-v67-60-0.js') ||
+    url.pathname.endsWith('/styles-v67-60-0.css') ||
     url.pathname.endsWith('/data.js') ||
     url.pathname.endsWith('/cloud-config.js') ||
     url.pathname.endsWith('/manifest.json');
@@ -77,7 +77,7 @@ self.addEventListener('fetch',event=>{
 });
 
 
-/* ===== V67.59.9 — WEB PUSH + ICONE PEQUENO + DEEP LINK ROBUSTO ===== */
+/* ===== V67.60.0 — WEB PUSH + ICONE PEQUENO + DEEP LINK ROBUSTO ===== */
 self.addEventListener('push',event=>{
   event.waitUntil((async()=>{
     let data={};
@@ -89,6 +89,7 @@ self.addEventListener('push',event=>{
       tag:String(data.tag||'treino-2cia-feed'),
       data:{tipo:data.tipo||'',feedId},
       badge:new URL('notification-badge.png',self.registration.scope).href,
+      icon:new URL('notification-transparent.png',self.registration.scope).href,
       vibrate:[180,80,180],
       renotify:true
     };
