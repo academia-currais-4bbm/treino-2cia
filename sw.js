@@ -1,13 +1,15 @@
-const CACHE='t2cia-v67.60.1';
-const RUNTIME='t2cia-runtime-v67.60.1';
+const CACHE='t2cia-v67.60.2';
+const RUNTIME='t2cia-runtime-v67.60.2';
 const SHELL=[
   './',
   'index.html',
-  'styles-v67-60-1.css',
-  'app-v67-60-1.js',
+  'styles-v67-60-2.css',
+  'app-v67-60-2.js',
   'data.js',
   'cloud-config.js',
-  'manifest.json'
+  'manifest.json',
+  'notification-badge.png',
+  'notification-transparent.png'
 ];
 
 self.addEventListener('install',event=>{
@@ -31,8 +33,8 @@ self.addEventListener('activate',event=>{
 function isAppShell(url){
   return url.pathname.endsWith('/') ||
     url.pathname.endsWith('/index.html') ||
-    url.pathname.endsWith('/app-v67-60-1.js') ||
-    url.pathname.endsWith('/styles-v67-60-1.css') ||
+    url.pathname.endsWith('/app-v67-60-2.js') ||
+    url.pathname.endsWith('/styles-v67-60-2.css') ||
     url.pathname.endsWith('/data.js') ||
     url.pathname.endsWith('/cloud-config.js') ||
     url.pathname.endsWith('/manifest.json');
@@ -89,6 +91,7 @@ self.addEventListener('push',event=>{
       tag:String(data.tag||'treino-2cia-feed'),
       data:{tipo:data.tipo||'',feedId},
       badge:new URL('notification-badge.png',self.registration.scope).href,
+      icon:new URL('notification-transparent.png',self.registration.scope).href,
       color:'#C8102E',
       vibrate:[180,80,180],
       renotify:true
