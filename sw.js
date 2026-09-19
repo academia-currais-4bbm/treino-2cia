@@ -1,10 +1,10 @@
-const CACHE='t2cia-v67.59.5';
-const RUNTIME='t2cia-runtime-v67.59.5';
+const CACHE='t2cia-v67.59.6';
+const RUNTIME='t2cia-runtime-v67.59.6';
 const SHELL=[
   './',
   'index.html',
-  'styles-v67-59-5.css',
-  'app-v67-59-5.js',
+  'styles-v67-59-6.css',
+  'app-v67-59-6.js',
   'data.js',
   'cloud-config.js',
   'manifest.json'
@@ -31,8 +31,8 @@ self.addEventListener('activate',event=>{
 function isAppShell(url){
   return url.pathname.endsWith('/') ||
     url.pathname.endsWith('/index.html') ||
-    url.pathname.endsWith('/app-v67-59-5.js') ||
-    url.pathname.endsWith('/styles-v67-59-5.css') ||
+    url.pathname.endsWith('/app-v67-59-6.js') ||
+    url.pathname.endsWith('/styles-v67-59-6.css') ||
     url.pathname.endsWith('/data.js') ||
     url.pathname.endsWith('/cloud-config.js') ||
     url.pathname.endsWith('/manifest.json');
@@ -77,7 +77,7 @@ self.addEventListener('fetch',event=>{
 });
 
 
-/* ===== V67.59.5 — WEB PUSH + ÍCONE DO APP + DEEP LINK ===== */
+/* ===== V67.59.6 — WEB PUSH + ÍCONE DO APP + DEEP LINK ===== */
 self.addEventListener('push',event=>{
   event.waitUntil((async()=>{
     let data={};
