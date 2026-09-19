@@ -1,5 +1,5 @@
-const CACHE='t2cia-v67.59.6';
-const RUNTIME='t2cia-runtime-v67.59.6';
+const CACHE='t2cia-v67.59.7';
+const RUNTIME='t2cia-runtime-v67.59.7';
 const SHELL=[
   './',
   'index.html',
@@ -77,7 +77,7 @@ self.addEventListener('fetch',event=>{
 });
 
 
-/* ===== V67.59.6 — WEB PUSH + ÍCONE DO APP + DEEP LINK ===== */
+/* ===== V67.59.7 — WEB PUSH + SMALL ICON + DEEP LINK ROBUSTO ===== */
 self.addEventListener('push',event=>{
   event.waitUntil((async()=>{
     let data={};
@@ -88,8 +88,7 @@ self.addEventListener('push',event=>{
       body:String(data.body||'Você recebeu uma nova notificação.'),
       tag:String(data.tag||'treino-2cia-feed'),
       data:{tipo:data.tipo||'',feedId},
-      icon:new URL('icon-512.png',self.registration.scope).href,
-      badge:new URL('icon-512.png',self.registration.scope).href,
+      badge:new URL('notification-badge.png',self.registration.scope).href,
       vibrate:[180,80,180],
       renotify:true
     };
@@ -101,20 +100,19 @@ self.addEventListener('notificationclick',event=>{
   event.notification.close();
   event.waitUntil((async()=>{
     const feedId=Number(event.notification?.data?.feedId||0)||null;
-    // registration.scope é a URL instalada do PWA (/treino-2cia/), evitando abrir a raiz do GitHub Pages.
     const target=new URL(self.registration.scope);
     if(feedId)target.searchParams.set('feed',String(feedId));
-    const targetHref=target.href;
     const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
     for(const client of windows){
       try{
         if(new URL(client.url).origin===target.origin){
-          if('navigate' in client)await client.navigate(targetHref);
           await client.focus();
+          if(feedId){client.postMessage({type:'OPEN_FEED_ACTIVITY',feedId});return}
+          if('navigate' in client)await client.navigate(target.href);
           return;
         }
       }catch(e){}
     }
-    if(self.clients.openWindow)await self.clients.openWindow(targetHref);
+    if(self.clients.openWindow)await self.clients.openWindow(target.href);
   })());
 });
