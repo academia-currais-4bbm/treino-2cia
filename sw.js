@@ -1,10 +1,10 @@
-const CACHE='t2cia-v67.59.4';
-const RUNTIME='t2cia-runtime-v67.59.4';
+const CACHE='t2cia-v67.59.5';
+const RUNTIME='t2cia-runtime-v67.59.5';
 const SHELL=[
   './',
   'index.html',
-  'styles-v67-59-4.css',
-  'app-v67-59-4.js',
+  'styles-v67-59-5.css',
+  'app-v67-59-5.js',
   'data.js',
   'cloud-config.js',
   'manifest.json'
@@ -31,8 +31,8 @@ self.addEventListener('activate',event=>{
 function isAppShell(url){
   return url.pathname.endsWith('/') ||
     url.pathname.endsWith('/index.html') ||
-    url.pathname.endsWith('/app-v67-59-4.js') ||
-    url.pathname.endsWith('/styles-v67-59-4.css') ||
+    url.pathname.endsWith('/app-v67-59-5.js') ||
+    url.pathname.endsWith('/styles-v67-59-5.css') ||
     url.pathname.endsWith('/data.js') ||
     url.pathname.endsWith('/cloud-config.js') ||
     url.pathname.endsWith('/manifest.json');
@@ -77,7 +77,7 @@ self.addEventListener('fetch',event=>{
 });
 
 
-/* ===== V67.59.4 — WEB PUSH + DEEP LINK PARA ATIVIDADE ===== */
+/* ===== V67.59.5 — WEB PUSH + ÍCONE DO APP + DEEP LINK ===== */
 self.addEventListener('push',event=>{
   event.waitUntil((async()=>{
     let data={};
@@ -88,6 +88,8 @@ self.addEventListener('push',event=>{
       body:String(data.body||'Você recebeu uma nova notificação.'),
       tag:String(data.tag||'treino-2cia-feed'),
       data:{tipo:data.tipo||'',feedId},
+      icon:new URL('icon-512.png',self.registration.scope).href,
+      badge:new URL('icon-512.png',self.registration.scope).href,
       vibrate:[180,80,180],
       renotify:true
     };
