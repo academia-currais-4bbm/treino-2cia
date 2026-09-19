@@ -1,10 +1,10 @@
-const CACHE='t2cia-v67.59.3';
-const RUNTIME='t2cia-runtime-v67.59.3';
+const CACHE='t2cia-v67.59.4';
+const RUNTIME='t2cia-runtime-v67.59.4';
 const SHELL=[
   './',
   'index.html',
-  'styles-v67-59-3.css',
-  'app-v67-59-3.js',
+  'styles-v67-59-4.css',
+  'app-v67-59-4.js',
   'data.js',
   'cloud-config.js',
   'manifest.json'
@@ -31,8 +31,8 @@ self.addEventListener('activate',event=>{
 function isAppShell(url){
   return url.pathname.endsWith('/') ||
     url.pathname.endsWith('/index.html') ||
-    url.pathname.endsWith('/app-v67-59-3.js') ||
-    url.pathname.endsWith('/styles-v67-59-3.css') ||
+    url.pathname.endsWith('/app-v67-59-4.js') ||
+    url.pathname.endsWith('/styles-v67-59-4.css') ||
     url.pathname.endsWith('/data.js') ||
     url.pathname.endsWith('/cloud-config.js') ||
     url.pathname.endsWith('/manifest.json');
@@ -77,16 +77,17 @@ self.addEventListener('fetch',event=>{
 });
 
 
-/* ===== V67.43.0 — WEB PUSH ===== */
+/* ===== V67.59.4 — WEB PUSH + DEEP LINK PARA ATIVIDADE ===== */
 self.addEventListener('push',event=>{
   event.waitUntil((async()=>{
     let data={};
     try{data=event.data?event.data.json():{}}catch(e){try{data={body:event.data?.text()||''}}catch(_){}}
     const title=String(data.title||'Treino 2ª CIA');
+    const feedId=Number(data.feedId??data.feed_id??0)||null;
     const options={
       body:String(data.body||'Você recebeu uma nova notificação.'),
       tag:String(data.tag||'treino-2cia-feed'),
-      data:{url:String(data.url||'./'),tipo:data.tipo||'',feedId:data.feedId||null},
+      data:{tipo:data.tipo||'',feedId},
       vibrate:[180,80,180],
       renotify:true
     };
@@ -97,17 +98,21 @@ self.addEventListener('push',event=>{
 self.addEventListener('notificationclick',event=>{
   event.notification.close();
   event.waitUntil((async()=>{
-    const target=new URL(event.notification?.data?.url||'./',self.location.origin).href;
+    const feedId=Number(event.notification?.data?.feedId||0)||null;
+    // registration.scope é a URL instalada do PWA (/treino-2cia/), evitando abrir a raiz do GitHub Pages.
+    const target=new URL(self.registration.scope);
+    if(feedId)target.searchParams.set('feed',String(feedId));
+    const targetHref=target.href;
     const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
     for(const client of windows){
       try{
-        if(new URL(client.url).origin===self.location.origin){
+        if(new URL(client.url).origin===target.origin){
+          if('navigate' in client)await client.navigate(targetHref);
           await client.focus();
-          if('navigate' in client)await client.navigate(target);
           return;
         }
       }catch(e){}
     }
-    if(self.clients.openWindow)await self.clients.openWindow(target);
+    if(self.clients.openWindow)await self.clients.openWindow(targetHref);
   })());
 });
