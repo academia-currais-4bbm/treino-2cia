@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-60-3.css?v=67.60.3">
+<link rel="stylesheet" href="styles-v67-60-4.css?v=67.60.4">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -65,6 +65,8 @@
 
     <section id="v6748Dashboard" class="v6748-dashboard" aria-label="Seu desempenho semanal"></section>
     <section id="v6749Performance" class="v6749-performance" aria-label="Recordes pessoais e conquistas"></section>
+
+    <section id="v67604ActiveWorkoutCard" class="v67604-active-card" style="display:none" aria-live="polite"></section>
 
     <div class="primary-actions">
       <button class="action-card action-main" onclick="openWorkoutChooser()">
@@ -330,6 +332,10 @@
       <div class="meta"><b id="exMuscle"></b><b id="exPrescription"></b></div>
       <p id="exTip"></p>
       <p class="avoid"><b>Evite:</b> <span id="exAvoid"></span></p>
+    </div>
+    <div id="v67604WorkoutControls" class="v67604-workout-controls">
+      <button type="button" onclick="v67604PauseWorkout(true)">⏸ PAUSAR TREINO</button>
+      <button type="button" class="v67604-cancel" onclick="v67604CancelWorkout()">✕ CANCELAR TREINO</button>
     </div>
     <div class="card">
       <h3 id="setLabel">Série 1</h3>
@@ -631,7 +637,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-60-3.js?v=67.60.3"></script>
-<div id="buildVersion" style="display:none">v67.60.3</div>
+<script src="app-v67-60-4.js?v=67.60.4"></script>
+<div id="buildVersion" style="display:none">v67.60.4</div>
 </body>
 </html>
