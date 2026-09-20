@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-60-10.css?v=67.60.10">
+<link rel="stylesheet" href="styles-v67-61-0.css?v=67.61.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -320,8 +320,9 @@
   </section>
 
   <section id="exercise" class="view">
-    <div id="workoutProgress" class="workout-progress" style="display:none">
-      <span id="workoutPlanLabel"></span><b id="workoutStepLabel"></b>
+    <div id="workoutProgress" class="workout-progress workout-progress-v67610" style="display:none">
+      <div class="workout-progress-copy"><span id="workoutPlanLabel"></span><b id="workoutStepLabel"></b></div>
+      <div class="workout-progress-track" aria-hidden="true"><i id="workoutProgressFill"></i></div>
     </div>
     <div class="bar"><button onclick="appBack('list')">←</button><h2 id="exTitle"></h2></div>
     <div class="visual">
@@ -337,9 +338,11 @@
       <button type="button" onclick="v67604PauseWorkout(true)">⏸ PAUSAR TREINO</button>
       <button type="button" class="v67604-cancel" onclick="v67604CancelWorkout()">✕ CANCELAR TREINO</button>
     </div>
-    <div class="card">
+    <div class="card workout-set-card">
+      <div class="workout-set-kicker">SÉRIE ATUAL</div>
       <h3 id="setLabel">Série 1</h3>
-      <div class="grid2">
+      <div id="setProgressDots" class="set-progress-dots" aria-hidden="true"></div>
+      <div class="grid2 workout-set-inputs">
         <label id="weightField">Carga (kg)<input id="weight" type="number" min="0" step=".5"></label>
         <label id="repsField"><span id="repsLabel">Repetições</span><input id="reps" type="number" min="1"></label>
       </div>
@@ -347,9 +350,10 @@
       <button id="skipSetBtn" class="big skip-set-btn" style="display:none" onclick="skipCurrentSet()">PULAR SÉRIE</button>
        <button id="nextExerciseBtn" class="big next-ex" style="display:none" onclick="nextPlanExercise()">PRÓXIMO EXERCÍCIO</button>
     </div>
-    <div class="card timer">
+    <div class="card timer workout-rest-card">
       <div class="eyebrow">DESCANSO</div>
-      <div id="clock">01:30</div>
+      <div class="rest-ring"><div id="clock">01:30</div></div>
+      <div id="restHint" class="rest-hint">Recupere o fôlego para a próxima série</div>
       <div class="grid3">
         <button onclick="startTimer()">Iniciar</button>
         <button onclick="pauseTimer()">Pausar</button>
@@ -637,7 +641,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-60-10.js?v=67.60.10"></script>
-<div id="buildVersion" style="display:none">v67.60.10</div>
+<script src="app-v67-61-0.js?v=67.61.0"></script>
+<div id="buildVersion" style="display:none">v67.61.0</div>
 </body>
 </html>
