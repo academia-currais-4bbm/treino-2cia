@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-61-3.css?v=67.61.3">
+<link rel="stylesheet" href="styles-v67-62-0.css?v=67.62.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -324,12 +324,12 @@
       <div class="workout-progress-copy"><span id="workoutPlanLabel"></span><b id="workoutStepLabel"></b></div>
       <div class="workout-progress-track" aria-hidden="true"><i id="workoutProgressFill"></i></div>
     </div>
-    <div class="bar"><button onclick="appBack('list')">←</button><h2 id="exTitle"></h2></div>
-    <div class="visual">
+    <div class="bar workout-ex-bar"><button onclick="appBack('list')">←</button><div class="workout-ex-heading"><small>EXERCÍCIO ATUAL</small><h2 id="exTitle"></h2></div></div>
+    <div class="visual workout-visual-v67620">
       <div class="imgbox"><span>1</span><img id="imgStart" alt="Posição inicial"><b>POSIÇÃO INICIAL</b></div>
       <div class="imgbox"><span>2</span><img id="imgEnd" alt="Posição final"><b>POSIÇÃO FINAL</b></div>
     </div>
-    <div class="card">
+    <div class="card workout-guide-v67620">
       <div class="meta"><b id="exMuscle"></b><b id="exPrescription"></b></div>
       <p id="exTip"></p>
       <p class="avoid"><b>Evite:</b> <span id="exAvoid"></span></p>
@@ -351,13 +351,13 @@
       <button type="button" id="skipExerciseBtn" class="big skip-exercise-btn" style="display:none" onclick="window.skipCurrentExercise()">PULAR EXERCÍCIO</button>
        <button id="nextExerciseBtn" class="big next-ex" style="display:none" onclick="nextPlanExercise()">PRÓXIMO EXERCÍCIO</button>
     </div>
-    <div class="card timer">
-      <div class="eyebrow">DESCANSO</div>
-      <div id="clock">01:30</div>
-      <div class="grid3">
-        <button onclick="startTimer()">Iniciar</button>
-        <button onclick="pauseTimer()">Pausar</button>
-        <button onclick="resetTimer()">Reiniciar</button>
+    <div class="card timer timer-v67620">
+      <div class="timer-v67620-head"><div><div class="eyebrow">DESCANSO</div><small>Recupere-se para a próxima série</small></div><span>⏱</span></div>
+      <div class="timer-v67620-ring"><div id="clock">01:30</div></div>
+      <div class="grid3 timer-v67620-actions">
+        <button onclick="startTimer()">▶ Iniciar</button>
+        <button onclick="pauseTimer()">Ⅱ Pausar</button>
+        <button onclick="resetTimer()">↻ Reiniciar</button>
       </div>
     </div>
   </section>
@@ -641,7 +641,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-61-3.js?v=67.61.3"></script>
-<div id="buildVersion" style="display:none">v67.61.3</div>
+<script src="app-v67-62-0.js?v=67.62.0"></script>
+<div id="buildVersion" style="display:none">v67.62.0</div>
 </body>
 </html>
