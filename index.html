@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-61-1.css?v=67.61.1">
+<link rel="stylesheet" href="styles-v67-61-2.css?v=67.61.2">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -320,7 +320,7 @@
   </section>
 
   <section id="exercise" class="view">
-    <div id="workoutProgress" class="workout-progress workout-progress-v67610" style="display:none">
+    <div id="workoutProgress" class="workout-progress workout-progress-v67612" style="display:none">
       <div class="workout-progress-copy"><span id="workoutPlanLabel"></span><b id="workoutStepLabel"></b></div>
       <div class="workout-progress-track" aria-hidden="true"><i id="workoutProgressFill"></i></div>
     </div>
@@ -347,14 +347,13 @@
         <label id="repsField"><span id="repsLabel">Repetições</span><input id="reps" type="number" min="1"></label>
       </div>
       <button class="big red" onclick="completeSet()">CONCLUIR SÉRIE</button>
-      <button id="skipSetBtn" class="big skip-set-btn" style="display:none" onclick="skipCurrentSet()">PULAR SÉRIE</button>
-      <button id="skipExerciseBtn" class="big skip-exercise-btn" style="display:none" onclick="skipCurrentExercise()">PULAR EXERCÍCIO</button>
+      <button type="button" id="skipSetBtn" class="big skip-set-btn" style="display:none" onclick="window.skipCurrentSet()">PULAR SÉRIE</button>
+      <button type="button" id="skipExerciseBtn" class="big skip-exercise-btn" style="display:none" onclick="window.skipCurrentExercise()">PULAR EXERCÍCIO</button>
        <button id="nextExerciseBtn" class="big next-ex" style="display:none" onclick="nextPlanExercise()">PRÓXIMO EXERCÍCIO</button>
     </div>
-    <div class="card timer workout-rest-card">
+    <div class="card timer">
       <div class="eyebrow">DESCANSO</div>
-      <div class="rest-ring"><div id="clock">01:30</div></div>
-      <div id="restHint" class="rest-hint">Recupere o fôlego para a próxima série</div>
+      <div id="clock">01:30</div>
       <div class="grid3">
         <button onclick="startTimer()">Iniciar</button>
         <button onclick="pauseTimer()">Pausar</button>
@@ -642,7 +641,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-61-1.js?v=67.61.1"></script>
-<div id="buildVersion" style="display:none">v67.61.1</div>
+<script src="app-v67-61-2.js?v=67.61.2"></script>
+<div id="buildVersion" style="display:none">v67.61.2</div>
 </body>
 </html>
