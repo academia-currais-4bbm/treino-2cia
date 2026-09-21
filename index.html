@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-65-0.css?v=67.64.0">
+<link rel="stylesheet" href="styles-v67-66-0.css?v=67.66.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -256,8 +256,22 @@
           <strong id="cardioRunPace">--:-- min/km</strong>
           <small>Calculado automaticamente pelo tempo e distância.</small>
         </div>
+        <div class="activity-location-card">
+          <b>📍 Local da atividade <small class="field-optional">opcional</small></b>
+          <p>Se estiver no local, capture o GPS. Se já estiver em casa, informe onde realizou a corrida.</p>
+          <div class="location-actions"><button type="button" onclick="captureCardioLocation()">USAR LOCALIZAÇÃO ATUAL</button><button type="button" onclick="chooseCardioManualLocation()">INFORMAR LOCAL</button></div>
+          <input id="cardioLocationText" type="text" maxlength="80" placeholder="Ex.: Pista de atletismo / Açude / Bairro" oninput="cardioLocationManualInput()">
+          <div id="cardioLocationStatus" class="activity-location-status">Nenhuma localização adicionada.</div>
+        </div>
       </div>
       <div id="cardioSwimFields" style="display:none">
+        <label>Tipo de natação
+          <select id="cardioSwimType" onchange="toggleSwimTypeFields()"><option value="pool">Piscina</option><option value="open">Águas abertas</option></select>
+        </label>
+        <div id="cardioPoolFields">
+          <div class="cardio-two-cols"><label>Comprimento da piscina (m)<select id="cardioPoolLength" onchange="updateSwimDistanceFromLaps()"><option value="25">25 m</option><option value="50">50 m</option><option value="custom">Personalizado</option></select></label><label id="cardioPoolCustomWrap" style="display:none">Comprimento (m)<input id="cardioPoolCustomLength" type="number" min="1" step="0.5" oninput="updateSwimDistanceFromLaps()"></label></div>
+          <label>Quantidade de voltas <small class="field-optional">opcional</small><input id="cardioPoolLaps" type="number" min="1" step="1" inputmode="numeric" placeholder="Ex.: 40" oninput="updateSwimDistanceFromLaps()"></label>
+        </div>
         <label>Distância nadada (metros)
           <input id="cardioSwimDistance" type="number" min="1" step="1" inputmode="numeric" placeholder="Ex.: 1000">
         </label>
@@ -265,6 +279,13 @@
           <span>RITMO MÉDIO</span>
           <strong id="cardioSwimPace">--:-- /100 m</strong>
           <small>Calculado automaticamente pelo tempo e distância.</small>
+        </div>
+        <div id="cardioSwimLocation" class="activity-location-card" style="display:none">
+          <b>📍 Local das águas abertas <small class="field-optional">opcional</small></b>
+          <p>Use o GPS se ainda estiver no local ou informe manualmente onde nadou.</p>
+          <div class="location-actions"><button type="button" onclick="captureCardioLocation()">USAR LOCALIZAÇÃO ATUAL</button><button type="button" onclick="chooseCardioManualLocation()">INFORMAR LOCAL</button></div>
+          <input id="cardioSwimLocationText" type="text" maxlength="80" placeholder="Ex.: Açude / Praia / Lago" oninput="cardioLocationManualInput(true)">
+          <div id="cardioSwimLocationStatus" class="activity-location-status">Nenhuma localização adicionada.</div>
         </div>
       </div>
       <div id="cardioRankingHint" class="cardio-ranking-hint">Mínimo de 30 minutos para pontuar.</div>
@@ -677,7 +698,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-65-0.js?v=67.64.0"></script>
+<script src="app-v67-66-0.js?v=67.66.0"></script>
 <div id="buildVersion" style="display:none">v67.64.0</div>
 </body>
 </html>
