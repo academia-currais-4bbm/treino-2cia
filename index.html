@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-66-1.css?v=67.66.1">
+<link rel="stylesheet" href="styles-v67-67-0.css?v=67.66.1">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -112,19 +112,6 @@
       </div>
       <div id="feedNotificationsPanel" class="feed-notifications-panel" hidden></div>
 
-      <details class="sports-feed-settings">
-        <summary>📍 Localização das próximas atividades</summary>
-        <div class="sports-feed-settings-body">
-          <label class="sports-feed-toggle-row">
-            <input id="feedLocationEnabled" type="checkbox" onchange="v6738SaveFeedLocationPrefs()">
-            <span>Mostrar uma localização nas próximas atividades</span>
-          </label>
-          <label class="sports-feed-location-label">Localização para a próxima atividade
-            <input id="feedLocationText" maxlength="80" placeholder="Ex.: 2ª CIA — Currais Novos/RN" oninput="v6738SaveFeedLocationPrefs()">
-          </label>
-          <small>A localização é opcional e fica registrada individualmente em cada atividade. Alterar este campo depois não muda atividades anteriores. Não são enviadas coordenadas GPS.</small>
-        </div>
-      </details>
 
       <details class="sports-feed-settings push-settings">
         <summary>🔔 Notificações no celular</summary>
@@ -256,13 +243,6 @@
           <strong id="cardioRunPace">--:-- min/km</strong>
           <small>Calculado automaticamente pelo tempo e distância.</small>
         </div>
-        <div class="activity-location-card">
-          <b>📍 Local da atividade <small class="field-optional">opcional</small></b>
-          <p>Se estiver no local, capture o GPS. Se já estiver em casa, informe onde realizou a corrida.</p>
-          <div class="location-actions"><button type="button" onclick="captureCardioLocation()">USAR LOCALIZAÇÃO ATUAL</button><button type="button" onclick="chooseCardioManualLocation()">INFORMAR LOCAL</button></div>
-          <input id="cardioLocationText" type="text" maxlength="80" placeholder="Ex.: Pista de atletismo / Açude / Bairro" oninput="cardioLocationManualInput()">
-          <div id="cardioLocationStatus" class="activity-location-status">Nenhuma localização adicionada.</div>
-        </div>
       </div>
       <div id="cardioSwimFields" style="display:none">
         <label>Tipo de natação
@@ -280,14 +260,8 @@
           <strong id="cardioSwimPace">--:-- /100 m</strong>
           <small>Calculado automaticamente pelo tempo e distância.</small>
         </div>
-        <div id="cardioSwimLocation" class="activity-location-card">
-          <b>📍 Local da atividade <small class="field-optional">opcional</small></b>
-          <p>Se ainda estiver no local, use o GPS. Se já estiver em casa, informe manualmente onde realizou a natação.</p>
-          <div class="location-actions"><button type="button" onclick="captureCardioLocation()">USAR LOCALIZAÇÃO ATUAL</button><button type="button" onclick="chooseCardioManualLocation()">INFORMAR LOCAL</button></div>
-          <input id="cardioSwimLocationText" type="text" maxlength="80" placeholder="Ex.: Piscina do quartel / Açude / Praia / Lago" oninput="cardioLocationManualInput(true)">
-          <div id="cardioSwimLocationStatus" class="activity-location-status">Nenhuma localização adicionada.</div>
-        </div>
       </div>
+      <div id="cardioActivityLocationHost"></div>
       <div id="cardioRankingHint" class="cardio-ranking-hint">Mínimo de 30 minutos para pontuar.</div>
       <div id="cardioSavedMessage" class="free-workout-saved-message" role="status" aria-live="assertive" style="display:none">✓ Cardio salvo.</div>
       <button id="saveCardioWorkoutBtn" class="big red" type="button" onclick="saveCardioWorkout()">SALVAR CARDIO</button>
@@ -312,6 +286,7 @@
         <input id="freeWorkoutMinutes" type="number" min="1" max="600" inputmode="numeric" placeholder="Ex.: 60">
       </label>
       <p class="free-note"><b>Para pontuar:</b> pelo menos 1 grupo muscular, 20 minutos e 1 exercício realizado com séries e repetições informadas, além da presença validada na unidade.</p>
+      <div id="freeActivityLocationHost"></div>
       <div id="freeWorkoutEligibility" class="free-eligibility"></div>
       <div id="freeWorkoutSavedMessage" class="free-workout-saved-message" role="status" aria-live="assertive" style="display:none">
         ✓ Treino salvo.
@@ -395,6 +370,7 @@
       <button type="button" onclick="v67604PauseWorkout(true)">⏸ PAUSAR TREINO</button>
       <button type="button" class="v67604-cancel" onclick="v67604CancelWorkout()">✕ CANCELAR TREINO</button>
     </div>
+    <div id="planActivityLocationHost"></div>
     <div class="card workout-set-card">
       <div class="workout-set-kicker">SÉRIE ATUAL</div>
       <h3 id="setLabel">Série 1</h3>
@@ -460,6 +436,7 @@
 
   <section id="coreOperational" class="view">
     <div class="bar"><button onclick="appBack('home')">←</button><h2>Core Operacional</h2></div>
+    <div id="coreActivityLocationHost"></div>
     <div id="coreOperationalList" class="stack"></div>
   </section>
 
@@ -698,7 +675,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-66-1.js?v=67.66.1"></script>
+<script src="app-v67-67-0.js?v=67.66.1"></script>
 <div id="buildVersion" style="display:none">v67.64.0</div>
 </body>
 </html>
