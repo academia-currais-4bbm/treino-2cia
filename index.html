@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-66-0.css?v=67.66.0">
+<link rel="stylesheet" href="styles-v67-66-1.css?v=67.66.1">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -280,11 +280,11 @@
           <strong id="cardioSwimPace">--:-- /100 m</strong>
           <small>Calculado automaticamente pelo tempo e distância.</small>
         </div>
-        <div id="cardioSwimLocation" class="activity-location-card" style="display:none">
-          <b>📍 Local das águas abertas <small class="field-optional">opcional</small></b>
-          <p>Use o GPS se ainda estiver no local ou informe manualmente onde nadou.</p>
+        <div id="cardioSwimLocation" class="activity-location-card">
+          <b>📍 Local da atividade <small class="field-optional">opcional</small></b>
+          <p>Se ainda estiver no local, use o GPS. Se já estiver em casa, informe manualmente onde realizou a natação.</p>
           <div class="location-actions"><button type="button" onclick="captureCardioLocation()">USAR LOCALIZAÇÃO ATUAL</button><button type="button" onclick="chooseCardioManualLocation()">INFORMAR LOCAL</button></div>
-          <input id="cardioSwimLocationText" type="text" maxlength="80" placeholder="Ex.: Açude / Praia / Lago" oninput="cardioLocationManualInput(true)">
+          <input id="cardioSwimLocationText" type="text" maxlength="80" placeholder="Ex.: Piscina do quartel / Açude / Praia / Lago" oninput="cardioLocationManualInput(true)">
           <div id="cardioSwimLocationStatus" class="activity-location-status">Nenhuma localização adicionada.</div>
         </div>
       </div>
@@ -698,7 +698,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-66-0.js?v=67.66.0"></script>
+<script src="app-v67-66-1.js?v=67.66.1"></script>
 <div id="buildVersion" style="display:none">v67.64.0</div>
 </body>
 </html>
