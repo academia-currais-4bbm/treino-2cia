@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-63-1.css?v=67.63.1">
+<link rel="stylesheet" href="styles-v67-64-0.css?v=67.64.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -252,14 +252,22 @@
       <h3>O que você treinou?</h3>
       <div id="freeMuscleGroups" class="free-muscle-grid"></div>
     </div>
+    <div id="freeExerciseCard" class="card" style="display:none">
+      <span class="eyebrow">EXERCÍCIOS</span>
+      <h3>Marque o que você fez</h3>
+      <p class="free-note">Os exercícios aparecem de acordo com os grupos selecionados. Informe séries e repetições. A carga é opcional.</p>
+      <div id="freeExerciseList" class="free-exercise-list"></div>
+    </div>
     <div class="card">
       <label>Tempo de treino (minutos)
         <input id="freeWorkoutMinutes" type="number" min="1" max="600" inputmode="numeric" placeholder="Ex.: 60">
       </label>
-      <p class="free-note">O treino livre registra somente grupos musculares e duração. Para valer no ranking, para pontuar, precisa ter presença validada na unidade e atender ao critério mínimo definido para treino livre.</p>
+      <p class="free-note"><b>Para pontuar:</b> pelo menos 1 grupo muscular, 20 minutos e 1 exercício realizado com séries e repetições informadas, além da presença validada na unidade.</p>
+      <div id="freeWorkoutEligibility" class="free-eligibility"></div>
       <div id="freeWorkoutSavedMessage" class="free-workout-saved-message" role="status" aria-live="assertive" style="display:none">
         ✓ Treino salvo.
       </div>
+      <div id="freeWorkoutSummary" class="free-workout-summary" style="display:none"></div>
       <button id="saveFreeWorkoutBtn" class="big red" onclick="saveFreeWorkout()">SALVAR TREINO LIVRE</button>
     </div>
   </section>
@@ -641,7 +649,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-63-1.js?v=67.63.1"></script>
-<div id="buildVersion" style="display:none">v67.62.6</div>
+<script src="app-v67-64-0.js?v=67.64.0"></script>
+<div id="buildVersion" style="display:none">v67.64.0</div>
 </body>
 </html>
