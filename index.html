@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-64-0.css?v=67.64.0">
+<link rel="stylesheet" href="styles-v67-65-0.css?v=67.64.0">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -194,9 +194,9 @@
       <p>Esteira, bicicleta e remo podem pontuar com pelo menos <b>30 minutos</b> e presença validada. <b>Corrida ao ar livre e natação são registros esportivos e não pontuam.</b></p>
       <div class="cardio-machine-grid">
         <button type="button" class="cardio-machine" data-cardio="run" onclick="selectCardioMachine('run')"><span>🏃‍♂️</span><b>CORRIDA AO AR LIVRE</b><small>Tempo, distância e pace • não pontua</small></button>
-        <button type="button" class="cardio-machine" data-cardio="treadmill" onclick="selectCardioMachine('treadmill')"><span>🏃</span><b>ESTEIRA</b><small>Tempo, distância e calorias</small></button>
-        <button type="button" class="cardio-machine" data-cardio="bike" onclick="selectCardioMachine('bike')"><span>🚴</span><b>BICICLETA</b><small>Tempo</small></button>
-        <button type="button" class="cardio-machine" data-cardio="rower" onclick="selectCardioMachine('rower')"><span>🚣</span><b>SIMULADOR DE REMO</b><small>Tempo</small></button>
+        <button type="button" class="cardio-machine" data-cardio="treadmill" onclick="selectCardioMachine('treadmill')"><span>🏃</span><b>ESTEIRA</b><small>Tempo, distância e pace</small></button>
+        <button type="button" class="cardio-machine" data-cardio="bike" onclick="selectCardioMachine('bike')"><span>🚴</span><b>BICICLETA</b><small>Tempo, intensidade e dados opcionais do smartwatch</small></button>
+        <button type="button" class="cardio-machine" data-cardio="rower" onclick="selectCardioMachine('rower')"><span>🚣</span><b>SIMULADOR DE REMO</b><small>Tempo, distância e ritmo /500 m</small></button>
         <button type="button" class="cardio-machine" data-cardio="swim" onclick="selectCardioMachine('swim')"><span>🏊</span><b>NATAÇÃO</b><small>Distância e tempo • não pontua</small></button>
       </div>
     </div>
@@ -210,13 +210,41 @@
         <label>Distância (km)
           <input id="cardioDistance" type="number" min="0.1" step="0.01" inputmode="decimal" placeholder="Ex.: 5,00">
         </label>
-        <label>Calorias
+        <label>Inclinação média (%) <small class="field-optional">opcional</small>
+          <input id="cardioIncline" type="number" min="0" step="0.5" inputmode="decimal" placeholder="Ex.: 3,0">
+        </label>
+        <label>Calorias <small class="field-optional">opcional</small>
           <input id="cardioCalories" type="number" min="1" step="1" inputmode="numeric" placeholder="Ex.: 320">
         </label>
         <div class="cardio-pace-box">
           <span>PACE MÉDIO</span>
           <strong id="cardioPace">--:-- min/km</strong>
           <small>Calculado automaticamente pelo tempo e distância.</small>
+        </div>
+      </div>
+      <div id="cardioBikeFields" style="display:none">
+        <label>Intensidade predominante
+          <select id="cardioBikeIntensity">
+            <option value="">Selecione</option><option value="Leve">Leve</option><option value="Moderada">Moderada</option><option value="Intensa">Intensa</option>
+          </select>
+        </label>
+        <label class="cardio-watch-check"><input id="cardioBikeWatch" type="checkbox" onchange="toggleCardioWatchFields()"> Usei smartwatch durante a atividade</label>
+        <div id="cardioBikeWatchFields" style="display:none">
+          <div class="cardio-two-cols">
+            <label>FC média (bpm) <small class="field-optional">opcional</small><input id="cardioBikeHrAvg" type="number" min="30" max="240" inputmode="numeric" placeholder="Ex.: 142"></label>
+            <label>FC máxima (bpm) <small class="field-optional">opcional</small><input id="cardioBikeHrMax" type="number" min="30" max="240" inputmode="numeric" placeholder="Ex.: 168"></label>
+          </div>
+          <label>Calorias do smartwatch <small class="field-optional">opcional</small><input id="cardioBikeCalories" type="number" min="1" inputmode="numeric" placeholder="Ex.: 280"></label>
+        </div>
+      </div>
+      <div id="cardioRowerFields" style="display:none">
+        <label>Distância (metros)
+          <input id="cardioRowerDistance" type="number" min="1" step="1" inputmode="numeric" placeholder="Ex.: 6000">
+        </label>
+        <div class="cardio-pace-box"><span>RITMO MÉDIO</span><strong id="cardioRowerPace">--:-- /500 m</strong><small>Calculado automaticamente pelo tempo e distância.</small></div>
+        <div class="cardio-two-cols">
+          <label>SPM <small class="field-optional">opcional</small><input id="cardioRowerSpm" type="number" min="1" max="100" inputmode="numeric" placeholder="Ex.: 26"></label>
+          <label>Calorias <small class="field-optional">opcional</small><input id="cardioRowerCalories" type="number" min="1" inputmode="numeric" placeholder="Ex.: 300"></label>
         </div>
       </div>
       <div id="cardioRunFields" style="display:none">
@@ -649,7 +677,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-64-0.js?v=67.64.0"></script>
+<script src="app-v67-65-0.js?v=67.64.0"></script>
 <div id="buildVersion" style="display:none">v67.64.0</div>
 </body>
 </html>
