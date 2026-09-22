@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-67-7.css?v=67.67.7">
+<link rel="stylesheet" href="styles-v67-67-8.css?v=67.67.8">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -379,6 +379,7 @@
         <label id="weightField">Carga (kg)<input id="weight" type="number" min="0" step=".5"></label>
         <label id="repsField"><span id="repsLabel">Repetições</span><input id="reps" type="number" min="1"></label>
       </div>
+      <div id="lastSetReference" class="last-set-reference" style="display:none"><span>↶ ÚLTIMA SÉRIE <b id="lastSetReferenceText"></b></span><button id="useLastSetBtn" type="button" onclick="v67678UseLastSet()">USAR</button></div>
       <button class="big red" onclick="completeSet()">CONCLUIR SÉRIE</button>
       <button type="button" id="skipSetBtn" class="big skip-set-btn" style="display:none" onclick="window.skipCurrentSet()">PULAR SÉRIE</button>
       <button type="button" id="skipExerciseBtn" class="big skip-exercise-btn" style="display:none" onclick="window.skipCurrentExercise()">PULAR EXERCÍCIO</button>
@@ -675,7 +676,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-67-7.js?v=67.67.7"></script>
+<script src="app-v67-67-8.js?v=67.67.8"></script>
 <div id="buildVersion" style="display:none">v67.64.0</div>
 </body>
 </html>
