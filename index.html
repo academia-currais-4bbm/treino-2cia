@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-67-8.css?v=67.67.8">
+<link rel="stylesheet" href="styles-v67-68-1.css?v=67.68.1">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -93,6 +93,11 @@
         <span class="feature-icon">⌁</span><span><b>MOBILIDADE & RECUPERAÇÃO</b><small>Prepare, movimente e recupere</small></span><span class="chev">›</span>
       </button>
       
+      
+
+      <button class="feature-card nutrition-home-card" onclick="openNutrition()">
+        <span class="feature-icon">🍽️</span><span><b>NUTRIÇÃO</b><small>Simulador alimentar • calorias, macros e plano diário</small></span><span class="chev">›</span>
+      </button>
       <button class="feature-card core-home-card" onclick="openCoreOperational()">
         <span class="feature-icon">🛡️</span><span><b>CORE OPERACIONAL</b><small>Estabilidade, carga e controle para o serviço</small></span><span class="chev">›</span>
       </button>
@@ -430,7 +435,43 @@
     </div>
   </section>
 
-  <section id="stretch" class="view">
+  
+
+
+  <section id="nutrition" class="view">
+    <div class="bar"><button onclick="appBack('home')">←</button><h2>Nutrição</h2></div>
+    <div class="nutrition-shell">
+      <div class="nutrition-hero"><span>🍽️ PLANEJAMENTO ALIMENTAR</span><h2>Simulador de dieta</h2><p>Estime sua necessidade energética e monte um plano alimentar prático para sua rotina.</p></div>
+      <div class="nutrition-tabs" role="tablist">
+        <button id="nutritionTabSim" class="active" type="button" onclick="nutritionTab('sim')">SIMULADOR</button>
+        <button id="nutritionTabPlan" type="button" onclick="nutritionTab('plan')">MEU PLANO</button>
+        <button id="nutritionTabEvolution" type="button" onclick="nutritionTab('evolution')">EVOLUÇÃO</button>
+      </div>
+      <div id="nutritionSim" class="nutrition-panel">
+        <div class="nutrition-grid">
+          <label>Sexo<select id="nutritionSex"><option value="m">Masculino</option><option value="f">Feminino</option></select></label>
+          <label>Idade<input id="nutritionAge" type="number" min="18" max="80" inputmode="numeric" placeholder="Ex.: 30"></label>
+          <label>Peso atual (kg)<input id="nutritionWeight" type="number" min="40" max="250" step="0.1" inputmode="decimal" placeholder="Ex.: 85"></label>
+          <label>Altura (cm)<input id="nutritionHeight" type="number" min="130" max="220" inputmode="numeric" placeholder="Ex.: 178"></label>
+          <label>Peso-meta (kg)<input id="nutritionTargetWeight" type="number" min="40" max="250" step="0.1" inputmode="decimal" placeholder="Opcional"></label>
+          <label>Objetivo<select id="nutritionGoal"><option value="loss">Perder gordura</option><option value="maintain">Manter peso</option><option value="gain">Ganhar massa muscular</option></select></label>
+          <label>Estilo de vida<select id="nutritionActivity"><option value="1.2">Pouco ativo</option><option value="1.375">Levemente ativo</option><option value="1.55" selected>Moderadamente ativo</option><option value="1.725">Muito ativo</option><option value="1.9">Extremamente ativo</option></select></label>
+          <label>Treinos por semana<input id="nutritionTraining" type="number" min="0" max="14" value="4" inputmode="numeric"></label>
+          <label>Refeições por dia<select id="nutritionMeals"><option>3</option><option selected>4</option><option>5</option><option>6</option></select></label>
+          <label>Estilo do plano<select id="nutritionMode"><option value="balanced">Equilibrado</option><option value="quartel">🚒 Modo Quartel — rápido e prático</option><option value="economic">💰 Econômico</option></select></label>
+        </div>
+        <label class="nutrition-wide">Meta de calorias manual (opcional)<input id="nutritionManualCalories" type="number" min="1200" max="6000" step="10" inputmode="numeric" placeholder="Deixe vazio para calcular automaticamente"></label>
+        <label class="nutrition-wide">Restrições, alergias ou alimentos que não gosta<textarea id="nutritionRestrictions" rows="3" maxlength="300" placeholder="Ex.: não gosto de peixe; intolerância à lactose..."></textarea></label>
+        <button class="big red" type="button" onclick="generateNutritionPlan()">GERAR MEU PLANO</button>
+        <div id="nutritionMessage" class="nutrition-message" aria-live="polite"></div>
+        <div class="nutrition-disclaimer">Este simulador fornece estimativas gerais de alimentação e não substitui avaliação individual de nutricionista ou médico. Em caso de doença, gestação, alergia alimentar importante ou necessidade clínica, procure acompanhamento profissional.</div>
+      </div>
+      <div id="nutritionPlan" class="nutrition-panel" hidden><div id="nutritionPlanContent"></div></div>
+      <div id="nutritionEvolution" class="nutrition-panel" hidden><div id="nutritionEvolutionContent"></div></div>
+    </div>
+  </section>
+
+<section id="stretch" class="view">
     <div class="bar"><button onclick="appBack('home')">←</button><h2>Mobilidade & Recuperação</h2></div>
     <div id="stretchList" class="stack"></div>
   </section>
@@ -676,7 +717,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-67-8.js?v=67.67.8"></script>
-<div id="buildVersion" style="display:none">v67.64.0</div>
+<script src="app-v67-68-1.js?v=67.68.1"></script>
+<div id="buildVersion" style="display:none">v67.68.1</div>
 </body>
 </html>
