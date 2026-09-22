@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-68-1.css?v=67.68.1">
+<link rel="stylesheet" href="styles-v67-68-2.css?v=67.68.1">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -462,7 +462,7 @@
         </div>
         <label class="nutrition-wide">Meta de calorias manual (opcional)<input id="nutritionManualCalories" type="number" min="1200" max="6000" step="10" inputmode="numeric" placeholder="Deixe vazio para calcular automaticamente"></label>
         <label class="nutrition-wide">Restrições, alergias ou alimentos que não gosta<textarea id="nutritionRestrictions" rows="3" maxlength="300" placeholder="Ex.: não gosto de peixe; intolerância à lactose..."></textarea></label>
-        <button class="big red" type="button" onclick="generateNutritionPlan()">GERAR MEU PLANO</button>
+        <div class="nutrition-plan-actions"><button class="big red" type="button" onclick="generateNutritionPlan()">GERAR MEU PLANO</button><button type="button" onclick="nutritionResetSimulator()">🗑 ZERAR SIMULADOR</button></div>
         <div id="nutritionMessage" class="nutrition-message" aria-live="polite"></div>
         <div class="nutrition-disclaimer">Este simulador fornece estimativas gerais de alimentação e não substitui avaliação individual de nutricionista ou médico. Em caso de doença, gestação, alergia alimentar importante ou necessidade clínica, procure acompanhamento profissional.</div>
       </div>
@@ -717,7 +717,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-68-1.js?v=67.68.1"></script>
-<div id="buildVersion" style="display:none">v67.68.1</div>
+<script src="app-v67-68-2.js?v=67.68.1"></script>
+<div id="buildVersion" style="display:none">v67.68.2</div>
 </body>
 </html>
