@@ -2143,3 +2143,14 @@ body.admin-modal-open{overflow:hidden}
 .v676844-hero span{display:block;color:#ff6969;font-size:10px;font-weight:900;letter-spacing:1.35px}.v676844-hero h2{margin:5px 0 3px;font-size:22px}.v676844-hero p{margin:0;color:#999;font-size:12px}.v676844-hero>b{display:grid;place-items:center;min-width:58px;height:58px;border-radius:18px;background:#b40000;color:#fff;font-size:26px;box-shadow:0 8px 24px rgba(180,0,0,.22)}
 .v676844-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:9px}.v676844-grid>div{padding:13px;border:1px solid #2b2b2b;border-radius:15px;background:#151515}.v676844-grid small{display:block;color:#999;font-size:9px;font-weight:900;letter-spacing:.55px}.v676844-grid strong{display:block;margin:5px 0 2px;font-size:19px;color:#fff}.v676844-grid span{color:#888;font-size:10px}
 .v676844-strip{display:flex;gap:8px;overflow-x:auto;margin-top:9px;padding-bottom:2px;scrollbar-width:none}.v676844-strip::-webkit-scrollbar{display:none}.v676844-strip span,.v676844-strip b{flex:0 0 auto;padding:9px 11px;border:1px solid #2c2c2c;border-radius:999px;background:#171717;color:#bbb;font-size:10px}.v676844-strip b{color:#f1f1f1}
+
+
+/* V67.68.46 — refinamento da Evolução */
+.chart-row{grid-template-columns:minmax(0,86px) minmax(90px,1fr) 82px;gap:9px}
+.chart-row .chart-label{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.exercise-summary .best-performance{grid-column:1/-1;border-color:rgba(255,193,7,.24)}
+.exercise-summary .best-performance b{color:#ffd25a}
+.v676846-timeline .progress-value{min-width:92px}
+.v676846-timeline .progress-value small{display:block;margin-top:2px;color:#929292;font-size:10px}
+.v676846-timeline .progress-value small .up{color:#7fe795}.v676846-timeline .progress-value small .down{color:#ff7b82}
+@media(max-width:380px){.chart-row{grid-template-columns:72px minmax(72px,1fr) 76px;gap:7px}.chart-row b{font-size:.78rem}}
