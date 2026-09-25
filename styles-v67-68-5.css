@@ -2132,3 +2132,7 @@ body.admin-modal-open{overflow:hidden}
 .custom-method-guide{display:flex;flex-direction:column;gap:4px;margin:0 0 12px;padding:10px 12px;border:1px solid #5b4421;border-radius:12px;background:#211a0d}
 .custom-method-guide b{color:#ffc75c;font-size:.78rem}
 .custom-method-guide span{color:#ddd;font-size:.76rem;line-height:1.35}
+
+/* V67.68.43 — múltiplos exercícios extras no Treino Livre */
+.free-add-exercise-btn{width:100%;margin:14px 0 4px;padding:15px 16px;border-radius:16px;border:1px solid rgba(255,59,59,.45);background:rgba(200,16,46,.10);color:#fff;font-weight:800;font-size:14px;letter-spacing:.02em}
+.free-add-exercise-btn:active{transform:scale(.99)}
