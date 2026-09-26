@@ -2193,3 +2193,9 @@ body.admin-modal-open{overflow:hidden}
 .v6850-highlight small{font-size:12px;font-weight:750;color:#f4f4f4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .v6850-highlight.pr{border-color:rgba(255,195,56,.26);background:linear-gradient(90deg,rgba(255,190,40,.10),rgba(255,255,255,.025))}
 .v6850-highlight.achievement{border-color:rgba(200,16,46,.34);background:linear-gradient(90deg,rgba(200,16,46,.14),rgba(255,255,255,.025))}
+
+/* V67.68.51 — edição da foto no próprio Perfil Esportivo */
+.v6851-sports-avatar-edit{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;flex:0 0 auto}
+.v6851-sports-avatar-edit>span{font-size:11px;font-weight:800;color:#ff5a61;white-space:nowrap}
+.v6851-sports-avatar-edit:active{transform:scale(.98)}
+#cloudUserBadge{cursor:pointer}
