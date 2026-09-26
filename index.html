@@ -578,6 +578,32 @@
 
       <div id="adminMessage" class="admin-message"></div>
 
+      <div class="admin52-tabs" role="tablist" aria-label="Seções administrativas">
+        <button type="button" class="active" data-admin52-tab="dashboard" onclick="admin52ShowTab('dashboard',this)">📊 Dashboard</button>
+        <button type="button" data-admin52-tab="militares" onclick="admin52ShowTab('militares',this)">👥 Militares</button>
+        <button type="button" data-admin52-tab="validacoes" onclick="admin52ShowTab('validacoes',this)">✅ Validações</button>
+        <button type="button" data-admin52-tab="ranking" onclick="admin52ShowTab('ranking',this)">🏆 Ranking</button>
+        <button type="button" data-admin52-tab="taf" onclick="admin52ShowTab('taf',this)">🎯 TAF</button>
+        <button type="button" data-admin52-tab="seguranca" onclick="admin52ShowTab('seguranca',this)">🛡️ Segurança</button>
+      </div>
+
+      <div id="admin52Dashboard" class="admin52-section">
+        <div class="admin52-hero"><span class="eyebrow">CENTRAL ADMINISTRATIVA</span><h3>Visão geral da unidade</h3><p>Acompanhe acessos, validações e Ranking em um único painel.</p></div>
+        <div id="admin52Metrics" class="admin52-metrics"><div class="admin52-metric"><b>—</b><span>Militares</span></div><div class="admin52-metric"><b>—</b><span>Ativos</span></div><div class="admin52-metric"><b>—</b><span>Validações 7d</span></div><div class="admin52-metric"><b>—</b><span>Pontos no mês</span></div></div>
+        <div class="card admin52-dashboard-card"><div class="admin52-card-head"><div><span class="eyebrow">ACESSO RÁPIDO</span><h3>Gestão da unidade</h3></div><button type="button" onclick="admin52RefreshDashboard()">ATUALIZAR</button></div><div class="admin52-quick"><button onclick="admin52ShowTab('militares')">👥 Gerenciar militares</button><button onclick="admin52ShowTab('validacoes')">✅ Conferir validações</button><button onclick="admin52ShowTab('ranking')">🏆 Auditar Ranking</button></div></div>
+        <div id="admin52RankingPreview" class="card admin52-dashboard-card"><h3>Ranking do mês</h3><div class="admin-loading">Carregando…</div></div>
+      </div>
+
+      <div id="admin52Validacoes" class="admin52-section" hidden>
+        <div class="admin52-section-title"><span class="eyebrow">PRESENÇA E PONTUAÇÃO</span><h3>Validações da unidade</h3><p>Confira o local configurado e as presenças registradas nos últimos 7 dias.</p></div>
+      </div>
+
+      <div id="admin52Ranking" class="admin52-section" hidden>
+        <div class="admin52-section-title"><span class="eyebrow">AUDITORIA</span><h3>Ranking de Frequência</h3><p>Visão administrativa dos pontos do mês, sem permitir alteração manual da pontuação.</p></div>
+        <div class="card"><div class="admin52-card-head"><h3 id="admin52RankingTitle">Mês atual</h3><button type="button" onclick="admin52LoadRankingAudit()">ATUALIZAR</button></div><div id="admin52RankingAudit"><div class="admin-loading">Carregando…</div></div></div>
+      </div>
+
+      <div id="admin52ServiceBlock" class="admin52-movable">
       <div class="card admin-service-card">
         <span class="eyebrow">VALIDAÇÃO DE TREINO</span>
         <h3>QR fixo da academia</h3>
@@ -609,6 +635,9 @@
         </div>
       </div>
 
+      </div>
+
+      <div id="admin52TafBlock" class="admin52-movable" hidden>
       <div class="card official-taf-admin-card">
         <span class="eyebrow">TAF OFICIAL</span>
         <h3>Alimentar Ranking Oficial TAF</h3>
@@ -624,6 +653,9 @@
         <div id="officialTafAdminList"><div class="admin-loading">Carregando TAF oficial…</div></div>
       </div>
 
+      </div>
+
+      <div id="admin52MilitaryBlock" class="admin52-movable" hidden>
       <div class="card">
         <h3>Cadastrar militar</h3>
         <div class="admin-form-grid">
@@ -680,6 +712,9 @@
         </div>
       </div>
 
+      </div>
+
+      <div id="admin52SecurityBlock" class="admin52-movable" hidden>
       <details class="card admin-security-card">
         <summary>Segurança administrativa</summary>
         <p>Troque o código administrativo sempre que necessário.</p>
@@ -688,6 +723,7 @@
         <label>Confirmar novo código<input id="adminConfirmCode" type="password" minlength="8"></label>
         <button onclick="adminChangeCode()">ALTERAR CÓDIGO</button>
       </details>
+      </div>
     </div>
   </section>
 
@@ -738,7 +774,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-68-51.js?v=67.68.51"></script>
-<div id="buildVersion" style="display:none">v67.68.13</div>
+<script src="app-v67-68-52.js?v=67.68.52"></script>
+<div id="buildVersion" style="display:none">v67.68.52</div>
 </body>
 </html>
