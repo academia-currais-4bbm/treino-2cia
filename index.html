@@ -120,6 +120,20 @@
       </div>
       <div id="feedNotificationsPanel" class="feed-notifications-panel" hidden></div>
 
+      <div class="v6848-feed-toolbar" aria-label="Filtros do Feed esportivo">
+        <div class="v6848-feed-filters">
+          <button type="button" class="active" data-feed-filter="all" onclick="v6848SetFeedFilter('all',this)">Todos</button>
+          <button type="button" data-feed-filter="treino" onclick="v6848SetFeedFilter('treino',this)">🏋️ Treino</button>
+          <button type="button" data-feed-filter="cardio" onclick="v6848SetFeedFilter('cardio',this)">🏃 Cardio</button>
+          <button type="button" data-feed-filter="servico" onclick="v6848SetFeedFilter('servico',this)">🚒 Em serviço</button>
+          <button type="button" data-feed-filter="meus" onclick="v6848SetFeedFilter('meus',this)">Meu feed</button>
+        </div>
+        <select id="v6848FeedSort" class="v6848-feed-sort" onchange="v6848SetFeedSort(this.value)" aria-label="Ordenar Feed">
+          <option value="recent">Mais recentes</option>
+          <option value="engagement">Mais interações</option>
+        </select>
+      </div>
+      <div id="v6848FeedSummary" class="v6848-feed-summary" hidden></div>
 
       <details class="sports-feed-settings push-settings">
         <summary>🔔 Notificações no celular</summary>
@@ -724,7 +738,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-68-47.js?v=67.68.47"></script>
+<script src="app-v67-68-48.js?v=67.68.48"></script>
 <div id="buildVersion" style="display:none">v67.68.13</div>
 </body>
 </html>
