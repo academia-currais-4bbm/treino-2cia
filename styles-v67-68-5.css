@@ -2170,3 +2170,15 @@ body.admin-modal-open{overflow:hidden}
 .v6848-feed-summary b{display:block;color:#fff;font-size:17px;line-height:1.1}
 .v6848-feed-summary span{display:block;margin-top:3px;color:#888;font-size:9px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:410px){.v6848-feed-toolbar{display:block}.v6848-feed-sort{width:100%;max-width:none;margin-top:8px}.v6848-feed-summary span{font-size:8px}}
+
+
+/* ===== V67.68.49 — Refinamento responsivo do Feed ===== */
+.v6848-feed-toolbar{display:flex;flex-direction:column;align-items:stretch;gap:7px;overflow:visible;margin-bottom:9px}
+.v6848-feed-filters{width:100%;max-width:100%;display:flex;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;padding:2px 1px 5px;flex:none}
+.v6848-feed-filters button{flex:0 0 auto;scroll-snap-align:start}
+.v6848-feed-sort{align-self:flex-end;width:min(154px,48%);max-width:154px;margin:0;padding:8px 9px}
+.v6848-feed-summary{gap:5px;margin-bottom:11px}
+.v6848-feed-summary>div{padding:7px 2px;border-radius:11px}
+.v6848-feed-summary b{font-size:15px}
+.v6848-feed-summary span{font-size:7.5px;margin-top:2px}
+@media(max-width:410px){.v6848-feed-toolbar{display:flex}.v6848-feed-sort{width:min(154px,52%);max-width:154px;margin-top:0}.v6848-feed-summary{gap:4px}.v6848-feed-summary>div{padding:7px 1px}.v6848-feed-summary b{font-size:14px}.v6848-feed-summary span{font-size:7px}}
