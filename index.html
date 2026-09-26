@@ -595,7 +595,16 @@
       </div>
 
       <div id="admin52Validacoes" class="admin52-section" hidden>
-        <div class="admin52-section-title"><span class="eyebrow">PRESENÇA E PONTUAÇÃO</span><h3>Validações da unidade</h3><p>Confira o local configurado e as presenças registradas nos últimos 7 dias.</p></div>
+        <div class="admin52-section-title"><span class="eyebrow">AUDITORIA DE PRESENÇA</span><h3>Validações da unidade</h3><p>Consulte as validações registradas, situação da janela operacional e distância registrada no momento da confirmação.</p></div>
+        <div id="admin59ValidationAudit" class="admin59-validation-audit">
+          <div id="admin59ValidationMetrics" class="admin59-validation-metrics"></div>
+          <div class="admin59-validation-tools">
+            <input id="admin59ValidationSearch" type="search" placeholder="Buscar por nome ou graduação" oninput="admin59RenderValidations()">
+            <select id="admin59ValidationStatus" onchange="admin59RenderValidations()"><option value="all">Todas</option><option value="active">Ativas</option><option value="expired">Encerradas</option></select>
+            <select id="admin59ValidationPeriod" onchange="admin59RenderValidations()"><option value="7">Últimos 7 dias</option><option value="1">Hoje / 24h</option><option value="3">Últimos 3 dias</option></select>
+          </div>
+          <div id="admin59ValidationList" class="admin59-validation-list"><div class="admin-loading">Carregando auditoria…</div></div>
+        </div>
       </div>
 
       <div id="admin52Ranking" class="admin52-section" hidden>
@@ -774,7 +783,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-68-58.js?v=67.68.56"></script>
+<script src="app-v67-68-59.js?v=67.68.56"></script>
 <div id="buildVersion" style="display:none">v67.68.56</div>
 </body>
 </html>
