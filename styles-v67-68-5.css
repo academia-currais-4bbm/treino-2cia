@@ -2259,3 +2259,24 @@ body.admin-modal-open{overflow:hidden}
 .admin56-military-row.is-inactive .admin56-military-main b{color:#cbd5e1!important}
 .admin56-military-row.is-inactive .admin56-military-main small{color:#8b96a6!important}
 .admin56-military-row.is-inactive{opacity:.78!important}
+
+/* ===== V67.68.58 — Resumo Individual Administrativo ===== */
+.admin56-detail-overlay{background:rgba(0,0,0,.76);backdrop-filter:blur(3px)}
+.admin56-detail-sheet{background:#0c0c0d;color:#f8fafc;border:1px solid #29292d;border-bottom:0;box-shadow:0 -18px 55px rgba(0,0,0,.55);padding:18px 18px calc(24px + env(safe-area-inset-bottom))}
+.admin56-detail-head{align-items:center;border-bottom:1px solid #2b2b2f;padding-bottom:14px}
+.admin56-detail-head .eyebrow{color:#ff5b61;font-size:11px;font-weight:900;letter-spacing:1.2px}
+.admin56-detail-head h3{color:#fff;font-size:22px;line-height:1.1;margin:5px 0 0}
+.admin56-detail-head>button{background:#202126;color:#fff;border:1px solid #303138;width:40px;height:40px;line-height:1;font-weight:500}
+.admin56-detail-person{padding:18px 2px 16px;gap:14px}
+.admin56-detail-person .admin56-avatar{background:#1c2737;color:#dce9ff;border:1px solid #34445c}
+.admin56-detail-person>div:last-child b{color:#fff;font-size:17px;line-height:1.25}
+.admin56-detail-person span{font-size:11px}
+.admin56-detail-person .is-active{color:#43d17a}.admin56-detail-person .is-inactive{color:#ff6b6b}
+.admin56-detail-metrics{gap:10px}
+.admin56-detail-metrics>div{background:#171719;border:1px solid #2a2a2e;border-radius:15px;padding:15px 10px}
+.admin56-detail-metrics b{color:#fff;font-size:21px}.admin56-detail-metrics span{color:#a8a8af;font-size:11px;margin-top:3px;display:block}
+.admin56-last{background:#141416;border:1px solid #2d2d31;border-radius:15px;margin:15px 0;padding:15px;gap:6px}
+.admin56-last .eyebrow{color:#ff5b61;font-weight:900;letter-spacing:1px;font-size:10px}
+.admin56-last b{color:#fff;font-size:15px;line-height:1.3}.admin56-last small{color:#a8a8af;font-size:12px}
+.admin56-detail-actions{gap:9px}.admin56-detail-actions button{background:#202b3b;border:1px solid #35445a;color:#fff;border-radius:13px;padding:13px 12px;font-size:12px}
+.admin56-detail-actions button.danger{background:#991f23;border-color:#c43b40}.admin56-detail-actions button.success{background:#176534;border-color:#26844a}
