@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-68-68.css?v=67.68.68">
+<link rel="stylesheet" href="styles-v67-68-69.css?v=67.68.68">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -406,6 +406,7 @@
       <button class="big red" onclick="completeSet()">CONCLUIR SÉRIE</button>
       <button type="button" id="skipSetBtn" class="big skip-set-btn" style="display:none" onclick="window.skipCurrentSet()">PULAR SÉRIE</button>
       <button type="button" id="skipExerciseBtn" class="big skip-exercise-btn" style="display:none" onclick="window.skipCurrentExercise()">PULAR EXERCÍCIO</button>
+      <button type="button" id="exerciseAdjustBtn" class="big exercise-adjust-btn" style="display:none" onclick="window.openExerciseAdjust()">⚙ AJUSTAR EXERCÍCIO</button>
        <button id="nextExerciseBtn" class="big next-ex" style="display:none" onclick="nextPlanExercise()">PRÓXIMO EXERCÍCIO</button>
     </div>
     <div class="card timer timer-v67620">
@@ -783,7 +784,9 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-68-68.js?v=67.68.68"></script>
+<script src="app-v67-68-69.js?v=67.68.68"></script>
 <div id="buildVersion" style="display:none">v67.68.56</div>
+
+<div id="exerciseAdjustModal" class="exercise-adjust-modal" hidden><div class="exercise-adjust-backdrop" onclick="window.closeExerciseAdjust()"></div><section class="exercise-adjust-sheet" role="dialog" aria-modal="true"><div class="exercise-adjust-head"><div><small>AJUSTES DURANTE O TREINO</small><h3 id="exerciseAdjustTitle">Exercício</h3></div><button type="button" class="exercise-adjust-close" onclick="window.closeExerciseAdjust()">×</button></div><div class="exercise-adjust-grid"><label>Séries<input id="exerciseAdjustSets" type="number" min="1" max="20" inputmode="numeric"></label><label>Descanso (seg)<input id="exerciseAdjustRest" type="number" min="0" max="600" step="5" inputmode="numeric"></label></div><div class="exercise-adjust-quick"><button type="button" onclick="window.adjustExerciseSets(-1)">− 1 SÉRIE</button><button type="button" onclick="window.adjustExerciseSets(1)">+ 1 SÉRIE</button></div><button type="button" class="big red exercise-adjust-save" onclick="window.saveExerciseAdjust()">SALVAR AJUSTES</button><p class="exercise-adjust-note">Os ajustes valem para esta execução e não alteram o Ranking.</p></section></div>
 </body>
 </html>
