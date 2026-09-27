@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-68-71.css?v=67.68.68">
+<link rel="stylesheet" href="styles-v67-68-72.css?v=67.68.68">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -91,6 +91,9 @@
       </button>
       <button class="feature-card official-taf-home-card" onclick="openOfficialTafRanking()">
         <span class="feature-icon">🎖️</span><span><b>RANKING OFICIAL TAF</b><small>Índices oficiais • classificação da tropa</small></span><span class="chev">›</span>
+      </button>
+      <button class="feature-card recovery-home-card" onclick="openMuscleRecovery()">
+        <span class="feature-icon">♻️</span><span><b>RECUPERAÇÃO MUSCULAR</b><small>Estimativa pelos grupos musculares treinados</small></span><span class="chev">›</span>
       </button>
       <button class="feature-card" onclick="showView('stretch');renderStretch()">
         <span class="feature-icon">⌁</span><span><b>MOBILIDADE & RECUPERAÇÃO</b><small>Prepare, movimente e recupere</small></span><span class="chev">›</span>
@@ -493,6 +496,30 @@
     </div>
   </section>
 
+
+  <section id="muscleRecovery" class="view">
+    <div class="topbar">
+      <button class="backbtn" onclick="showView('home')">‹</button>
+      <div><span class="eyebrow">DESEMPENHO</span><h2>Recuperação muscular</h2></div>
+    </div>
+    <div class="recovery-hero">
+      <span class="recovery-kicker">ESTIMATIVA PÓS-TREINO</span>
+      <h3>Como estão os grupos treinados?</h3>
+      <p>Leitura baseada no seu histórico recente. Use como referência de organização do treino, não como avaliação médica.</p>
+    </div>
+    <div class="recovery-legend">
+      <span><i class="rec-dot recent"></i>Treinado recentemente</span>
+      <span><i class="rec-dot recovering"></i>Recuperando</span>
+      <span><i class="rec-dot ready"></i>Recuperado</span>
+    </div>
+    <div id="muscleRecoverySummary" class="recovery-summary"></div>
+    <div id="muscleRecoveryList" class="recovery-list"></div>
+    <div class="recovery-info">
+      <b>Como a estimativa funciona?</b>
+      <p>O aplicativo considera o último registro de cada grupo muscular. Até 24 h aparece como treinado recentemente; de 24 a 48 h, recuperando; após 48 h, recuperado. A recuperação real varia entre pessoas e treinos.</p>
+    </div>
+  </section>
+
 <section id="stretch" class="view">
     <div class="bar"><button onclick="appBack('home')">←</button><h2>Mobilidade & Recuperação</h2></div>
     <div id="stretchList" class="stack"></div>
@@ -784,7 +811,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-68-71.js?v=67.68.68"></script>
+<script src="app-v67-68-72.js?v=67.68.68"></script>
 <div id="buildVersion" style="display:none">v67.68.56</div>
 
 <div id="exerciseAdjustModal" class="exercise-adjust-modal" hidden><div class="exercise-adjust-backdrop" onclick="window.closeExerciseAdjust()"></div><section class="exercise-adjust-sheet" role="dialog" aria-modal="true"><div class="exercise-adjust-head"><div><small>AJUSTES DURANTE O TREINO</small><h3 id="exerciseAdjustTitle">Exercício</h3></div><button type="button" class="exercise-adjust-close" onclick="window.closeExerciseAdjust()">×</button></div><div class="exercise-adjust-grid"><label>Séries<input id="exerciseAdjustSets" type="number" min="1" max="20" inputmode="numeric"></label><label>Descanso (seg)<input id="exerciseAdjustRest" type="number" min="0" max="600" step="5" inputmode="numeric"></label></div><div class="exercise-adjust-quick"><button type="button" onclick="window.adjustExerciseSets(-1)">− 1 SÉRIE</button><button type="button" onclick="window.adjustExerciseSets(1)">+ 1 SÉRIE</button></div><button type="button" class="big exercise-change-open" onclick="window.openExerciseChange()">⇄ TROCAR EXERCÍCIO</button>
