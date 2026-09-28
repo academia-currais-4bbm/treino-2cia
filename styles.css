@@ -2367,3 +2367,12 @@ body.admin-modal-open{overflow:hidden}
 .motion3d-stage{position:relative;overflow:hidden;border-radius:16px;background:#080808;min-height:240px;display:grid;place-items:center}
 .motion3d-stage video,.motion3d-stage img{width:100%;max-height:62vh;object-fit:contain;background:#080808}
 .motion3d-badge{position:absolute;z-index:2;left:12px;top:12px;padding:7px 9px;border-radius:999px;background:rgba(8,8,8,.82);border:1px solid rgba(237,28,36,.55);color:#ff4b52;font-size:9px;font-weight:950;letter-spacing:.1em}
+
+/* V67.68.81 — Supino Reto 3D integrado à tela de execução */
+.visual.v676881-legacy-hidden > *:not(.v676881-inline3d){display:none!important}
+.v676881-inline3d{position:relative;width:100%;padding:0;border:1px solid rgba(237,28,36,.42);border-radius:18px;overflow:hidden;background:#080808;color:#fff;text-align:left;box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.v676881-inline3d img{display:block;width:100%;height:auto;max-height:390px;object-fit:contain;background:#080808}
+.v676881-tag{position:absolute;left:12px;top:12px;z-index:2;padding:7px 10px;border-radius:999px;background:rgba(7,7,7,.86);border:1px solid rgba(237,28,36,.62);color:#ff5057;font-size:10px;font-weight:950;letter-spacing:.08em}
+.v676881-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:linear-gradient(180deg,#151515,#0c0c0c)}
+.v676881-caption b{font-size:13px;letter-spacing:.06em}
+.v676881-caption small{font-size:10px;color:#aaa;text-align:right}

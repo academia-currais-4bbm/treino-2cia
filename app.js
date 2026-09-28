@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.68.80';
+const TREINO_2CIA_BUILD='67.68.81';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -2199,6 +2199,10 @@ function openExercise(id,inPlan=false){
   imgEnd.onerror=()=>{imgEnd.onerror=null;imgEnd.src=`assets/exercises/${currentExercise.id}-fim.svg`;imgEnd.classList.remove('realistic-exercise');};
   imgStart.src=hasRealistic?`assets/exercises/${realisticKey}-inicio.webp?v=37.0`:`assets/exercises/${currentExercise.id}-inicio.svg`;
   imgEnd.src=hasRealistic?`assets/exercises/${realisticKey}-fim.webp?v=37.0`:`assets/exercises/${currentExercise.id}-fim.svg`;
+  /* V67.68.81 — Supino Reto: piloto 3D também na tela principal.
+     Mantém as imagens início/fim carregadas no DOM para fallback e para a biblioteca legada,
+     mas apresenta o poster 3D como visual principal quando disponível. */
+  v676881ApplyInline3DPilot();
   bindExerciseImageZoom();
   updateMotionButton(hasRealistic);
   const hdPortrait=[
@@ -3229,6 +3233,34 @@ function openExerciseImageZoom(src,label){
   overlay.querySelector('.exercise-zoom-label').textContent=label||'Execução';
   overlay.classList.add('show');
 }
+
+function v676881IsSupinoReto(){
+  const raw=String(currentExercise?.name||'').trim();
+  const key=raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ');
+  return key==='supino reto' || key==='supino reto barra' || key==='supino reto (barra)';
+}
+function v676881ApplyInline3DPilot(){
+  const visual=document.querySelector('.visual');
+  if(!visual)return;
+  const old=visual.querySelector('.v676881-inline3d');
+  if(old)old.remove();
+  visual.classList.remove('v676881-legacy-hidden');
+  if(!v676881IsSupinoReto())return;
+
+  const card=document.createElement('button');
+  card.type='button';
+  card.className='v676881-inline3d';
+  card.innerHTML=`<span class="v676881-tag">3D • TREINO 2ª CIA</span>
+    <img alt="Guia visual 3D do Supino Reto">
+    <span class="v676881-caption"><b>SUPINO RETO</b><small>Toque para ampliar a demonstração</small></span>`;
+  const img=card.querySelector('img');
+  img.onload=()=>visual.classList.add('v676881-legacy-hidden');
+  img.onerror=()=>{card.remove();visual.classList.remove('v676881-legacy-hidden')};
+  img.src='assets/exercises/3d/supino-reto-poster.webp?v=676881';
+  card.addEventListener('click',()=>openExerciseMotion());
+  visual.appendChild(card);
+}
+
 function bindExerciseImageZoom(){
   const s=byId('imgStart'), e=byId('imgEnd');
   if(s && !s.dataset.zoomBound){
