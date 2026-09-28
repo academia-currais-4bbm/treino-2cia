@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles-v67-68-73.css?v=67.68.68">
+<link rel="stylesheet" href="styles-v67-68-74.css?v=67.68.68">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -383,8 +383,13 @@
       <div class="workout-progress-track" aria-hidden="true"><i id="workoutProgressFill"></i></div>
     </div>
     <div class="bar workout-ex-bar"><button onclick="appBack('list')">←</button><div class="workout-ex-heading"><small>EXERCÍCIO ATUAL</small><h2 id="exTitle"></h2></div></div>
-    <div class="visual workout-visual-v67620">
+    <div class="execution2-demo-head">
+      <div><small>DEMONSTRAÇÃO DO MOVIMENTO</small><b id="execution2MuscleLabel">Execução técnica</b></div>
+      <button type="button" onclick="openExerciseMotion()">▶ VER EM TELA CHEIA</button>
+    </div>
+    <div class="visual workout-visual-v67620 execution2-visual">
       <div class="imgbox"><span>1</span><img id="imgStart" alt="Posição inicial"><b>POSIÇÃO INICIAL</b></div>
+      <div class="execution2-flow" aria-hidden="true">→</div>
       <div class="imgbox"><span>2</span><img id="imgEnd" alt="Posição final"><b>POSIÇÃO FINAL</b></div>
     </div>
     <div class="card workout-guide-v67620">
@@ -392,13 +397,13 @@
       <p id="exTip"></p>
       <p class="avoid"><b>Evite:</b> <span id="exAvoid"></span></p>
     </div>
-    <div id="v67604WorkoutControls" class="v67604-workout-controls">
+    <div class="execution2-actions-label">CONTROLES DO TREINO</div><div id="v67604WorkoutControls" class="v67604-workout-controls">
       <button type="button" onclick="v67604PauseWorkout(true)">⏸ PAUSAR TREINO</button>
       <button type="button" class="v67604-cancel" onclick="v67604CancelWorkout()">✕ CANCELAR TREINO</button>
     </div>
     <div id="planActivityLocationHost"></div>
     <div class="card workout-set-card">
-      <div class="workout-set-kicker">SÉRIE ATUAL</div>
+      <div class="workout-set-kicker">REGISTRO DA EXECUÇÃO</div><div class="execution2-columns"><span>SÉRIE</span><span>CARGA</span><span>REPS/TEMPO</span><span>STATUS</span></div>
       <h3 id="setLabel">Série 1</h3>
       <div id="setProgressDots" class="set-progress-dots" aria-hidden="true"></div>
       <div class="grid2 workout-set-inputs">
@@ -811,7 +816,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js"></script>
-<script src="app-v67-68-73.js?v=67.68.68"></script>
+<script src="app-v67-68-74.js?v=67.68.68"></script>
 <div id="buildVersion" style="display:none">v67.68.56</div>
 
 <div id="exerciseAdjustModal" class="exercise-adjust-modal" hidden><div class="exercise-adjust-backdrop" onclick="window.closeExerciseAdjust()"></div><section class="exercise-adjust-sheet" role="dialog" aria-modal="true"><div class="exercise-adjust-head"><div><small>AJUSTES DURANTE O TREINO</small><h3 id="exerciseAdjustTitle">Exercício</h3></div><button type="button" class="exercise-adjust-close" onclick="window.closeExerciseAdjust()">×</button></div><div class="exercise-adjust-grid"><label>Séries<input id="exerciseAdjustSets" type="number" min="1" max="20" inputmode="numeric"></label><label>Descanso (seg)<input id="exerciseAdjustRest" type="number" min="0" max="600" step="5" inputmode="numeric"></label></div><div class="exercise-adjust-quick"><button type="button" onclick="window.adjustExerciseSets(-1)">− 1 SÉRIE</button><button type="button" onclick="window.adjustExerciseSets(1)">+ 1 SÉRIE</button></div><button type="button" class="big exercise-change-open" onclick="window.openExerciseChange()">⇄ TROCAR EXERCÍCIO</button>
