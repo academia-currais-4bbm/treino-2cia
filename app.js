@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.68.85';
+const TREINO_2CIA_BUILD='67.68.86';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -3255,7 +3255,7 @@ function v676881ApplyInline3DPilot(){
   const img=card.querySelector('img');
   img.onload=()=>visual.classList.add('v676881-legacy-hidden');
   img.onerror=()=>{card.remove();visual.classList.remove('v676881-legacy-hidden')};
-  img.src='assets/exercises/3d/supino-reto-card.webp?v=676885';
+  img.src='assets/exercises/3d/supino-reto-card.webp?v=676886';
   card.addEventListener('click',()=>openExerciseMotion());
   visual.appendChild(card);
 }
@@ -3293,6 +3293,30 @@ function stopExerciseMotion(){
   const video=ov?.querySelector('#motion3dVideo');
   if(video){try{video.pause();video.currentTime=0}catch(e){}}
   if(ov) ov.classList.remove('show');
+}
+function v676886StartFrameMotion(ov,media){
+  const video=ov.querySelector('#motion3dVideo');
+  const img=ov.querySelector('#motionImage');
+  const label=ov.querySelector('#motionLabel');
+  const badge=ov.querySelector('#motion3dBadge');
+  const help=ov.querySelector('#motionHelp');
+  if(video){try{video.pause()}catch(e){} video.style.display='none';}
+  img.style.display='block';
+  if(badge)badge.style.display='inline-flex';
+  label.textContent='MOVIMENTO EM SEQUÊNCIA';
+  help.textContent='Sequência visual do Supino Reto • descida e subida controladas';
+  const forward=media.frames.slice();
+  const frames=forward.concat(forward.slice(1,-1).reverse());
+  let i=0;
+  const show=()=>{
+    img.onerror=null;
+    img.src=frames[i];
+    img.classList.remove('motion-pop'); void img.offsetWidth; img.classList.add('motion-pop');
+    i=(i+1)%frames.length;
+  };
+  show();
+  if(exerciseMotionTimer)clearInterval(exerciseMotionTimer);
+  exerciseMotionTimer=setInterval(show,420);
 }
 function v676878StartLegacyMotion(ov,start,end){
   const video=ov.querySelector('#motion3dVideo');
@@ -3357,6 +3381,10 @@ function openExerciseMotion(){
     video.src=media.video;
     const play=video.play();
     if(play&&typeof play.catch==='function')play.catch(()=>v676878StartLegacyMotion(ov,start,end));
+    return;
+  }
+  if(media && Array.isArray(media.frames) && media.frames.length>1){
+    v676886StartFrameMotion(ov,media);
     return;
   }
   if(media && media.poster){
