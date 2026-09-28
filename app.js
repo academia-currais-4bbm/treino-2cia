@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.68.79';
+const TREINO_2CIA_BUILD='67.68.80';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -3245,11 +3245,16 @@ function bindExerciseImageZoom(){
 let exerciseMotionTimer=null;
 const V676878_3D_MEDIA={
   'Supino reto':{
-    poster:'assets/exercises/3d/supino-reto-poster.webp'
+    poster:'assets/exercises/3d/supino-reto-poster.webp?v=676880'
   }
 };
 function v676878Exercise3DMedia(){
-  return V676878_3D_MEDIA[String(currentExercise?.name||'')]||null;
+  const raw=String(currentExercise?.name||'').trim();
+  const key=raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ');
+  if(key==='supino reto' || key==='supino reto barra' || key==='supino reto (barra)'){
+    return {poster:'assets/exercises/3d/supino-reto-poster.webp?v=676880'};
+  }
+  return V676878_3D_MEDIA[raw]||null;
 }
 function stopExerciseMotion(){
   if(exerciseMotionTimer){ clearInterval(exerciseMotionTimer); exerciseMotionTimer=null; }
@@ -3324,12 +3329,14 @@ function openExerciseMotion(){
     return;
   }
   if(media && media.poster){
-    if(video)video.style.display='none';
+    if(video){try{video.pause()}catch(e){} video.removeAttribute('src'); video.style.display='none';}
+    if(exerciseMotionTimer){clearInterval(exerciseMotionTimer);exerciseMotionTimer=null;}
     img.style.display='block';
     if(badge)badge.style.display='inline-flex';
     label.textContent='GUIA VISUAL 3D';
-    help.textContent='Guia 3D do Supino Reto • animação em movimento será adicionada depois';
+    help.textContent='Guia 3D do Supino Reto • piloto da nova biblioteca visual';
     img.onerror=()=>v676878StartLegacyMotion(ov,start,end);
+    img.onload=()=>{ img.style.display='block'; };
     img.src=media.poster;
     return;
   }
