@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.68.89';
+const TREINO_2CIA_BUILD='67.68.90';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -3255,7 +3255,7 @@ function v676881ApplyInline3DPilot(){
   const img=card.querySelector('img');
   img.onload=()=>visual.classList.add('v676881-legacy-hidden');
   img.onerror=()=>{card.remove();visual.classList.remove('v676881-legacy-hidden')};
-  img.src='assets/exercises/3d/supino-reto-card.webp?v=676889';
+  img.src='assets/exercises/3d/supino-reto-card.webp?v=676890';
   card.addEventListener('click',()=>openExerciseMotion());
   visual.appendChild(card);
 }
@@ -3294,7 +3294,7 @@ function stopExerciseMotion(){
   if(video){try{video.pause();video.currentTime=0}catch(e){}}
   if(ov) ov.classList.remove('show');
 }
-function v676889StartFrameMotion(ov,media){
+function v676890StartFrameMotion(ov,media){
   const video=ov.querySelector('#motion3dVideo');
   const img=ov.querySelector('#motionImage');
   const label=ov.querySelector('#motionLabel');
@@ -3306,7 +3306,7 @@ function v676889StartFrameMotion(ov,media){
   label.textContent='MOVIMENTO EM SEQUÊNCIA';
   help.textContent='Sequência visual do Supino Reto • descida e subida controladas';
   const forward=media.frames.slice();
-  const frames=forward;
+  const frames=forward.concat(forward.slice(1,-1).reverse());
   let i=0;
   const show=()=>{
     img.onerror=null;
@@ -3316,7 +3316,7 @@ function v676889StartFrameMotion(ov,media){
   };
   show();
   if(exerciseMotionTimer)clearInterval(exerciseMotionTimer);
-  exerciseMotionTimer=setInterval(show,190);
+  exerciseMotionTimer=setInterval(show,520);
 }
 function v676878StartLegacyMotion(ov,start,end){
   const video=ov.querySelector('#motion3dVideo');
@@ -3337,14 +3337,13 @@ function v676878StartLegacyMotion(ov,start,end){
     img.classList.add('motion-pop');
   },950);
 }
-function v676889IsSupinoRetoMotion(){
+function v676890IsSupinoRetoMotion(){
   const raw=String(currentExercise?.name||'').trim();
   const key=raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ');
   return key==='supino reto'||key==='supino reto barra'||key==='supino reto (barra)';
 }
-function v676889SupinoFrames(){
-  return Array.from({length:10},(_,i)=>`assets/exercises/3d/supino-reto-frames-pro/frame-${String(i+1).padStart(2,'0')}.webp?v=676889`);
-}.webp?v=676889`);
+function v676890SupinoFrames(){
+  return [1,2,3,4,5].map(n=>`assets/exercises/3d/supino-reto-frames/frame-${n}.webp?v=676890`);
 }
 function openExerciseMotion(){
   const start=byId('imgStart'), end=byId('imgEnd');
@@ -3372,8 +3371,8 @@ function openExerciseMotion(){
   }
   ov.classList.add('show');
   if(exerciseMotionTimer){clearInterval(exerciseMotionTimer);exerciseMotionTimer=null}
-  if(v676889IsSupinoRetoMotion()){
-    v676889StartFrameMotion(ov,{frames:v676889SupinoFrames()});
+  if(v676890IsSupinoRetoMotion()){
+    v676890StartFrameMotion(ov,{frames:v676890SupinoFrames()});
     return;
   }
   const media=v676878Exercise3DMedia();
@@ -3397,7 +3396,7 @@ function openExerciseMotion(){
     return;
   }
   if(media && Array.isArray(media.frames) && media.frames.length>1){
-    v676889StartFrameMotion(ov,media);
+    v676890StartFrameMotion(ov,media);
     return;
   }
   if(media && media.poster){
