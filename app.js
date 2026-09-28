@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.68.82';
+const TREINO_2CIA_BUILD='67.68.85';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -3250,13 +3250,12 @@ function v676881ApplyInline3DPilot(){
   const card=document.createElement('button');
   card.type='button';
   card.className='v676881-inline3d v676882-inline3d-full';
-  card.innerHTML=`<span class="v676881-tag">3D • TREINO 2ª CIA</span>
-    <img alt="Guia visual 3D do Supino Reto">
+  card.innerHTML=`<img alt="Guia visual 3D do Supino Reto">
     <span class="v676881-caption"><b>SUPINO RETO</b><small>Toque para ampliar a demonstração</small></span>`;
   const img=card.querySelector('img');
   img.onload=()=>visual.classList.add('v676881-legacy-hidden');
   img.onerror=()=>{card.remove();visual.classList.remove('v676881-legacy-hidden')};
-  img.src='assets/exercises/3d/supino-reto-poster.webp?v=676882';
+  img.src='assets/exercises/3d/supino-reto-card.webp?v=676885';
   card.addEventListener('click',()=>openExerciseMotion());
   visual.appendChild(card);
 }

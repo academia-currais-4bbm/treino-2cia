@@ -2418,3 +2418,20 @@ body.admin-modal-open{overflow:hidden}
 }
 .visual.v676881-legacy-hidden .v676881-caption{width:100%!important;box-sizing:border-box!important}
 .visual.v676881-legacy-hidden .v676881-tag{display:inline-flex!important}
+
+/* V67.68.83 — card 3D limpo: sem selo sobre o título e sem UI falsa de player */
+.visual.v676881-legacy-hidden .v676881-inline3d .v676881-tag{display:none!important}
+
+/* V67.68.84 — card 3D sem recorte: preserva 100% da arte */
+.visual.v676881-legacy-hidden .v676881-inline3d img{
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+.visual.v676881-legacy-hidden .v676881-inline3d{
+  height:auto!important;
+  overflow:hidden!important;
+}
