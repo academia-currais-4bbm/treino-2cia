@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.68.86';
+const TREINO_2CIA_BUILD='67.68.87';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -3255,7 +3255,7 @@ function v676881ApplyInline3DPilot(){
   const img=card.querySelector('img');
   img.onload=()=>visual.classList.add('v676881-legacy-hidden');
   img.onerror=()=>{card.remove();visual.classList.remove('v676881-legacy-hidden')};
-  img.src='assets/exercises/3d/supino-reto-card.webp?v=676886';
+  img.src='assets/exercises/3d/supino-reto-card.webp?v=676887';
   card.addEventListener('click',()=>openExerciseMotion());
   visual.appendChild(card);
 }
@@ -3294,7 +3294,7 @@ function stopExerciseMotion(){
   if(video){try{video.pause();video.currentTime=0}catch(e){}}
   if(ov) ov.classList.remove('show');
 }
-function v676886StartFrameMotion(ov,media){
+function v676887StartFrameMotion(ov,media){
   const video=ov.querySelector('#motion3dVideo');
   const img=ov.querySelector('#motionImage');
   const label=ov.querySelector('#motionLabel');
@@ -3316,7 +3316,7 @@ function v676886StartFrameMotion(ov,media){
   };
   show();
   if(exerciseMotionTimer)clearInterval(exerciseMotionTimer);
-  exerciseMotionTimer=setInterval(show,420);
+  exerciseMotionTimer=setInterval(show,520);
 }
 function v676878StartLegacyMotion(ov,start,end){
   const video=ov.querySelector('#motion3dVideo');
@@ -3336,6 +3336,14 @@ function v676878StartLegacyMotion(ov,start,end){
     img.src=frames[frame].src; label.textContent=frames[frame].label;
     img.classList.add('motion-pop');
   },950);
+}
+function v676887IsSupinoRetoMotion(){
+  const raw=String(currentExercise?.name||'').trim();
+  const key=raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ');
+  return key==='supino reto'||key==='supino reto barra'||key==='supino reto (barra)';
+}
+function v676887SupinoFrames(){
+  return [1,2,3,4,5].map(n=>`assets/exercises/3d/supino-reto-frames/frame-${n}.webp?v=676887`);
 }
 function openExerciseMotion(){
   const start=byId('imgStart'), end=byId('imgEnd');
@@ -3363,6 +3371,10 @@ function openExerciseMotion(){
   }
   ov.classList.add('show');
   if(exerciseMotionTimer){clearInterval(exerciseMotionTimer);exerciseMotionTimer=null}
+  if(v676887IsSupinoRetoMotion()){
+    v676887StartFrameMotion(ov,{frames:v676887SupinoFrames()});
+    return;
+  }
   const media=v676878Exercise3DMedia();
   const video=ov.querySelector('#motion3dVideo');
   const img=ov.querySelector('#motionImage');
@@ -3384,7 +3396,7 @@ function openExerciseMotion(){
     return;
   }
   if(media && Array.isArray(media.frames) && media.frames.length>1){
-    v676886StartFrameMotion(ov,media);
+    v676887StartFrameMotion(ov,media);
     return;
   }
   if(media && media.poster){
