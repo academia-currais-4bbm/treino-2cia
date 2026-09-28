@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.68.77';
+const TREINO_2CIA_BUILD='67.68.78';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -3243,10 +3243,40 @@ function bindExerciseImageZoom(){
 
 
 let exerciseMotionTimer=null;
+const V676878_3D_MEDIA={
+  'Supino reto':{
+    video:'assets/exercises/3d/supino-reto.webm',
+    poster:'assets/exercises/3d/supino-reto-poster.webp'
+  }
+};
+function v676878Exercise3DMedia(){
+  return V676878_3D_MEDIA[String(currentExercise?.name||'')]||null;
+}
 function stopExerciseMotion(){
   if(exerciseMotionTimer){ clearInterval(exerciseMotionTimer); exerciseMotionTimer=null; }
   const ov=document.getElementById('exerciseMotion');
+  const video=ov?.querySelector('#motion3dVideo');
+  if(video){try{video.pause();video.currentTime=0}catch(e){}}
   if(ov) ov.classList.remove('show');
+}
+function v676878StartLegacyMotion(ov,start,end){
+  const video=ov.querySelector('#motion3dVideo');
+  const img=ov.querySelector('#motionImage');
+  const label=ov.querySelector('#motionLabel');
+  const badge=ov.querySelector('#motion3dBadge');
+  if(video)video.style.display='none';
+  if(img)img.style.display='block';
+  if(badge)badge.style.display='none';
+  const frames=[{src:start.src,label:'POSIÇÃO INICIAL'},{src:end.src,label:'POSIÇÃO FINAL'}];
+  let frame=0;
+  img.src=frames[0].src; label.textContent=frames[0].label;
+  if(exerciseMotionTimer)clearInterval(exerciseMotionTimer);
+  exerciseMotionTimer=setInterval(()=>{
+    frame=(frame+1)%frames.length;
+    img.classList.remove('motion-pop'); void img.offsetWidth;
+    img.src=frames[frame].src; label.textContent=frames[frame].label;
+    img.classList.add('motion-pop');
+  },950);
 }
 function openExerciseMotion(){
   const start=byId('imgStart'), end=byId('imgEnd');
@@ -3258,31 +3288,43 @@ function openExerciseMotion(){
     ov.className='exercise-motion';
     ov.innerHTML=`<button class="exercise-motion-close" aria-label="Fechar">×</button>
       <div class="exercise-motion-card">
-        <div class="exercise-motion-top"><b>EXECUÇÃO DO MOVIMENTO</b><span id="motionLabel">POSIÇÃO INICIAL</span></div>
-        <img id="motionImage" alt="Animação da execução">
+        <div class="exercise-motion-top"><b>EXECUÇÃO DO MOVIMENTO</b><span id="motionLabel">DEMONSTRAÇÃO</span></div>
+        <div class="motion3d-stage">
+          <span id="motion3dBadge" class="motion3d-badge">3D • TREINO 2ª CIA</span>
+          <video id="motion3dVideo" muted playsinline loop preload="metadata"></video>
+          <img id="motionImage" alt="Demonstração da execução">
+        </div>
         <div class="exercise-motion-progress"><i></i></div>
-        <small>Visualização alternada entre início e fim • movimento real deve ser controlado</small>
+        <small id="motionHelp">Demonstração visual • execute o movimento de forma controlada</small>
       </div>`;
     document.body.appendChild(ov);
     ov.addEventListener('click',e=>{
       if(e.target===ov || e.target.classList.contains('exercise-motion-close')) stopExerciseMotion();
     });
   }
+  ov.classList.add('show');
+  if(exerciseMotionTimer){clearInterval(exerciseMotionTimer);exerciseMotionTimer=null}
+  const media=v676878Exercise3DMedia();
+  const video=ov.querySelector('#motion3dVideo');
   const img=ov.querySelector('#motionImage');
   const label=ov.querySelector('#motionLabel');
-  const frames=[{src:start.src,label:'POSIÇÃO INICIAL'},{src:end.src,label:'POSIÇÃO FINAL'}];
-  let frame=0;
-  img.src=frames[0].src; label.textContent=frames[0].label;
-  ov.classList.add('show');
-  if(exerciseMotionTimer) clearInterval(exerciseMotionTimer);
-  exerciseMotionTimer=setInterval(()=>{
-    frame=(frame+1)%2;
-    img.classList.remove('motion-pop');
-    void img.offsetWidth;
-    img.src=frames[frame].src;
-    label.textContent=frames[frame].label;
-    img.classList.add('motion-pop');
-  },950);
+  const badge=ov.querySelector('#motion3dBadge');
+  const help=ov.querySelector('#motionHelp');
+
+  if(media && video){
+    img.style.display='none';
+    video.style.display='block';
+    badge.style.display='inline-flex';
+    label.textContent='ANIMAÇÃO 3D';
+    help.textContent='Atleta 3D padronizado • músculo principal destacado';
+    video.poster=media.poster||'';
+    video.onerror=()=>v676878StartLegacyMotion(ov,start,end);
+    video.src=media.video;
+    const play=video.play();
+    if(play&&typeof play.catch==='function')play.catch(()=>v676878StartLegacyMotion(ov,start,end));
+    return;
+  }
+  v676878StartLegacyMotion(ov,start,end);
 }
 function updateMotionButton(hasRealistic){
   let btn=document.getElementById('motionBtn');

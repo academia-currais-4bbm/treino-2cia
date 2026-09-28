@@ -2362,3 +2362,8 @@ body.admin-modal-open{overflow:hidden}
 #exercise .workout-set-inputs label{font-size:10px!important;color:#aaa!important;font-weight:850!important}#exercise .workout-set-inputs input{border-radius:12px!important;background:#0b0b0b!important;border:1px solid rgba(255,255,255,.13)!important}
 #exercise .workout-set-card .big.red{border-radius:13px!important;box-shadow:0 9px 22px rgba(210,11,20,.18)}#exercise .timer-v67620{margin-top:12px;border-radius:18px}
 @media(max-width:380px){.execution2-demo-head{align-items:flex-start;flex-direction:column}.execution2-demo-head button{width:100%}.execution2-visual{grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr)!important}.execution2-flow{font-size:17px}}
+
+/* V67.68.78 — biblioteca de demonstrações 3D */
+.motion3d-stage{position:relative;overflow:hidden;border-radius:16px;background:#080808;min-height:240px;display:grid;place-items:center}
+.motion3d-stage video,.motion3d-stage img{width:100%;max-height:62vh;object-fit:contain;background:#080808}
+.motion3d-badge{position:absolute;z-index:2;left:12px;top:12px;padding:7px 9px;border-radius:999px;background:rgba(8,8,8,.82);border:1px solid rgba(237,28,36,.55);color:#ff4b52;font-size:9px;font-weight:950;letter-spacing:.1em}
