@@ -1,0 +1,7 @@
+Biblioteca 3D — Treino 2ª CIA
+v67.68.79
+Piloto: Supino reto
+- supino-reto-poster.webp = guia visual 3D real incluído nesta versão.
+A animação WebM ainda não foi produzida. O app não apresenta o poster como vídeo.
+Quando houver supino-reto.webm, basta mapear a propriedade video novamente.
+Os arquivos antigos de início/fim permanecem como fallback.
