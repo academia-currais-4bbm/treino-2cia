@@ -2376,3 +2376,45 @@ body.admin-modal-open{overflow:hidden}
 .v676881-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:linear-gradient(180deg,#151515,#0c0c0c)}
 .v676881-caption b{font-size:13px;letter-spacing:.06em}
 .v676881-caption small{font-size:10px;color:#aaa;text-align:right}
+
+/* V67.68.82 — correção do encaixe do piloto 3D na tela principal */
+.visual.v676881-legacy-hidden{
+  display:block!important;
+  width:100%!important;
+  padding:0!important;
+  min-height:0!important;
+  height:auto!important;
+  grid-template-columns:1fr!important;
+  overflow:hidden!important;
+  background:#0b0b0b!important;
+}
+.visual.v676881-legacy-hidden::before,
+.visual.v676881-legacy-hidden::after{display:none!important;content:none!important}
+.visual.v676881-legacy-hidden > *:not(.v676881-inline3d){display:none!important}
+.visual.v676881-legacy-hidden .v676881-inline3d{
+  display:block!important;
+  position:relative!important;
+  width:100%!important;
+  max-width:none!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+  background:#080808!important;
+}
+.visual.v676881-legacy-hidden .v676881-inline3d img{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  aspect-ratio:16/9!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  margin:0!important;
+  background:#080808!important;
+}
+.visual.v676881-legacy-hidden .v676881-caption{width:100%!important;box-sizing:border-box!important}
+.visual.v676881-legacy-hidden .v676881-tag{display:inline-flex!important}
