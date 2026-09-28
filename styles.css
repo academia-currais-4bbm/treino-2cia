@@ -2435,3 +2435,6 @@ body.admin-modal-open{overflow:hidden}
   height:auto!important;
   overflow:hidden!important;
 }
+
+/* V67.68.92 — navegação bidirecional durante treinos estruturados */
+.previous-exercise-btn{margin-top:10px;min-height:48px;background:#15181b!important;border:1px solid #59616a!important;color:#fff!important;position:relative;z-index:2;touch-action:manipulation}

@@ -1715,6 +1715,27 @@ function v676821ForceNewExerciseSetOne(){
   try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao salvar início do novo exercício:',e)}
   try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação do novo exercício:',e)}
 }
+function previousPlanExercise(){
+  if(activePlanIndex<=0 || !activePlanExercises[activePlanIndex-1])return false;
+  pauseTimer();
+  activePlanIndex--;
+  currentSet=1;
+  try{openExercise(activePlanExercises[activePlanIndex].id,true)}catch(e){console.warn('Rotina visual do exercício anterior falhou; mantendo núcleo do treino:',e)}
+  // V67.68.92 — permite retornar a exercícios anteriores durante treinos prontos
+  // e personalizados. O histórico das séries já concluídas permanece intacto.
+  v676822ApplyExecutionCoreUI(true);
+  v676821ForceNewExerciseSetOne();
+  v67612UpdateWorkoutVisuals();
+  pauseTimer();
+  timer=Math.max(0,Number(currentExercise?.rest)||0);
+  updateClock();
+  try{v67604SaveActivePlanState({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet:1,status:'running'})}catch(e){console.warn('Falha ao persistir retorno de exercício:',e)}
+  try{if(v676830IsCustomName())v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet:1,status:'running'})}catch(e){}
+  try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação do exercício anterior:',e)}
+  return true;
+}
+window.previousPlanExercise=previousPlanExercise;
+
 function nextPlanExercise(){
   if(activePlanIndex<0)return;
   if(activePlanIndex < activePlanExercises.length-1){
@@ -2009,6 +2030,7 @@ function v676822ApplyExecutionCoreUI(resetSet=true){
     const skipExerciseBtn=byId('skipExerciseBtn');
     if(skipBtn) skipBtn.style.display='block';
     if(skipExerciseBtn) skipExerciseBtn.style.display='block';
+    const previousExerciseBtn=byId('previousExerciseBtn'); if(previousExerciseBtn) previousExerciseBtn.style.display=activePlanIndex>0?'block':'none';
     const adjustBtn=byId('exerciseAdjustBtn'); if(adjustBtn) adjustBtn.style.display='block';
   }
 }
@@ -2248,6 +2270,7 @@ function openExercise(id,inPlan=false){
   const canSkipPlanExercise = activePlanIndex>=0 || v676830IsCustomName();
   if(skipBtn) skipBtn.style.display=canSkipPlanExercise?'block':'none';
   if(skipExerciseBtn) skipExerciseBtn.style.display=canSkipPlanExercise?'block':'none';
+  const previousExerciseBtn=byId('previousExerciseBtn'); if(previousExerciseBtn) previousExerciseBtn.style.display=activePlanIndex>0?'block':'none';
   showView('exercise');
   return true;
 }
