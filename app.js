@@ -1516,6 +1516,7 @@ function startPlanWorkout(){
 
     try{v67670ResetActivityLocation()}catch(e){console.warn('Localização não impediu início:',e)}
     workoutStartedAt=new Date().toISOString();
+    v676894ClearProgress();
     activePlanIndex=0;
     currentSet=1;
     try{v67621StopMusic(true)}catch(e){console.warn('Falha ao parar música:',e)}
@@ -1670,6 +1671,7 @@ async function finishPlanWorkout(){
 
   localStorage.setItem('t2_last',`${activePlanName} • ${metrics.sets} séries • ${minutes} min`);
   localStorage.removeItem('t2_active_plan');
+  v676894ClearProgress();
   v676830ClearCheckpoint();
   v676835SuppressAutoRestore(true);
   pauseTimer();
@@ -1704,8 +1706,40 @@ async function finishPlanWorkout(){
   }
 
 }
+// V67.68.94 — progresso explícito por exercício dentro da sessão ativa.
+// Não depende de reconstrução por data/nome do plano ao navegar para trás/para frente.
+const V676894_PROGRESS_KEY='t2_active_exercise_progress';
+function v676894ProgressKey(ex=currentExercise){
+  if(!ex)return '';
+  return String(ex.id??v67678ExerciseKey(ex.name));
+}
+function v676894ReadProgress(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(V676894_PROGRESS_KEY)||'null');
+    if(!raw||raw.session!==workoutStartedAt||raw.plan!==activePlanName)return {session:workoutStartedAt,plan:activePlanName,exercises:{}};
+    raw.exercises=raw.exercises&&typeof raw.exercises==='object'?raw.exercises:{};
+    return raw;
+  }catch(e){return {session:workoutStartedAt,plan:activePlanName,exercises:{}}}
+}
+function v676894WriteProgress(ex=currentExercise,doneSets=0){
+  if(!ex||!workoutStartedAt)return;
+  const state=v676894ReadProgress(), key=v676894ProgressKey(ex); if(!key)return;
+  const total=Math.max(1,parseInt(ex.sets,10)||1);
+  const prev=Math.max(0,Number(state.exercises[key]?.doneSets)||0);
+  state.session=workoutStartedAt;state.plan=activePlanName;
+  state.exercises[key]={doneSets:Math.min(total,Math.max(prev,Number(doneSets)||0)),totalSets:total,name:ex.name,updatedAt:new Date().toISOString()};
+  try{localStorage.setItem(V676894_PROGRESS_KEY,JSON.stringify(state))}catch(e){}
+}
+function v676894GetProgress(ex=currentExercise){
+  const state=v676894ReadProgress(), key=v676894ProgressKey(ex); if(!key)return 0;
+  return Math.max(0,Number(state.exercises[key]?.doneSets)||0);
+}
+function v676894ClearProgress(){try{localStorage.removeItem(V676894_PROGRESS_KEY)}catch(e){}}
+
 function v676821SessionSetCount(ex=currentExercise){
   if(!ex||!workoutStartedAt||activePlanIndex<0)return 0;
+  const explicit=v676894GetProgress(ex);
+  if(explicit>0)return explicit;
   const startedMs=new Date(workoutStartedAt).getTime();
   return history().filter(x=>{
     const t=new Date(x?.date||'').getTime();
@@ -2462,6 +2496,7 @@ function completeSet(){
   });
   const wasPR=!bodyweight && checkNewPR(currentExercise.name,weight);
   saveHistory(h);
+  if(activePlanIndex>=0) v676894WriteProgress(currentExercise,currentSet);
   localStorage.setItem('t2_last',`${currentExercise.group} • ${currentExercise.name} • ${weight} kg • ${reps} reps`);
   updateLast();
   if(wasPR && weight>0){
