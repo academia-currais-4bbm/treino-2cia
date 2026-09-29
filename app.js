@@ -1704,33 +1704,57 @@ async function finishPlanWorkout(){
   }
 
 }
-function v676821ForceNewExerciseSetOne(){
-  if(!currentExercise)return;
-  currentSet=1;
+function v676821SessionSetCount(ex=currentExercise){
+  if(!ex||!workoutStartedAt||activePlanIndex<0)return 0;
+  const startedMs=new Date(workoutStartedAt).getTime();
+  return history().filter(x=>{
+    const t=new Date(x?.date||'').getTime();
+    return Number.isFinite(t) && t>=startedMs && x.plan===activePlanName && v67678ExerciseKey(x.exercise)===v67678ExerciseKey(ex.name);
+  }).length;
+}
+function v676821RestoreExerciseProgress(){
+  if(!currentExercise)return {done:false,count:0};
   const totalSets=Math.max(1,parseInt(currentExercise.sets,10)||1);
-  const label=byId('setLabel'); if(label)label.textContent=`Série 1 de ${totalSets}`;
-  const dots=byId('setProgressDots');
-  if(dots)dots.innerHTML=Array.from({length:totalSets},(_,i)=>`<i class="${i===0?'current':''}"></i>`).join('');
-  const next=byId('nextExerciseBtn'); if(next)next.style.display='none';
-  try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao salvar início do novo exercício:',e)}
-  try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação do novo exercício:',e)}
+  const doneCount=Math.min(totalSets,v676821SessionSetCount(currentExercise));
+  const btn=byId('nextExerciseBtn');
+  pauseTimer();timer=Math.max(0,Number(currentExercise.rest)||0);updateClock();
+  if(doneCount>=totalSets){
+    currentSet=totalSets;
+    const label=byId('setLabel');
+    if(label)label.innerHTML=`<span class="done-inline">✓ Exercício concluído</span><small>${totalSets}/${totalSets} séries realizadas</small>`;
+    const dots=byId('setProgressDots');
+    if(dots)dots.innerHTML=Array.from({length:totalSets},()=>`<i class="done"></i>`).join('');
+    if(btn){
+      btn.style.display='block';
+      btn.textContent=activePlanIndex<activePlanExercises.length-1?`PRÓXIMO EXERCÍCIO → ${activePlanExercises[activePlanIndex+1].name}`:'FINALIZAR TREINO ✓';
+    }
+    const reps=byId('reps');if(reps)reps.value='';
+    return {done:true,count:doneCount};
+  }
+  currentSet=Math.max(1,doneCount+1);
+  if(btn)btn.style.display='none';
+  v676822ApplyExecutionCoreUI(false);
+  v67625SyncCurrentSetUI();
+  v67612UpdateWorkoutVisuals();
+  const reps=byId('reps');if(reps)reps.value='';
+  try{v67678RenderLastSetReference()}catch(e){}
+  try{v67690RenderMethodGuide()}catch(e){}
+  return {done:false,count:doneCount};
+}
+function v676821ForceNewExerciseSetOne(){
+  // V67.68.93 — compatibilidade: agora restaura o progresso real da sessão.
+  return v676821RestoreExerciseProgress();
 }
 function previousPlanExercise(){
   if(activePlanIndex<=0 || !activePlanExercises[activePlanIndex-1])return false;
   pauseTimer();
   activePlanIndex--;
-  currentSet=1;
   try{openExercise(activePlanExercises[activePlanIndex].id,true)}catch(e){console.warn('Rotina visual do exercício anterior falhou; mantendo núcleo do treino:',e)}
-  // V67.68.92 — permite retornar a exercícios anteriores durante treinos prontos
-  // e personalizados. O histórico das séries já concluídas permanece intacto.
-  v676822ApplyExecutionCoreUI(true);
-  v676821ForceNewExerciseSetOne();
-  v67612UpdateWorkoutVisuals();
-  pauseTimer();
-  timer=Math.max(0,Number(currentExercise?.rest)||0);
-  updateClock();
-  try{v67604SaveActivePlanState({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet:1,status:'running'})}catch(e){console.warn('Falha ao persistir retorno de exercício:',e)}
-  try{if(v676830IsCustomName())v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet:1,status:'running'})}catch(e){}
+  // V67.68.93 — voltar não reinicia o exercício. Séries feitas nesta sessão
+  // determinam a próxima série; se todas já foram feitas, mantém concluído.
+  const restored=v676821RestoreExerciseProgress();
+  try{v67604SaveActivePlanState({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running'})}catch(e){console.warn('Falha ao persistir retorno de exercício:',e)}
+  try{if(v676830IsCustomName())v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running'})}catch(e){}
   try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação do exercício anterior:',e)}
   return true;
 }
@@ -1741,24 +1765,15 @@ function nextPlanExercise(){
   if(activePlanIndex < activePlanExercises.length-1){
     activePlanIndex++;
     pauseTimer();
-    currentSet=1;
     try{openExercise(activePlanExercises[activePlanIndex].id,true)}catch(e){console.warn('Rotina visual do novo exercício falhou; mantendo núcleo do treino:',e)}
-    // V67.68.22 — o novo exercício começa sempre em 1/X, mesmo se alguma rotina
-    // visual do personalizado falhar depois que a tela já foi aberta.
-    v676822ApplyExecutionCoreUI(true);
-    v676821ForceNewExerciseSetOne();
-    try{requestAnimationFrame(v676821ForceNewExerciseSetOne)}catch(e){}
-    setTimeout(v676821ForceNewExerciseSetOne,60);
-    setTimeout(v676821ForceNewExerciseSetOne,220);
-    v67612UpdateWorkoutVisuals();
-    // V67.68.28 — ao ENTRAR em um novo exercício, o relógio fica no tempo
-    // completo e PARADO. Ele só inicia quando a série atual for concluída/pulada.
-    pauseTimer();
-    timer=Math.max(0,Number(currentExercise?.rest)||0);
-    updateClock();
+    // V67.68.93 — se este exercício já foi executado antes de o militar voltar,
+    // restaura exatamente o progresso dele em vez de reapresentá-lo como novo.
+    v676821RestoreExerciseProgress();
+    try{v67604SaveActivePlanState({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running'})}catch(e){}
+    try{if(v676830IsCustomName())v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running'})}catch(e){}
+    try{saveNavigationState('exercise')}catch(e){}
   }else finishPlanWorkout();
 }
-
 
 
 function numericRepValue(value){
@@ -3317,47 +3332,26 @@ function stopExerciseMotion(){
   if(video){try{video.pause();video.currentTime=0}catch(e){}}
   if(ov) ov.classList.remove('show');
 }
-function v676893StartContinuousMotion(ov){
-  const video=ov.querySelector('#motion3dVideo');
-  const img=ov.querySelector('#motionImage');
-  const label=ov.querySelector('#motionLabel');
-  const badge=ov.querySelector('#motion3dBadge');
-  const help=ov.querySelector('#motionHelp');
-  if(video){try{video.pause()}catch(e){} video.style.display='none';}
-  if(img)img.style.display='none';
-  if(badge){badge.style.display='inline-flex';badge.textContent='MOVIMENTO CONTÍNUO • TREINO 2ª CIA';}
-  label.textContent='EXECUÇÃO CONTÍNUA';
-  help.textContent='Supino Reto • descida e subida fluidas, sem troca de quadros';
-
-  let stage=ov.querySelector('#motionContinuousStage');
-  if(!stage){
-    stage=document.createElement('div');
-    stage.id='motionContinuousStage';
-    stage.className='motion-continuous-stage';
-    stage.innerHTML=`<img class="motion-continuous-base" src="assets/exercises/3d/supino-reto-card.webp?v=676893" alt="Supino reto">
-      <div class="motion-continuous-bar" aria-hidden="true"><i></i><b></b><i></i></div>
-      <div class="motion-continuous-hint">MOVIMENTO CONTÍNUO</div>`;
-    ov.querySelector('.motion3d-stage').appendChild(stage);
-  }
-  stage.style.display='block';
-  requestAnimationFrame(()=>stage.classList.add('running'));
-}
 function v676891StartFrameMotion(ov,media){
-  /* fallback preservado para outros exercícios; o Supino usa o piloto contínuo v67.68.93 */
   const video=ov.querySelector('#motion3dVideo');
   const img=ov.querySelector('#motionImage');
   const label=ov.querySelector('#motionLabel');
   const badge=ov.querySelector('#motion3dBadge');
   const help=ov.querySelector('#motionHelp');
-  const stage=ov.querySelector('#motionContinuousStage');
-  if(stage)stage.style.display='none';
   if(video){try{video.pause()}catch(e){} video.style.display='none';}
   img.style.display='block';
   if(badge)badge.style.display='inline-flex';
   label.textContent='MOVIMENTO EM SEQUÊNCIA';
-  help.textContent='Sequência visual • execute o movimento de forma controlada';
-  const frames=media.frames.slice(); let i=0;
-  const show=()=>{img.src=frames[i];i=(i+1)%frames.length;};
+  help.textContent='Sequência visual do Supino Reto • descida e subida controladas';
+  const forward=media.frames.slice();
+  const frames=forward; // v91: sequência já contém descida e subida
+  let i=0;
+  const show=()=>{
+    img.onerror=null;
+    img.src=frames[i];
+    img.classList.remove('motion-pop'); void img.offsetWidth; img.classList.add('motion-pop');
+    i=(i+1)%frames.length;
+  };
   show();
   if(exerciseMotionTimer)clearInterval(exerciseMotionTimer);
   exerciseMotionTimer=setInterval(show,190);
@@ -3427,7 +3421,7 @@ function openExerciseMotion(){
   ov.classList.add('show');
   if(exerciseMotionTimer){clearInterval(exerciseMotionTimer);exerciseMotionTimer=null}
   if(v676891IsSupinoRetoMotion()){
-    v676893StartContinuousMotion(ov);
+    v676891StartFrameMotion(ov,{frames:v676891SupinoFrames()});
     return;
   }
   const media=v676878Exercise3DMedia();
