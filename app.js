@@ -3317,26 +3317,47 @@ function stopExerciseMotion(){
   if(video){try{video.pause();video.currentTime=0}catch(e){}}
   if(ov) ov.classList.remove('show');
 }
-function v676891StartFrameMotion(ov,media){
+function v676893StartContinuousMotion(ov){
   const video=ov.querySelector('#motion3dVideo');
   const img=ov.querySelector('#motionImage');
   const label=ov.querySelector('#motionLabel');
   const badge=ov.querySelector('#motion3dBadge');
   const help=ov.querySelector('#motionHelp');
   if(video){try{video.pause()}catch(e){} video.style.display='none';}
+  if(img)img.style.display='none';
+  if(badge){badge.style.display='inline-flex';badge.textContent='MOVIMENTO CONTÍNUO • TREINO 2ª CIA';}
+  label.textContent='EXECUÇÃO CONTÍNUA';
+  help.textContent='Supino Reto • descida e subida fluidas, sem troca de quadros';
+
+  let stage=ov.querySelector('#motionContinuousStage');
+  if(!stage){
+    stage=document.createElement('div');
+    stage.id='motionContinuousStage';
+    stage.className='motion-continuous-stage';
+    stage.innerHTML=`<img class="motion-continuous-base" src="assets/exercises/3d/supino-reto-card.webp?v=676893" alt="Supino reto">
+      <div class="motion-continuous-bar" aria-hidden="true"><i></i><b></b><i></i></div>
+      <div class="motion-continuous-hint">MOVIMENTO CONTÍNUO</div>`;
+    ov.querySelector('.motion3d-stage').appendChild(stage);
+  }
+  stage.style.display='block';
+  requestAnimationFrame(()=>stage.classList.add('running'));
+}
+function v676891StartFrameMotion(ov,media){
+  /* fallback preservado para outros exercícios; o Supino usa o piloto contínuo v67.68.93 */
+  const video=ov.querySelector('#motion3dVideo');
+  const img=ov.querySelector('#motionImage');
+  const label=ov.querySelector('#motionLabel');
+  const badge=ov.querySelector('#motion3dBadge');
+  const help=ov.querySelector('#motionHelp');
+  const stage=ov.querySelector('#motionContinuousStage');
+  if(stage)stage.style.display='none';
+  if(video){try{video.pause()}catch(e){} video.style.display='none';}
   img.style.display='block';
   if(badge)badge.style.display='inline-flex';
   label.textContent='MOVIMENTO EM SEQUÊNCIA';
-  help.textContent='Sequência visual do Supino Reto • descida e subida controladas';
-  const forward=media.frames.slice();
-  const frames=forward; // v91: sequência já contém descida e subida
-  let i=0;
-  const show=()=>{
-    img.onerror=null;
-    img.src=frames[i];
-    img.classList.remove('motion-pop'); void img.offsetWidth; img.classList.add('motion-pop');
-    i=(i+1)%frames.length;
-  };
+  help.textContent='Sequência visual • execute o movimento de forma controlada';
+  const frames=media.frames.slice(); let i=0;
+  const show=()=>{img.src=frames[i];i=(i+1)%frames.length;};
   show();
   if(exerciseMotionTimer)clearInterval(exerciseMotionTimer);
   exerciseMotionTimer=setInterval(show,190);
@@ -3406,7 +3427,7 @@ function openExerciseMotion(){
   ov.classList.add('show');
   if(exerciseMotionTimer){clearInterval(exerciseMotionTimer);exerciseMotionTimer=null}
   if(v676891IsSupinoRetoMotion()){
-    v676891StartFrameMotion(ov,{frames:v676891SupinoFrames()});
+    v676893StartContinuousMotion(ov);
     return;
   }
   const media=v676878Exercise3DMedia();

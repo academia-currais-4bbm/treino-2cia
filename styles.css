@@ -2438,3 +2438,14 @@ body.admin-modal-open{overflow:hidden}
 
 /* V67.68.92 — navegação bidirecional durante treinos estruturados */
 .previous-exercise-btn{margin-top:10px;min-height:48px;background:#15181b!important;border:1px solid #59616a!important;color:#fff!important;position:relative;z-index:2;touch-action:manipulation}
+
+/* V67.68.93 — piloto de movimento contínuo: Supino Reto */
+.motion-continuous-stage{position:absolute;inset:0;overflow:hidden;background:#080808}
+.motion-continuous-base{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;opacity:.92;filter:saturate(.92) brightness(.78)}
+.motion-continuous-bar{position:absolute;left:20%;right:20%;top:31%;height:8px;transform:translateY(-34px);animation:v676893BenchPress 3.2s cubic-bezier(.45,.05,.55,.95) infinite;will-change:transform;filter:drop-shadow(0 3px 3px rgba(0,0,0,.55))}
+.motion-continuous-bar b{position:absolute;left:5%;right:5%;top:2px;height:4px;border-radius:4px;background:linear-gradient(180deg,#f4f4f4,#858585)}
+.motion-continuous-bar i{position:absolute;top:-15px;width:26px;height:38px;border-radius:50%;background:radial-gradient(circle,#333 0 24%,#0c0c0c 27% 63%,#333 66% 70%,#090909 72%);box-shadow:0 0 0 2px #111}
+.motion-continuous-bar i:first-child{left:-9px}.motion-continuous-bar i:last-child{right:-9px}
+.motion-continuous-hint{position:absolute;right:12px;bottom:12px;padding:6px 9px;border-radius:999px;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.18);font-size:8px;font-weight:950;letter-spacing:.1em;color:#ddd}
+@keyframes v676893BenchPress{0%,100%{transform:translateY(-34px)}50%{transform:translateY(54px)}}
+@media (prefers-reduced-motion:reduce){.motion-continuous-bar{animation-duration:6s}}
