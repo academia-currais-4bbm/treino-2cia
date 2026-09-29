@@ -1,0 +1,22 @@
+Treino 2ª CIA — limpeza do repositório — base v67.68.94
+
+Removido da raiz:
+- 251 cópias históricas app-v*.js
+- 156 cópias históricas styles-v*.css
+- 59 cópias históricas sw-v*.js
+- 63 imagens legadas exercicio-XX.png sem referência no código canônico atual
+
+Preservado:
+- index.html, app.js, styles.css, sw.js, data.js, cloud-config.js, manifest.json
+- assets/core-operacional
+- assets/exercises
+- assets/mobility
+- assets/qr e assets/service
+- ícones, notificações, áudio e demais recursos atuais
+- arquivo SQL administrativo existente
+
+Ajustes:
+- cache-busting de app.js/styles.css atualizado para v67.68.94
+- nome do cache do Service Worker atualizado para v67.68.94-clean
+
+Importante: versões antigas continuam recuperáveis pelo histórico de commits do GitHub; não precisam existir como arquivos no deploy atual.
