@@ -1,4 +1,4 @@
-const CACHE='t2cia-v67.68.95-brasao';
+const CACHE='t2cia-v67.68.96-brasao-correto';
 const RUNTIME='t2cia-runtime-v67.67.8';
 const SHELL=[
   './',
