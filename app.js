@@ -3208,25 +3208,41 @@ function previousBestBefore(exercise,date){
 }
 
 function personalRecords(){
-  const sets=validTrainingSets();
-  const prs={};
-  sets.forEach(x=>{
-    const ex=exByName(x.exercise);
-    if(Number(x.weight)>0 && !isBodyweightExercise(ex) && !isBodyweightName(x.exercise) && !isLegacyRangeValue(x.reps)){
-      const w=Number(x.weight);
-      if(!prs[x.exercise] || w>prs[x.exercise].weight){
-        prs[x.exercise]={exercise:x.exercise,weight:w,date:x.date};
-      }
-    }
-  });
-  return Object.values(prs).map(p=>{
-    const prev=previousBestBefore(p.exercise,p.date);
-    const gain=prev>0?p.weight-prev:0;
-    const pct=prev>0?gain/prev*100:null;
-    return {...p,previous:prev,gain,pct};
-  }).sort((a,b)=>b.weight-a.weight);
-}
+    const sets=validTrainingSets();
+    const prs={};
+    const historyByExercise=new Map();
 
+    sets.forEach(x=>{
+        const weight=Number(x.weight);
+        if(weight>0 && !isLegacyRangeValue(x.reps)){
+            const key=String(x.exercise||'');
+            if(!historyByExercise.has(key))historyByExercise.set(key,[]);
+            historyByExercise.get(key).push(x);
+        }
+
+        const ex=exByName(x.exercise);
+        if(weight>0 && !isBodyweightExercise(ex) && !isBodyweightName(x.exercise) && !isLegacyRangeValue(x.reps)){
+            if(!prs[x.exercise] || weight>prs[x.exercise].weight){
+                prs[x.exercise]={exercise:x.exercise,weight,date:x.date};
+            }
+        }
+    });
+
+    return Object.values(prs).map(p=>{
+        const t=new Date(p.date).getTime();
+        let prev=0;
+        const hist=historyByExercise.get(String(p.exercise||''))||[];
+        hist.forEach(x=>{
+            const xt=new Date(x.date).getTime();
+            if(Number.isFinite(xt) && xt<t){
+                prev=Math.max(prev,Number(x.weight)||0);
+            }
+        });
+        const gain=prev>0?p.weight-prev:0;
+        const pct=prev>0?gain/prev*100:null;
+        return {...p,previous:prev,gain,pct};
+    }).sort((a,b)=>b.weight-a.weight);
+}
 function workoutExerciseBestMap(w){
   const sets=getWorkoutSets(w);
   const map={};
@@ -3680,7 +3696,7 @@ function v676844PerformanceHub(records){
     <div class="v676844-strip"><span>${comparison}</span><b>🏆 ${monthPrs.length} PR${monthPrs.length===1?'':'s'} no mês</b><b>🎖️ ${unlocked}/${totalAch} conquistas</b></div>`;
 }
 function renderProgress(){
-  const h=history(); reconcileWorkoutHistory(); const whAll=migrateWorkoutQuality(), wh=reliableWorkouts(), now=new Date();
+  const h=history(); const whAll=migrateWorkoutQuality(), wh=whAll.filter(w=>!w.legacyData && !w.excludedFromStats), now=new Date();
   v676844PerformanceHub(wh);
   v676847RenderGoalsAchievements(wh);
   const reliableDates=new Set(wh.map(w=>w.date.slice(0,10)));
@@ -4898,14 +4914,11 @@ function copyCurrentBase(){navigator.clipboard?.writeText(location.origin+locati
   }catch(e){}
 })();
 
-try{reconcileWorkoutHistory();}catch(e){console.warn('Reconcile startup:',e)}
 // V67.60.10 — replay automático do Histórico para o Feed removido.
 // V67.60.10: não republica histórico no online; evita alterar localização de posts antigos.
 // V67.60.10: recuperação automática Histórico→Feed desativada por segurança.
-try{migrateWorkoutQuality();}catch(e){console.warn('Migration startup:',e)}
 try{updateLast();}catch(e){console.warn('Last startup:',e)}
 try{v6748RenderDashboard();}catch(e){console.warn('Dashboard startup:',e)}
-try{v6749RenderPerformance(false);}catch(e){console.warn('Performance startup:',e)}
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}));
 const params=new URLSearchParams(location.search);const direct=Number(params.get('exercise'));if(direct)setTimeout(()=>openExercise(direct),50);
 
@@ -5905,9 +5918,9 @@ async function v67382RefreshFeed(button){
     v6738FeedLastLoad=0;
     // V67.60.10: não republica atividades antigas ao atualizar o Feed.
     // A localização já publicada permanece imutável.
-    await v67384ReconcileMyFeed();
+    v67384ReconcileMyFeed().catch(e=>console.warn('Reconcile Feed:',e));
+    v67382LoadNotifications(false).catch(e=>console.warn('Notificacoes Feed:',e));
     await v6738LoadFeed(true);
-    await v67382LoadNotifications(false);
   }finally{
     if(btn){btn.disabled=false;btn.classList.remove('refreshing')}
   }
@@ -6556,7 +6569,7 @@ async function cloudLogout(){
   cloudShowGate();
 }
 async function cloudInit(){
-  cloudLoadSession();
+  cloudLoadSession(); try{v6718RenderHomeProfilePhoto();}catch(e){}
   if(!cloudConfigured()){cloudShowGate();cloudMsg('Configuração da nuvem ausente.','error');return;}
 
   if(cloudSession?.token){
@@ -7354,7 +7367,7 @@ async function v6719ImproveStorageDurability(){
     }
   }catch(e){}
 }
-window.addEventListener('load',()=>{setTimeout(cloudInit,700);setTimeout(v6719ImproveStorageDurability,1200)});
+window.addEventListener('DOMContentLoaded',()=>{setTimeout(cloudInit,0);setTimeout(v6719ImproveStorageDurability,1200)});
 
 
 /* V55 — PERFIL DO MILITAR + RANKING DE CONSTÂNCIA */
