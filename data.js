@@ -1405,7 +1405,7 @@ window.APP_DATA = {
       "Dead bug"
     ]
   },
-  "catalogVersion": "67.69.0",
+  "catalogVersion": "67.69.1",
   "catalogMediaSchema": 3
 };
 
@@ -1417,4 +1417,6 @@ window.APP_DATA.exercises.forEach(ex=>{
   ex.videoKey=ex.videoKey||ex.mediaKey||('exercise-'+ex.id);
   ex.videoStatus=ex.videoStatus||'pending';
   ex.videoSrc=ex.videoSrc||`assets/exercises/videos/${ex.videoKey}.mp4`;
+  ex.posterKey=ex.posterKey||ex.mediaKey||('exercise-'+ex.id);
+  ex.posterSrc=ex.posterSrc||`assets/exercises/posters/${ex.posterKey}.webp`;
 });

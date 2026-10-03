@@ -2485,3 +2485,30 @@ body.admin-modal-open{overflow:hidden}
 .v676900-main-shot>span,.v676900-side-shot>span{width:auto!important;height:auto!important;display:inline-flex!important;place-items:initial!important;margin:0!important;background:rgba(0,0,0,.88)!important;font-weight:1000!important;border-radius:5px!important}
 .v676900-seq-frame{width:100%!important;height:auto!important;display:block!important;background:#080808!important;margin:0!important;border-radius:5px!important}
 .v676900-muscle-content p span{width:auto!important;height:auto!important;display:block!important;background:transparent!important;border-radius:0!important;margin:0!important}
+
+
+/* =========================================================
+   V67.69.1 — POSTER ESTÁTICO: preserva o layout original
+   ========================================================= */
+.visual.v676901-poster-active{
+  display:block!important;width:100%!important;height:auto!important;min-height:0!important;
+  padding:0!important;overflow:visible!important;background:transparent!important;border:0!important;
+  grid-template-columns:1fr!important;
+}
+.visual.v676901-poster-active>.imgbox,
+.visual.v676901-poster-active>.execution2-flow,
+.visual.v676901-poster-active>.v676900-demo-card,
+.visual.v676901-poster-active>.v676881-inline3d{display:none!important}
+.v676901-poster-card{
+  width:100%;overflow:hidden;border-radius:20px;background:#070707;
+  border:1px solid rgba(255,255,255,.16);box-shadow:0 14px 34px rgba(0,0,0,.38);
+}
+.v676901-poster-card>img{
+  display:block;width:100%;height:auto!important;max-height:none!important;aspect-ratio:auto!important;
+  object-fit:contain!important;background:#070707;margin:0!important;
+}
+.v676901-poster-footer{
+  box-sizing:border-box;width:100%;padding:13px 22px;background:#ef1c24;color:#fff;
+  text-transform:uppercase;font-size:clamp(16px,3vw,26px);font-weight:1000;letter-spacing:.02em;text-align:left;
+}
+.v676901-poster-fallback .v676901-poster-footer:after{content:' • ARTE EM PREPARAÇÃO';font-size:.55em;opacity:.8}

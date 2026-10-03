@@ -1,0 +1,8 @@
+TREINO 2ª CIA — v67.69.1
+
+Correção visual da demonstração dos exercícios.
+- Restaura o Supino Reto com a arte original, sem redesenho em HTML.
+- Todos os exercícios passam a usar poster estático no mesmo layout-base.
+- VER EM TELA CHEIA amplia somente o poster.
+- VER MOVIMENTO permanece exclusivo para o vídeo individual de cada exercício.
+- Nenhuma regra de treino, ranking, descanso, feed, GPS ou nutrição foi alterada.

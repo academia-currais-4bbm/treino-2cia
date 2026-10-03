@@ -2281,7 +2281,7 @@ function openExercise(id,inPlan=false){
   /* V67.68.81 — Supino Reto: piloto 3D também na tela principal.
      Mantém as imagens início/fim carregadas no DOM para fallback e para a biblioteca legada,
      mas apresenta o poster 3D como visual principal quando disponível. */
-  v676900ApplyStandardExerciseCard();
+  v676901ApplyExactPosterCard();
   bindExerciseImageZoom();
   updateMotionButton(hasRealistic);
   const hdPortrait=[
@@ -3454,6 +3454,45 @@ function v676900ApplyStandardExerciseCard(){
       img.classList.add('v676900-img-fallback');
     };
   });
+}
+
+
+/* =========================================================
+   V67.69.1 — POSTER ESTÁTICO NO LAYOUT ORIGINAL
+   O card visual não é mais redesenhado em HTML. Cada exercício
+   carrega uma imagem pronta no mesmo formato do poster original.
+   O Supino Reto usa a arte original sem qualquer alteração.
+   O botão superior amplia o poster; VER MOVIMENTO abre somente vídeo.
+   ========================================================= */
+function v676901PosterSrc(ex){
+  if(!ex)return '';
+  return ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
+}
+function v676901ApplyExactPosterCard(){
+  const visual=document.querySelector('#exercise .visual');
+  if(!visual||!currentExercise)return;
+  visual.querySelector('.v676900-demo-card')?.remove();
+  visual.querySelector('.v676881-inline3d')?.remove();
+  visual.querySelector('.v676901-poster-card')?.remove();
+  visual.classList.remove('v676900-standard-active','v676881-legacy-hidden');
+  visual.classList.add('v676901-poster-active');
+
+  const poster=document.createElement('div');
+  poster.className='v676901-poster-card';
+  poster.innerHTML=`<img alt="${v676900Esc(currentExercise.name||'Exercício')} — guia visual">
+    <div class="v676901-poster-footer">${v676900Esc(currentExercise.name||'EXERCÍCIO')}</div>`;
+  const img=poster.querySelector('img');
+  img.src=v676901PosterSrc(currentExercise);
+  img.onerror=()=>{
+    img.onerror=null;
+    img.src='assets/exercises/posters/supino-reto.webp';
+    poster.classList.add('v676901-poster-fallback');
+  };
+  visual.appendChild(poster);
+}
+function openExercisePosterFullscreen(){
+  if(!currentExercise)return;
+  openExerciseImageZoom(v676901PosterSrc(currentExercise),String(currentExercise.name||'Exercício').toUpperCase());
 }
 
 function bindExerciseImageZoom(){
