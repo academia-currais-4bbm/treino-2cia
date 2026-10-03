@@ -9,7 +9,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 90,
       "tip": "Escápulas retraídas, pés firmes e descida controlada.",
-      "avoid": "Não quique a barra no peito nem abra demais os cotovelos."
+      "avoid": "Não quique a barra no peito nem abra demais os cotovelos.",
+      "mediaKey": "supino-reto",
+      "mediaStatus": "frames",
+      "visualAssetKey": "1"
     },
     {
       "id": 2,
@@ -20,7 +23,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 90,
       "tip": "Banco em inclinação moderada e movimento controlado.",
-      "avoid": "Evite inclinação excessiva e perder contato das escápulas com o banco."
+      "avoid": "Evite inclinação excessiva e perder contato das escápulas com o banco.",
+      "mediaKey": "supino-inclinado",
+      "mediaStatus": "static",
+      "visualAssetKey": "supino-inclinado"
     },
     {
       "id": 3,
@@ -31,7 +37,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 75,
       "tip": "Mantenha a barra alinhada à porção inferior do peito.",
-      "avoid": "Evite descer a barra em direção ao pescoço."
+      "avoid": "Evite descer a barra em direção ao pescoço.",
+      "mediaKey": "supino-declinado",
+      "mediaStatus": "static",
+      "visualAssetKey": "supino-declinado"
     },
     {
       "id": 4,
@@ -42,7 +51,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Leve flexão dos cotovelos e arco amplo.",
-      "avoid": "Não transforme o movimento em supino."
+      "avoid": "Não transforme o movimento em supino.",
+      "mediaKey": "crucifixo-com-halteres",
+      "mediaStatus": "static",
+      "visualAssetKey": "crucifixo-halteres"
     },
     {
       "id": 5,
@@ -53,7 +65,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Traga as mãos para baixo e à frente do corpo.",
-      "avoid": "Não use impulso do tronco."
+      "avoid": "Não use impulso do tronco.",
+      "mediaKey": "crossover-alto",
+      "mediaStatus": "static",
+      "visualAssetKey": "crossover-alto"
     },
     {
       "id": 6,
@@ -64,7 +79,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Cruze as mãos levemente à frente do peito.",
-      "avoid": "Evite encurtar demais a amplitude."
+      "avoid": "Evite encurtar demais a amplitude.",
+      "mediaKey": "crossover-medio",
+      "mediaStatus": "static",
+      "visualAssetKey": "crossover-medio"
     },
     {
       "id": 7,
@@ -75,7 +93,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Puxe de baixo para cima em direção ao centro do peito.",
-      "avoid": "Não arqueie a lombar."
+      "avoid": "Não arqueie a lombar.",
+      "mediaKey": "crossover-baixo",
+      "mediaStatus": "static",
+      "visualAssetKey": "crossover-baixo"
     },
     {
       "id": 8,
@@ -86,7 +107,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Costas apoiadas e contração máxima à frente.",
-      "avoid": "Evite bater as placas da máquina."
+      "avoid": "Evite bater as placas da máquina.",
+      "mediaKey": "peck-deck",
+      "mediaStatus": "static",
+      "visualAssetKey": "peck-deck"
     },
     {
       "id": 9,
@@ -97,7 +121,49 @@ window.APP_DATA = {
       "reps": "10–20",
       "rest": 60,
       "tip": "Corpo alinhado e peito aproximando do chão.",
-      "avoid": "Não deixe o quadril cair."
+      "avoid": "Não deixe o quadril cair.",
+      "mediaKey": "flexao-de-bracos",
+      "mediaStatus": "static",
+      "visualAssetKey": "flexao-bracos"
+    },
+    {
+      "id": 70,
+      "group": "Peito",
+      "name": "Supino reto com halteres",
+      "muscle": "Peitoral maior/tríceps",
+      "sets": 4,
+      "reps": "8–12",
+      "rest": 90,
+      "tip": "Mantenha as escápulas retraídas e desça os halteres de forma controlada.",
+      "avoid": "Não deixe os cotovelos abrirem excessivamente nem bata os halteres no topo.",
+      "mediaKey": "supino-reto-com-halteres",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 71,
+      "group": "Peito",
+      "name": "Supino inclinado com halteres",
+      "muscle": "Peitoral superior/tríceps",
+      "sets": 3,
+      "reps": "8–12",
+      "rest": 90,
+      "tip": "Use inclinação moderada, peito aberto e controle a amplitude.",
+      "avoid": "Não incline demais o banco nem eleve os ombros durante a subida.",
+      "mediaKey": "supino-inclinado-com-halteres",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 72,
+      "group": "Peito",
+      "name": "Chest press na máquina",
+      "muscle": "Peitoral/tríceps",
+      "sets": 3,
+      "reps": "10–15",
+      "rest": 75,
+      "tip": "Ajuste o banco para as pegadas ficarem na linha do meio do peito.",
+      "avoid": "Não retire as costas do encosto nem trave os cotovelos.",
+      "mediaKey": "chest-press-na-maquina",
+      "mediaStatus": "pending"
     },
     {
       "id": 10,
@@ -108,7 +174,10 @@ window.APP_DATA = {
       "reps": "6–12",
       "rest": 90,
       "tip": "Suba sem balanço e controle a descida.",
-      "avoid": "Evite chutar ou encurtar a amplitude."
+      "avoid": "Evite chutar ou encurtar a amplitude.",
+      "mediaKey": "barra-fixa",
+      "mediaStatus": "static",
+      "visualAssetKey": "barra-fixa"
     },
     {
       "id": 11,
@@ -119,7 +188,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 75,
       "tip": "Puxe a barra até a parte superior do peito.",
-      "avoid": "Não leve a barra atrás da nuca."
+      "avoid": "Não leve a barra atrás da nuca.",
+      "mediaKey": "puxada-alta-pronada",
+      "mediaStatus": "static",
+      "visualAssetKey": "puxada-frontal"
     },
     {
       "id": 12,
@@ -130,7 +202,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 75,
       "tip": "Mantenha peito aberto e cotovelos para baixo.",
-      "avoid": "Evite curvar excessivamente o tronco."
+      "avoid": "Evite curvar excessivamente o tronco.",
+      "mediaKey": "puxada-neutra",
+      "mediaStatus": "static",
+      "visualAssetKey": "puxada-neutra"
     },
     {
       "id": 13,
@@ -141,7 +216,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 75,
       "tip": "Finalize aproximando as escápulas.",
-      "avoid": "Não balance o tronco."
+      "avoid": "Não balance o tronco.",
+      "mediaKey": "remada-baixa",
+      "mediaStatus": "static",
+      "visualAssetKey": "remada-baixa"
     },
     {
       "id": 14,
@@ -152,7 +230,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 90,
       "tip": "Coluna neutra e barra próxima ao corpo.",
-      "avoid": "Não arredonde a lombar."
+      "avoid": "Não arredonde a lombar.",
+      "mediaKey": "remada-curvada",
+      "mediaStatus": "static",
+      "visualAssetKey": "remada-curvada"
     },
     {
       "id": 15,
@@ -163,7 +244,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 75,
       "tip": "Puxe o cotovelo em direção ao quadril.",
-      "avoid": "Evite girar o tronco."
+      "avoid": "Evite girar o tronco.",
+      "mediaKey": "remada-unilateral",
+      "mediaStatus": "static",
+      "visualAssetKey": "remada-unilateral"
     },
     {
       "id": 16,
@@ -174,7 +258,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 90,
       "tip": "Peito aberto e cotovelos acompanhando a linha do corpo.",
-      "avoid": "Não hiperestenda a lombar."
+      "avoid": "Não hiperestenda a lombar.",
+      "mediaKey": "remada-cavalinho",
+      "mediaStatus": "static",
+      "visualAssetKey": "remada-cavalinho"
     },
     {
       "id": 17,
@@ -185,7 +272,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Braços quase estendidos e foco em puxar com as costas.",
-      "avoid": "Não transforme em tríceps."
+      "avoid": "Não transforme em tríceps.",
+      "mediaKey": "pullover-na-polia",
+      "mediaStatus": "static",
+      "visualAssetKey": "pullover-polia"
     },
     {
       "id": 18,
@@ -196,7 +286,50 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Puxe em direção ao rosto com cotovelos altos.",
-      "avoid": "Evite usar carga excessiva."
+      "avoid": "Evite usar carga excessiva.",
+      "mediaKey": "face-pull",
+      "mediaStatus": "static",
+      "visualAssetKey": "face-pull"
+    },
+    {
+      "id": 73,
+      "group": "Costas",
+      "name": "Levantamento terra",
+      "muscle": "Cadeia posterior/dorsais",
+      "sets": 4,
+      "reps": "5–8",
+      "rest": 120,
+      "tip": "Mantenha a barra próxima ao corpo, coluna neutra e pressione o chão com os pés.",
+      "avoid": "Não arredonde a lombar nem puxe a barra com os braços.",
+      "mediaKey": "levantamento-terra",
+      "mediaStatus": "static",
+      "visualAssetKey": "levantamento-terra"
+    },
+    {
+      "id": 74,
+      "group": "Costas",
+      "name": "Remada articulada",
+      "muscle": "Dorsal/romboides",
+      "sets": 3,
+      "reps": "8–12",
+      "rest": 75,
+      "tip": "Mantenha o peito apoiado quando houver suporte e finalize aproximando as escápulas.",
+      "avoid": "Não transforme a repetição em balanço do tronco.",
+      "mediaKey": "remada-articulada",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 75,
+      "group": "Costas",
+      "name": "Pulldown unilateral",
+      "muscle": "Dorsal",
+      "sets": 3,
+      "reps": "10–15 por lado",
+      "rest": 60,
+      "tip": "Puxe o cotovelo em direção ao quadril mantendo o tronco estável.",
+      "avoid": "Não gire o tronco para completar a repetição.",
+      "mediaKey": "pulldown-unilateral",
+      "mediaStatus": "pending"
     },
     {
       "id": 19,
@@ -207,7 +340,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 90,
       "tip": "Abdômen firme e halteres acima dos ombros.",
-      "avoid": "Não arqueie excessivamente a lombar."
+      "avoid": "Não arqueie excessivamente a lombar.",
+      "mediaKey": "desenvolvimento-com-halteres",
+      "mediaStatus": "static",
+      "visualAssetKey": "desenvolvimento-halteres"
     },
     {
       "id": 20,
@@ -218,7 +354,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 75,
       "tip": "Ajuste o banco para manter pegada na linha dos ombros.",
-      "avoid": "Evite travar os cotovelos."
+      "avoid": "Evite travar os cotovelos.",
+      "mediaKey": "desenvolvimento-na-maquina",
+      "mediaStatus": "static",
+      "visualAssetKey": "desenvolvimento-maquina"
     },
     {
       "id": 21,
@@ -229,7 +368,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Eleve até a linha dos ombros sem impulso.",
-      "avoid": "Não encolha os ombros."
+      "avoid": "Não encolha os ombros.",
+      "mediaKey": "elevacao-lateral",
+      "mediaStatus": "static",
+      "visualAssetKey": "elevacao-lateral"
     },
     {
       "id": 22,
@@ -240,7 +382,10 @@ window.APP_DATA = {
       "reps": "10–15",
       "rest": 60,
       "tip": "Eleve controladamente até a altura dos ombros.",
-      "avoid": "Evite balançar o tronco."
+      "avoid": "Evite balançar o tronco.",
+      "mediaKey": "elevacao-frontal",
+      "mediaStatus": "static",
+      "visualAssetKey": "elevacao-frontal"
     },
     {
       "id": 23,
@@ -251,7 +396,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Abra os braços mantendo leve flexão dos cotovelos.",
-      "avoid": "Não use carga que comprometa a postura."
+      "avoid": "Não use carga que comprometa a postura.",
+      "mediaKey": "crucifixo-inverso",
+      "mediaStatus": "static",
+      "visualAssetKey": "crucifixo-inverso"
     },
     {
       "id": 24,
@@ -262,7 +410,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Puxe a corda em direção ao rosto.",
-      "avoid": "Não abaixe os cotovelos durante a puxada."
+      "avoid": "Não abaixe os cotovelos durante a puxada.",
+      "mediaKey": "face-pull",
+      "mediaStatus": "static",
+      "visualAssetKey": "face-pull"
     },
     {
       "id": 25,
@@ -273,7 +424,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 60,
       "tip": "Suba até altura confortável, sem forçar a articulação.",
-      "avoid": "Evite elevar demais os cotovelos se houver desconforto."
+      "avoid": "Evite elevar demais os cotovelos se houver desconforto.",
+      "mediaKey": "remada-alta",
+      "mediaStatus": "static",
+      "visualAssetKey": "remada-alta"
     },
     {
       "id": 26,
@@ -284,7 +438,64 @@ window.APP_DATA = {
       "reps": "10–15",
       "rest": 60,
       "tip": "Eleve os ombros verticalmente e segure no topo.",
-      "avoid": "Não faça círculos com os ombros."
+      "avoid": "Não faça círculos com os ombros.",
+      "mediaKey": "encolhimento",
+      "mediaStatus": "static",
+      "visualAssetKey": "encolhimento"
+    },
+    {
+      "id": 76,
+      "group": "Ombros",
+      "name": "Desenvolvimento com barra",
+      "muscle": "Deltoides/tríceps",
+      "sets": 4,
+      "reps": "6–10",
+      "rest": 90,
+      "tip": "Mantenha abdômen firme e conduza a barra em trajetória vertical confortável.",
+      "avoid": "Não hiperestenda a lombar nem force amplitude dolorosa.",
+      "mediaKey": "desenvolvimento-com-barra",
+      "mediaStatus": "static",
+      "visualAssetKey": "desenvolvimento-barra"
+    },
+    {
+      "id": 77,
+      "group": "Ombros",
+      "name": "Elevação lateral no cabo",
+      "muscle": "Deltoide lateral",
+      "sets": 3,
+      "reps": "12–15 por lado",
+      "rest": 60,
+      "tip": "Mantenha tensão contínua e eleve o braço até a linha do ombro.",
+      "avoid": "Não incline o tronco para roubar o movimento.",
+      "mediaKey": "elevacao-lateral-no-cabo",
+      "mediaStatus": "static",
+      "visualAssetKey": "elevacao-lateral-cabo"
+    },
+    {
+      "id": 78,
+      "group": "Ombros",
+      "name": "Arnold press",
+      "muscle": "Deltoides",
+      "sets": 3,
+      "reps": "8–12",
+      "rest": 75,
+      "tip": "Gire os antebraços de forma contínua e mantenha o tronco firme.",
+      "avoid": "Não acelere a rotação nem arqueie a lombar.",
+      "mediaKey": "arnold-press",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 79,
+      "group": "Ombros",
+      "name": "Peck deck inverso",
+      "muscle": "Deltoide posterior/romboides",
+      "sets": 3,
+      "reps": "12–15",
+      "rest": 60,
+      "tip": "Ajuste o banco para manter os braços alinhados e abra até contrair a parte posterior dos ombros.",
+      "avoid": "Não use impulso nem deixe os ombros avançarem.",
+      "mediaKey": "peck-deck-inverso",
+      "mediaStatus": "pending"
     },
     {
       "id": 27,
@@ -295,7 +506,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 60,
       "tip": "Cotovelos fixos e punhos neutros.",
-      "avoid": "Não balance o tronco."
+      "avoid": "Não balance o tronco.",
+      "mediaKey": "rosca-direta-barra",
+      "mediaStatus": "static",
+      "visualAssetKey": "rosca-direta"
     },
     {
       "id": 28,
@@ -306,7 +520,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 60,
       "tip": "Gire a palma para cima durante a subida.",
-      "avoid": "Evite deslocar o cotovelo para frente."
+      "avoid": "Evite deslocar o cotovelo para frente.",
+      "mediaKey": "rosca-alternada",
+      "mediaStatus": "static",
+      "visualAssetKey": "rosca-alternada"
     },
     {
       "id": 29,
@@ -317,7 +534,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 60,
       "tip": "Pegada neutra e cotovelos próximos ao corpo.",
-      "avoid": "Não use impulso."
+      "avoid": "Não use impulso.",
+      "mediaKey": "rosca-martelo",
+      "mediaStatus": "static",
+      "visualAssetKey": "rosca-martelo"
     },
     {
       "id": 30,
@@ -328,7 +548,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 60,
       "tip": "Braços apoiados e descida controlada.",
-      "avoid": "Não hiperestenda o cotovelo no final."
+      "avoid": "Não hiperestenda o cotovelo no final.",
+      "mediaKey": "rosca-scott",
+      "mediaStatus": "static",
+      "visualAssetKey": "rosca-scott"
     },
     {
       "id": 31,
@@ -339,7 +562,10 @@ window.APP_DATA = {
       "reps": "10–15",
       "rest": 60,
       "tip": "Apoie o cotovelo e concentre a contração.",
-      "avoid": "Não mova o ombro."
+      "avoid": "Não mova o ombro.",
+      "mediaKey": "rosca-concentrada",
+      "mediaStatus": "static",
+      "visualAssetKey": "rosca-concentrada"
     },
     {
       "id": 32,
@@ -350,7 +576,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Mantenha tensão contínua durante todo o movimento.",
-      "avoid": "Não deixe o peso puxar os ombros para frente."
+      "avoid": "Não deixe o peso puxar os ombros para frente.",
+      "mediaKey": "rosca-na-polia",
+      "mediaStatus": "static",
+      "visualAssetKey": "rosca-polia"
     },
     {
       "id": 33,
@@ -361,7 +590,75 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 60,
       "tip": "Braços atrás da linha do tronco e movimento completo.",
-      "avoid": "Não suba os cotovelos."
+      "avoid": "Não suba os cotovelos.",
+      "mediaKey": "rosca-inclinada",
+      "mediaStatus": "static",
+      "visualAssetKey": "rosca-inclinada"
+    },
+    {
+      "id": 80,
+      "group": "Bíceps",
+      "name": "Rosca 21",
+      "muscle": "Bíceps",
+      "sets": 3,
+      "reps": "21",
+      "rest": 75,
+      "tip": "Execute 7 repetições na metade inferior, 7 na metade superior e 7 completas.",
+      "avoid": "Não balance o tronco para terminar a sequência.",
+      "mediaKey": "rosca-21",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 81,
+      "group": "Bíceps",
+      "name": "Rosca martelo na corda",
+      "muscle": "Braquial/bíceps",
+      "sets": 3,
+      "reps": "10–15",
+      "rest": 60,
+      "tip": "Use pegada neutra e mantenha os cotovelos junto ao corpo.",
+      "avoid": "Não projete os cotovelos para frente.",
+      "mediaKey": "rosca-martelo-na-corda",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 82,
+      "group": "Bíceps",
+      "name": "Rosca Spider",
+      "muscle": "Bíceps",
+      "sets": 3,
+      "reps": "10–15",
+      "rest": 60,
+      "tip": "Apoie o peito no banco inclinado e mantenha os braços apontados para baixo.",
+      "avoid": "Não retire o peito do apoio nem encurte a descida.",
+      "mediaKey": "rosca-spider",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 83,
+      "group": "Bíceps",
+      "name": "Rosca inversa",
+      "muscle": "Braquiorradial/bíceps",
+      "sets": 3,
+      "reps": "10–15",
+      "rest": 60,
+      "tip": "Use pegada pronada e mantenha os punhos alinhados.",
+      "avoid": "Não dobre os punhos para compensar a carga.",
+      "mediaKey": "rosca-inversa",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 84,
+      "group": "Bíceps",
+      "name": "Rosca unilateral na polia",
+      "muscle": "Bíceps",
+      "sets": 3,
+      "reps": "10–15 por lado",
+      "rest": 60,
+      "tip": "Mantenha tensão contínua e o cotovelo estável ao lado do corpo.",
+      "avoid": "Não gire o tronco nem eleve o ombro.",
+      "mediaKey": "rosca-unilateral-na-polia",
+      "mediaStatus": "pending"
     },
     {
       "id": 34,
@@ -372,7 +669,10 @@ window.APP_DATA = {
       "reps": "10–15",
       "rest": 60,
       "tip": "Cotovelos junto ao corpo e extensão completa.",
-      "avoid": "Não balance o tronco."
+      "avoid": "Não balance o tronco.",
+      "mediaKey": "triceps-corda",
+      "mediaStatus": "static",
+      "visualAssetKey": "triceps-corda"
     },
     {
       "id": 35,
@@ -383,7 +683,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 60,
       "tip": "Antebraços se movem; braços ficam estáveis.",
-      "avoid": "Não abra os cotovelos."
+      "avoid": "Não abra os cotovelos.",
+      "mediaKey": "triceps-barra",
+      "mediaStatus": "static",
+      "visualAssetKey": "triceps-barra"
     },
     {
       "id": 36,
@@ -394,7 +697,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 75,
       "tip": "Cotovelos apontados para cima e descida controlada.",
-      "avoid": "Não deixe os cotovelos abrirem."
+      "avoid": "Não deixe os cotovelos abrirem.",
+      "mediaKey": "triceps-testa",
+      "mediaStatus": "static",
+      "visualAssetKey": "triceps-testa"
     },
     {
       "id": 37,
@@ -405,7 +711,10 @@ window.APP_DATA = {
       "reps": "10–12",
       "rest": 60,
       "tip": "Mantenha abdômen firme e cotovelos próximos.",
-      "avoid": "Não arqueie a lombar."
+      "avoid": "Não arqueie a lombar.",
+      "mediaKey": "triceps-frances",
+      "mediaStatus": "static",
+      "visualAssetKey": "triceps-frances"
     },
     {
       "id": 38,
@@ -416,7 +725,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Estenda o braço completamente sem girar o tronco.",
-      "avoid": "Não mova o ombro."
+      "avoid": "Não mova o ombro.",
+      "mediaKey": "triceps-unilateral-polia",
+      "mediaStatus": "static",
+      "visualAssetKey": "triceps-unilateral-polia"
     },
     {
       "id": 39,
@@ -427,7 +739,10 @@ window.APP_DATA = {
       "reps": "10–15",
       "rest": 60,
       "tip": "Desça até amplitude confortável com ombros estáveis.",
-      "avoid": "Evite descer excessivamente."
+      "avoid": "Evite descer excessivamente.",
+      "mediaKey": "mergulho-em-banco",
+      "mediaStatus": "static",
+      "visualAssetKey": "mergulho-banco"
     },
     {
       "id": 40,
@@ -438,7 +753,75 @@ window.APP_DATA = {
       "reps": "6–12",
       "rest": 90,
       "tip": "Tronco relativamente vertical para enfatizar tríceps.",
-      "avoid": "Não mergulhe além da mobilidade do ombro."
+      "avoid": "Não mergulhe além da mobilidade do ombro.",
+      "mediaKey": "paralelas",
+      "mediaStatus": "static",
+      "visualAssetKey": "paralelas"
+    },
+    {
+      "id": 85,
+      "group": "Tríceps",
+      "name": "Supino fechado",
+      "muscle": "Tríceps/peitoral",
+      "sets": 3,
+      "reps": "6–10",
+      "rest": 90,
+      "tip": "Use pegada confortável, cotovelos próximos ao tronco e escápulas firmes.",
+      "avoid": "Não use pegada excessivamente estreita nem abra os cotovelos.",
+      "mediaKey": "supino-fechado",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 86,
+      "group": "Tríceps",
+      "name": "Coice de tríceps",
+      "muscle": "Tríceps",
+      "sets": 3,
+      "reps": "12–15 por lado",
+      "rest": 60,
+      "tip": "Mantenha o braço paralelo ao tronco e estenda apenas o cotovelo.",
+      "avoid": "Não balance o ombro para mover o peso.",
+      "mediaKey": "coice-de-triceps",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 87,
+      "group": "Tríceps",
+      "name": "Tríceps francês unilateral",
+      "muscle": "Tríceps",
+      "sets": 3,
+      "reps": "10–15 por lado",
+      "rest": 60,
+      "tip": "Mantenha o cotovelo apontado para cima e o abdômen firme.",
+      "avoid": "Não abra o cotovelo nem arqueie a lombar.",
+      "mediaKey": "triceps-frances-unilateral",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 88,
+      "group": "Tríceps",
+      "name": "Extensão acima da cabeça na corda",
+      "muscle": "Tríceps",
+      "sets": 3,
+      "reps": "10–15",
+      "rest": 60,
+      "tip": "Mantenha os cotovelos estáveis e estenda completamente sem perder a postura.",
+      "avoid": "Não use o tronco para empurrar a carga.",
+      "mediaKey": "extensao-acima-da-cabeca-na-corda",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 89,
+      "group": "Tríceps",
+      "name": "Tríceps na máquina",
+      "muscle": "Tríceps",
+      "sets": 3,
+      "reps": "10–15",
+      "rest": 60,
+      "tip": "Ajuste o assento e mantenha os braços apoiados conforme o equipamento.",
+      "avoid": "Não solte a carga de forma brusca na volta.",
+      "mediaKey": "triceps-na-maquina",
+      "mediaStatus": "pending"
     },
     {
       "id": 41,
@@ -449,7 +832,10 @@ window.APP_DATA = {
       "reps": "6–10",
       "rest": 120,
       "tip": "Pés firmes, coluna neutra e joelhos alinhados.",
-      "avoid": "Não deixe os joelhos colapsarem para dentro."
+      "avoid": "Não deixe os joelhos colapsarem para dentro.",
+      "mediaKey": "agachamento-livre",
+      "mediaStatus": "static",
+      "visualAssetKey": "agachamento-livre"
     },
     {
       "id": 42,
@@ -460,7 +846,10 @@ window.APP_DATA = {
       "reps": "10–15",
       "rest": 90,
       "tip": "Lombar apoiada e amplitude confortável.",
-      "avoid": "Não trave os joelhos."
+      "avoid": "Não trave os joelhos.",
+      "mediaKey": "leg-press-45",
+      "mediaStatus": "static",
+      "visualAssetKey": "leg-press"
     },
     {
       "id": 43,
@@ -471,7 +860,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Estenda os joelhos controladamente e segure no topo.",
-      "avoid": "Não use impulso."
+      "avoid": "Não use impulso.",
+      "mediaKey": "cadeira-extensora",
+      "mediaStatus": "static",
+      "visualAssetKey": "cadeira-extensora"
     },
     {
       "id": 44,
@@ -482,7 +874,10 @@ window.APP_DATA = {
       "reps": "10–15",
       "rest": 60,
       "tip": "Mantenha quadril apoiado e flexione os joelhos.",
-      "avoid": "Não levante o quadril."
+      "avoid": "Não levante o quadril.",
+      "mediaKey": "mesa-flexora",
+      "mediaStatus": "static",
+      "visualAssetKey": "mesa-flexora"
     },
     {
       "id": 45,
@@ -493,7 +888,10 @@ window.APP_DATA = {
       "reps": "10–15",
       "rest": 60,
       "tip": "Ajuste o encosto e mantenha movimento controlado.",
-      "avoid": "Não solte o peso na volta."
+      "avoid": "Não solte o peso na volta.",
+      "mediaKey": "cadeira-flexora",
+      "mediaStatus": "static",
+      "visualAssetKey": "cadeira-flexora"
     },
     {
       "id": 46,
@@ -504,7 +902,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 90,
       "tip": "Quadril para trás e coluna neutra.",
-      "avoid": "Não arredonde a lombar."
+      "avoid": "Não arredonde a lombar.",
+      "mediaKey": "stiff",
+      "mediaStatus": "static",
+      "visualAssetKey": "stiff"
     },
     {
       "id": 47,
@@ -515,7 +916,10 @@ window.APP_DATA = {
       "reps": "8–12 por perna",
       "rest": 75,
       "tip": "Passo estável e tronco controlado.",
-      "avoid": "Não deixe o joelho da frente colapsar para dentro."
+      "avoid": "Não deixe o joelho da frente colapsar para dentro.",
+      "mediaKey": "afundo",
+      "mediaStatus": "static",
+      "visualAssetKey": "afundo"
     },
     {
       "id": 48,
@@ -526,7 +930,10 @@ window.APP_DATA = {
       "reps": "8–12 por perna",
       "rest": 75,
       "tip": "Desça verticalmente com base estável.",
-      "avoid": "Não perca o equilíbrio pela pressa."
+      "avoid": "Não perca o equilíbrio pela pressa.",
+      "mediaKey": "agachamento-bulgaro",
+      "mediaStatus": "static",
+      "visualAssetKey": "agachamento-bulgaro"
     },
     {
       "id": 49,
@@ -537,7 +944,10 @@ window.APP_DATA = {
       "reps": "8–12",
       "rest": 90,
       "tip": "Queixo levemente recolhido e contração no topo.",
-      "avoid": "Não hiperestenda a lombar."
+      "avoid": "Não hiperestenda a lombar.",
+      "mediaKey": "elevacao-pelvica",
+      "mediaStatus": "static",
+      "visualAssetKey": "elevacao-pelvica"
     },
     {
       "id": 50,
@@ -548,7 +958,10 @@ window.APP_DATA = {
       "reps": "12–20",
       "rest": 45,
       "tip": "Use amplitude completa, subindo e descendo devagar.",
-      "avoid": "Não faça repetições curtas e rápidas."
+      "avoid": "Não faça repetições curtas e rápidas.",
+      "mediaKey": "panturrilha-em-pe",
+      "mediaStatus": "static",
+      "visualAssetKey": "panturrilha-em-pe"
     },
     {
       "id": 51,
@@ -559,7 +972,64 @@ window.APP_DATA = {
       "reps": "15–20",
       "rest": 45,
       "tip": "Eleve os calcanhares e controle a descida.",
-      "avoid": "Não quique o peso."
+      "avoid": "Não quique o peso.",
+      "mediaKey": "panturrilha-sentada",
+      "mediaStatus": "static",
+      "visualAssetKey": "panturrilha-sentado"
+    },
+    {
+      "id": 90,
+      "group": "Pernas",
+      "name": "Cadeira adutora",
+      "muscle": "Adutores",
+      "sets": 3,
+      "reps": "12–20",
+      "rest": 60,
+      "tip": "Feche as pernas de forma controlada e segure brevemente na contração.",
+      "avoid": "Não deixe a carga puxar as pernas bruscamente na volta.",
+      "mediaKey": "cadeira-adutora",
+      "mediaStatus": "static",
+      "visualAssetKey": "cadeira-adutora"
+    },
+    {
+      "id": 91,
+      "group": "Pernas",
+      "name": "Cadeira abdutora",
+      "muscle": "Glúteo médio/abdutores",
+      "sets": 3,
+      "reps": "12–20",
+      "rest": 60,
+      "tip": "Abra os joelhos de forma controlada mantendo o quadril apoiado.",
+      "avoid": "Não use impulso do tronco.",
+      "mediaKey": "cadeira-abdutora",
+      "mediaStatus": "static",
+      "visualAssetKey": "cadeira-abdutora"
+    },
+    {
+      "id": 92,
+      "group": "Pernas",
+      "name": "Hack squat",
+      "muscle": "Quadríceps/glúteos",
+      "sets": 4,
+      "reps": "8–12",
+      "rest": 90,
+      "tip": "Mantenha costas apoiadas, pés firmes e joelhos acompanhando a direção dos pés.",
+      "avoid": "Não deixe os joelhos colapsarem para dentro nem trave-os no topo.",
+      "mediaKey": "hack-squat",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 93,
+      "group": "Pernas",
+      "name": "Agachamento sumô",
+      "muscle": "Glúteos/adutores/quadríceps",
+      "sets": 3,
+      "reps": "8–12",
+      "rest": 90,
+      "tip": "Use base ampla, pontas dos pés levemente para fora e coluna neutra.",
+      "avoid": "Não deixe os joelhos fecharem para dentro durante a subida.",
+      "mediaKey": "agachamento-sumo",
+      "mediaStatus": "pending"
     },
     {
       "id": 52,
@@ -570,7 +1040,10 @@ window.APP_DATA = {
       "reps": "15–20",
       "rest": 45,
       "tip": "Aproxime costelas da pelve sem puxar o pescoço.",
-      "avoid": "Não use as mãos para puxar a cabeça."
+      "avoid": "Não use as mãos para puxar a cabeça.",
+      "mediaKey": "crunch-tradicional",
+      "mediaStatus": "static",
+      "visualAssetKey": "crunch-tradicional"
     },
     {
       "id": 53,
@@ -581,7 +1054,10 @@ window.APP_DATA = {
       "reps": "12–15",
       "rest": 60,
       "tip": "Flexione o tronco usando o abdômen.",
-      "avoid": "Não puxe apenas com os braços."
+      "avoid": "Não puxe apenas com os braços.",
+      "mediaKey": "crunch-na-polia",
+      "mediaStatus": "static",
+      "visualAssetKey": "crunch-polia"
     },
     {
       "id": 54,
@@ -592,7 +1068,10 @@ window.APP_DATA = {
       "reps": "30–60 s",
       "rest": 45,
       "tip": "Corpo alinhado e abdômen contraído.",
-      "avoid": "Não deixe o quadril cair."
+      "avoid": "Não deixe o quadril cair.",
+      "mediaKey": "prancha-frontal",
+      "mediaStatus": "static",
+      "visualAssetKey": "prancha-frontal"
     },
     {
       "id": 55,
@@ -603,7 +1082,10 @@ window.APP_DATA = {
       "reps": "20–45 s por lado",
       "rest": 45,
       "tip": "Mantenha quadril elevado e corpo alinhado.",
-      "avoid": "Não deixe o ombro afundar."
+      "avoid": "Não deixe o ombro afundar.",
+      "mediaKey": "prancha-lateral",
+      "mediaStatus": "static",
+      "visualAssetKey": "prancha-lateral"
     },
     {
       "id": 56,
@@ -614,7 +1096,10 @@ window.APP_DATA = {
       "reps": "10–15",
       "rest": 45,
       "tip": "Controle a descida e mantenha lombar estável.",
-      "avoid": "Não balance as pernas."
+      "avoid": "Não balance as pernas.",
+      "mediaKey": "elevacao-de-pernas",
+      "mediaStatus": "static",
+      "visualAssetKey": "elevacao-pernas"
     },
     {
       "id": 57,
@@ -625,7 +1110,10 @@ window.APP_DATA = {
       "reps": "16–24 total",
       "rest": 45,
       "tip": "Gire o tronco aproximando ombro e joelho opostos.",
-      "avoid": "Não puxe o pescoço."
+      "avoid": "Não puxe o pescoço.",
+      "mediaKey": "abdominal-bicicleta",
+      "mediaStatus": "static",
+      "visualAssetKey": "abdominal-bicicleta"
     },
     {
       "id": 58,
@@ -636,7 +1124,10 @@ window.APP_DATA = {
       "reps": "12–20 por lado",
       "rest": 45,
       "tip": "Faça flexão lateral controlada.",
-      "avoid": "Não transforme em rotação brusca."
+      "avoid": "Não transforme em rotação brusca.",
+      "mediaKey": "abdominal-obliquo",
+      "mediaStatus": "static",
+      "visualAssetKey": "abdominal-obliquo"
     },
     {
       "id": 59,
@@ -647,7 +1138,102 @@ window.APP_DATA = {
       "reps": "8–12 por lado",
       "rest": 45,
       "tip": "Mantenha a lombar em contato com o solo.",
-      "avoid": "Não acelere o movimento."
+      "avoid": "Não acelere o movimento.",
+      "mediaKey": "dead-bug",
+      "mediaStatus": "static",
+      "visualAssetKey": "dead-bug"
+    },
+    {
+      "id": 94,
+      "group": "Abdômen",
+      "name": "Crunch invertido",
+      "muscle": "Reto abdominal",
+      "sets": 3,
+      "reps": "12–20",
+      "rest": 45,
+      "tip": "Aproxime a pelve das costelas elevando levemente o quadril.",
+      "avoid": "Não use balanço das pernas para criar impulso.",
+      "mediaKey": "crunch-invertido",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 95,
+      "group": "Abdômen",
+      "name": "Abdominal na máquina",
+      "muscle": "Reto abdominal",
+      "sets": 3,
+      "reps": "10–15",
+      "rest": 60,
+      "tip": "Ajuste o equipamento e flexione o tronco contraindo o abdômen.",
+      "avoid": "Não puxe apenas com os braços nem use carga excessiva.",
+      "mediaKey": "abdominal-na-maquina",
+      "mediaStatus": "static",
+      "visualAssetKey": "abdominal-maquina"
+    },
+    {
+      "id": 96,
+      "group": "Abdômen",
+      "name": "Ab wheel",
+      "muscle": "Core/ reto abdominal",
+      "sets": 3,
+      "reps": "6–12",
+      "rest": 60,
+      "tip": "Mantenha quadril e costelas controlados e avance apenas até preservar a posição lombar.",
+      "avoid": "Não deixe a lombar afundar durante a extensão.",
+      "mediaKey": "ab-wheel",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 97,
+      "group": "Abdômen",
+      "name": "Hollow body",
+      "muscle": "Core",
+      "sets": 3,
+      "reps": "20–40 s",
+      "rest": 45,
+      "tip": "Pressione a lombar contra o solo e mantenha braços e pernas na altura que consiga controlar.",
+      "avoid": "Não aumente a alavanca se a lombar perder contato com o chão.",
+      "mediaKey": "hollow-body",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 98,
+      "group": "Abdômen",
+      "name": "Russian twist",
+      "muscle": "Oblíquos/core",
+      "sets": 3,
+      "reps": "16–24 total",
+      "rest": 45,
+      "tip": "Gire o tronco com controle mantendo o peito aberto e o abdômen ativo.",
+      "avoid": "Não faça rotações rápidas usando apenas os braços.",
+      "mediaKey": "russian-twist",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 99,
+      "group": "Abdômen",
+      "name": "Pallof press",
+      "muscle": "Core anti-rotação",
+      "sets": 3,
+      "reps": "10–15 por lado",
+      "rest": 45,
+      "tip": "Afaste as mãos do peito sem permitir que o tronco gire em direção à polia.",
+      "avoid": "Não incline ou rode o corpo para vencer a resistência.",
+      "mediaKey": "pallof-press",
+      "mediaStatus": "pending"
+    },
+    {
+      "id": 100,
+      "group": "Abdômen",
+      "name": "Bird dog",
+      "muscle": "Core/lombopélvico",
+      "sets": 3,
+      "reps": "8–12 por lado",
+      "rest": 45,
+      "tip": "Estenda braço e perna opostos mantendo quadril e tronco estáveis.",
+      "avoid": "Não arqueie a lombar nem rode a pelve.",
+      "mediaKey": "bird-dog",
+      "mediaStatus": "pending"
     },
     {
       "id": 60,
@@ -658,7 +1244,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Incline suavemente a cabeça para o lado.",
-      "avoid": "Não force com a mão."
+      "avoid": "Não force com a mão.",
+      "mediaKey": "pescoco-lateral",
+      "mediaStatus": "legacy"
     },
     {
       "id": 61,
@@ -669,7 +1257,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Incline a cabeça diagonalmente e mantenha ombro relaxado.",
-      "avoid": "Não faça movimentos bruscos."
+      "avoid": "Não faça movimentos bruscos.",
+      "mediaKey": "trapezio",
+      "mediaStatus": "legacy"
     },
     {
       "id": 62,
@@ -680,7 +1270,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Apoie o braço e gire suavemente o tronco.",
-      "avoid": "Não force o ombro."
+      "avoid": "Não force o ombro.",
+      "mediaKey": "peitoral-na-parede",
+      "mediaStatus": "legacy"
     },
     {
       "id": 63,
@@ -691,7 +1283,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Traga o braço à frente do peito e sustente.",
-      "avoid": "Não pressione sobre a articulação do cotovelo."
+      "avoid": "Não pressione sobre a articulação do cotovelo.",
+      "mediaKey": "ombro-cruzado",
+      "mediaStatus": "legacy"
     },
     {
       "id": 64,
@@ -702,7 +1296,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Flexione o cotovelo e sustente suavemente.",
-      "avoid": "Não force a cervical."
+      "avoid": "Não force a cervical.",
+      "mediaKey": "triceps-acima-da-cabeca",
+      "mediaStatus": "legacy"
     },
     {
       "id": 65,
@@ -713,7 +1309,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Incline o tronco mantendo a coluna longa.",
-      "avoid": "Não arredonde excessivamente a lombar."
+      "avoid": "Não arredonde excessivamente a lombar.",
+      "mediaKey": "posterior-de-coxa",
+      "mediaStatus": "legacy"
     },
     {
       "id": 66,
@@ -724,7 +1322,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Aproxime o calcanhar do glúteo mantendo joelhos juntos.",
-      "avoid": "Não arqueie a lombar."
+      "avoid": "Não arqueie a lombar.",
+      "mediaKey": "quadriceps-em-pe",
+      "mediaStatus": "legacy"
     },
     {
       "id": 67,
@@ -735,7 +1335,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Calcanhar no chão e joelho estendido.",
-      "avoid": "Não gire o pé para fora."
+      "avoid": "Não gire o pé para fora.",
+      "mediaKey": "panturrilha-na-parede",
+      "mediaStatus": "legacy"
     },
     {
       "id": 68,
@@ -746,7 +1348,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Cruze a perna e aproxime suavemente.",
-      "avoid": "Não force o joelho."
+      "avoid": "Não force o joelho.",
+      "mediaKey": "gluteo-deitado",
+      "mediaStatus": "legacy"
     },
     {
       "id": 69,
@@ -757,7 +1361,9 @@ window.APP_DATA = {
       "reps": "20–30 s por lado",
       "rest": 20,
       "tip": "Leve o quadril à frente com tronco ereto.",
-      "avoid": "Não hiperestenda a lombar."
+      "avoid": "Não hiperestenda a lombar.",
+      "mediaKey": "flexor-do-quadril",
+      "mediaStatus": "legacy"
     }
   ],
   "plans": {
@@ -798,5 +1404,17 @@ window.APP_DATA = {
       "Prancha lateral",
       "Dead bug"
     ]
-  }
+  },
+  "catalogVersion": "67.69.0",
+  "catalogMediaSchema": 3
 };
+
+
+/* V67.69.0 — camada de vídeo desacoplada do card visual.
+   Para associar um vídeo no futuro, basta definir videoStatus='ready'
+   e videoSrc para o exercício correspondente. */
+window.APP_DATA.exercises.forEach(ex=>{
+  ex.videoKey=ex.videoKey||ex.mediaKey||('exercise-'+ex.id);
+  ex.videoStatus=ex.videoStatus||'pending';
+  ex.videoSrc=ex.videoSrc||`assets/exercises/videos/${ex.videoKey}.mp4`;
+});

@@ -1,0 +1,35 @@
+TREINO 2ª CIA — v67.68.99
+Base: v67.68.98 estável (estado atual do Termux)
+
+OBJETIVO DESTA VERSÃO
+- Ampliar o catálogo de exercícios sem alterar as regras já validadas do app.
+- Preparar cada exercício para receber vídeo/animação individual posteriormente.
+
+CATÁLOGO
+- Peito: 12 exercícios
+- Costas: 12 exercícios
+- Ombros: 12 exercícios
+- Bíceps: 12 exercícios
+- Tríceps: 12 exercícios
+- Pernas: 15 exercícios
+- Abdômen/Core: 15 exercícios
+- Alongamentos: 10 exercícios preservados
+- Total geral: 100 exercícios
+
+NOVOS EXERCÍCIOS
+Peito: Supino reto com halteres; Supino inclinado com halteres; Chest press na máquina.
+Costas: Levantamento terra; Remada articulada; Pulldown unilateral.
+Ombros: Desenvolvimento com barra; Elevação lateral no cabo; Arnold press; Peck deck inverso.
+Bíceps: Rosca 21; Rosca martelo na corda; Rosca Spider; Rosca inversa; Rosca unilateral na polia.
+Tríceps: Supino fechado; Coice de tríceps; Tríceps francês unilateral; Extensão acima da cabeça na corda; Tríceps na máquina.
+Pernas: Cadeira adutora; Cadeira abdutora; Hack squat; Agachamento sumô.
+Abdômen/Core: Crunch invertido; Abdominal na máquina; Ab wheel; Hollow body; Russian twist; Pallof press; Bird dog.
+
+ESTRUTURA DE MÍDIA
+Cada exercício passa a possuir mediaKey e mediaStatus. Exercícios com artes existentes usam visualAssetKey. Os novos exercícios ainda sem mídia ficam com mediaStatus=pending e exibem um placeholder limpo, sem botão de movimento até a mídia ser associada.
+
+MÍDIAS JÁ APROVEITADAS NESTA VERSÃO
+Levantamento terra; Desenvolvimento com barra; Elevação lateral no cabo; Cadeira adutora; Cadeira abdutora; Abdominal na máquina já utilizam artes que estavam presentes no repositório.
+
+PRESERVADO
+Treinos Prontos, Personalizados, Treino Livre, Ranking, progresso por exercício, descanso, histórico, feed, GPS/localização, nutrição e demais funções da v67.68.98 não tiveram suas regras alteradas.

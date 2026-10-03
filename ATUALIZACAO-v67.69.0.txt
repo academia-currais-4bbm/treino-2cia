@@ -1,0 +1,11 @@
+TREINO 2ª CIA — v67.69.0
+
+- Base: v67.68.99 catálogo ampliado.
+- Card de demonstração padronizado para todos os exercícios.
+- Identidade visual preta/vermelha inspirada no card aprovado do Supino Reto.
+- Nome, grupo muscular, nível, objetivo, equipamento, posições e sequência preenchidos dinamicamente.
+- Botão VER MOVIMENTO presente em todos os exercícios.
+- Camada de vídeo desacoplada da arte estática: videoKey / videoStatus / videoSrc.
+- Enquanto o vídeo individual não estiver associado, o botão abre um estado 'VÍDEO EM PREPARAÇÃO'.
+- Para ativar um vídeo: definir videoStatus='ready' e videoSrc='assets/exercises/videos/<arquivo>.mp4'.
+- Nenhuma regra de ranking, descanso, progresso, feed, GPS ou nutrição foi alterada.

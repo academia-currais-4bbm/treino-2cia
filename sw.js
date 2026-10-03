@@ -1,4 +1,4 @@
-const CACHE='t2cia-v67.68.98-evolucao-render';
+const CACHE='t2cia-v67.69.0-demo-padronizada';
 const RUNTIME='t2cia-runtime-v67.67.8';
 const SHELL=[
   './',

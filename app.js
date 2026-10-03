@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.68.91';
+const TREINO_2CIA_BUILD='67.69.0';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -2261,19 +2261,27 @@ function openExercise(id,inPlan=false){
     'Abdominal máquina':'abdominal-maquina',
     'Prancha lateral':'prancha-lateral'
   };
-  const realisticKey=realisticByName[currentExercise.name];
-  const hasRealistic=!!realisticKey;
+  /* V67.68.99 — catálogo ampliado com camada de mídia desacoplada do nome.
+     visualAssetKey permite associar a arte sem alterar IDs/nome do exercício;
+     mediaStatus='pending' mantém o exercício utilizável mesmo antes da animação. */
+  const mediaPending=String(currentExercise.mediaStatus||'')==='pending';
+  const realisticKey=currentExercise.visualAssetKey||realisticByName[currentExercise.name];
+  const hasRealistic=!mediaPending&&!!realisticKey;
   const imgStart=byId('imgStart'), imgEnd=byId('imgEnd');
+  const pendingStart='assets/exercises/media-pending-inicio.svg';
+  const pendingEnd='assets/exercises/media-pending-fim.svg';
   imgStart.classList.toggle('realistic-exercise',hasRealistic);
   imgEnd.classList.toggle('realistic-exercise',hasRealistic);
-  imgStart.onerror=()=>{imgStart.onerror=null;imgStart.src=`assets/exercises/${currentExercise.id}-inicio.svg`;imgStart.classList.remove('realistic-exercise');};
-  imgEnd.onerror=()=>{imgEnd.onerror=null;imgEnd.src=`assets/exercises/${currentExercise.id}-fim.svg`;imgEnd.classList.remove('realistic-exercise');};
-  imgStart.src=hasRealistic?`assets/exercises/${realisticKey}-inicio.webp?v=37.0`:`assets/exercises/${currentExercise.id}-inicio.svg`;
-  imgEnd.src=hasRealistic?`assets/exercises/${realisticKey}-fim.webp?v=37.0`:`assets/exercises/${currentExercise.id}-fim.svg`;
+  imgStart.onerror=()=>{imgStart.onerror=null;imgStart.src=mediaPending?pendingStart:`assets/exercises/${currentExercise.id}-inicio.svg`;imgStart.classList.remove('realistic-exercise');};
+  imgEnd.onerror=()=>{imgEnd.onerror=null;imgEnd.src=mediaPending?pendingEnd:`assets/exercises/${currentExercise.id}-fim.svg`;imgEnd.classList.remove('realistic-exercise');};
+  imgStart.src=mediaPending?pendingStart:(hasRealistic?`assets/exercises/${realisticKey}-inicio.webp?v=676899`:`assets/exercises/${currentExercise.id}-inicio.svg`);
+  imgEnd.src=mediaPending?pendingEnd:(hasRealistic?`assets/exercises/${realisticKey}-fim.webp?v=676899`:`assets/exercises/${currentExercise.id}-fim.svg`);
+  const fullscreenMotionBtn=byId('exerciseFullscreenMotionBtn');
+  if(fullscreenMotionBtn){fullscreenMotionBtn.style.display='';fullscreenMotionBtn.disabled=false;}
   /* V67.68.81 — Supino Reto: piloto 3D também na tela principal.
      Mantém as imagens início/fim carregadas no DOM para fallback e para a biblioteca legada,
      mas apresenta o poster 3D como visual principal quando disponível. */
-  v676881ApplyInline3DPilot();
+  v676900ApplyStandardExerciseCard();
   bindExerciseImageZoom();
   updateMotionButton(hasRealistic);
   const hdPortrait=[
@@ -3349,6 +3357,105 @@ function v676881ApplyInline3DPilot(){
   visual.appendChild(card);
 }
 
+
+/* =========================================================
+   V67.69.0 — CARD PADRONIZADO DE DEMONSTRAÇÃO
+   A arte da tela é única para todo o catálogo. O conteúdo
+   (nome, músculo, imagens técnicas e dados) é preenchido
+   dinamicamente; o vídeo é uma camada separada, associada
+   posteriormente por videoKey/videoSrc.
+   ========================================================= */
+function v676900Esc(value){
+  return String(value??'').replace(/[&<>'"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':'&quot;'}[ch]));
+}
+function v676900Equipment(ex){
+  const n=String(ex?.name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  if(/barra fixa|prancha|flexao|paralela|mergulho|dead bug|bird dog|hollow|abdominal bicicleta|obliquo/.test(n)) return 'Peso corporal';
+  if(/halter|rosca alternada|martelo|concentrada|coice|afundo|bulgaro/.test(n)) return 'Halteres / banco';
+  if(/polia|crossover|pulley|puxada|remada baixa|face pull|corda|pulldown|pallof/.test(n)) return 'Polia / cabo';
+  if(/maquina|machine|peck|cadeira|mesa flexora|leg press|hack/.test(n)) return 'Máquina';
+  if(/barra|agachamento|stiff|terra|supino|rosca direta|remada curvada/.test(n)) return 'Barra / anilhas';
+  if(/panturrilha/.test(n)) return 'Máquina / peso corporal';
+  return 'Equipamento de academia';
+}
+function v676900Objective(ex){
+  const g=String(ex?.group||'');
+  if(g==='Abdômen/Core') return 'Estabilidade e força do core';
+  if(g==='Alongamento') return 'Mobilidade e recuperação';
+  return 'Força e hipertrofia';
+}
+function v676900Level(ex){
+  const n=String(ex?.name||'').toLowerCase();
+  if(/terra|bulgaro|barra fixa|ab wheel|hollow|pallof/.test(n)) return 'Intermediário';
+  return 'Básico a intermediário';
+}
+function v676900MuscleMap(group){
+  const g=String(group||'');
+  const spots={
+    'Peito':'<ellipse cx="43" cy="46" rx="10" ry="7"/><ellipse cx="57" cy="46" rx="10" ry="7"/>',
+    'Costas':'<rect x="36" y="38" width="28" height="25" rx="8"/>',
+    'Ombros':'<circle cx="28" cy="43" r="7"/><circle cx="72" cy="43" r="7"/>',
+    'Bíceps':'<ellipse cx="24" cy="59" rx="5" ry="12"/><ellipse cx="76" cy="59" rx="5" ry="12"/>',
+    'Tríceps':'<ellipse cx="20" cy="58" rx="5" ry="13"/><ellipse cx="80" cy="58" rx="5" ry="13"/>',
+    'Pernas':'<rect x="36" y="89" width="9" height="31" rx="5"/><rect x="55" y="89" width="9" height="31" rx="5"/><rect x="37" y="124" width="7" height="24" rx="4"/><rect x="56" y="124" width="7" height="24" rx="4"/>',
+    'Abdômen/Core':'<rect x="41" y="58" width="18" height="28" rx="6"/>',
+    'Alongamento':'<rect x="45" y="35" width="10" height="108" rx="5"/>'
+  };
+  const active=spots[g]||spots['Alongamento'];
+  return `<svg viewBox="0 0 100 160" aria-hidden="true">
+    <g class="v676900-body"><circle cx="50" cy="17" r="11"/><rect x="38" y="29" width="24" height="58" rx="11"/><rect x="22" y="39" width="10" height="52" rx="5"/><rect x="68" y="39" width="10" height="52" rx="5"/><rect x="38" y="82" width="10" height="65" rx="5"/><rect x="52" y="82" width="10" height="65" rx="5"/></g>
+    <g class="v676900-active">${active}</g>
+  </svg>`;
+}
+function v676900ApplyStandardExerciseCard(){
+  const visual=document.querySelector('#exercise .visual');
+  if(!visual || !currentExercise)return;
+  visual.querySelector('.v676900-demo-card')?.remove();
+  visual.querySelector('.v676881-inline3d')?.remove();
+  visual.classList.remove('v676881-legacy-hidden');
+  visual.classList.add('v676900-standard-active');
+
+  const start=byId('imgStart'), end=byId('imgEnd');
+  const startSrc=start?.src||'assets/exercises/media-pending-inicio.svg';
+  const endSrc=end?.src||'assets/exercises/media-pending-fim.svg';
+  const ex=currentExercise;
+  const title=v676900Esc(ex.name||'Exercício');
+  const muscle=v676900Esc(ex.muscle||ex.group||'Grupo muscular');
+  const group=v676900Esc(ex.group||'Treino');
+  const sequence=[startSrc,startSrc,endSrc,endSrc,endSrc];
+  const card=document.createElement('article');
+  card.className='v676900-demo-card';
+  card.innerHTML=`
+    <header class="v676900-poster-head">
+      <div class="v676900-unit"><span>🔥</span><b>TREINO<br>2ª CIA</b></div>
+      <div class="v676900-title"><h3>${title}</h3><strong>${muscle}</strong></div>
+      <div class="v676900-meta">
+        <div><small>NÍVEL</small><b>${v676900Esc(v676900Level(ex))}</b></div>
+        <div><small>OBJETIVO</small><b>${v676900Esc(v676900Objective(ex))}</b></div>
+        <div><small>EQUIPAMENTO</small><b>${v676900Esc(v676900Equipment(ex))}</b></div>
+      </div>
+    </header>
+    <div class="v676900-poster-grid">
+      <div class="v676900-main-shot"><img src="${v676900Esc(startSrc)}" alt="${title} — demonstração principal"><span>EXECUÇÃO TÉCNICA</span></div>
+      <div class="v676900-side-shot"><span>POSIÇÃO INICIAL</span><img src="${v676900Esc(startSrc)}" alt="Posição inicial"></div>
+      <div class="v676900-side-shot"><span>POSIÇÃO FINAL</span><img src="${v676900Esc(endSrc)}" alt="Posição final"></div>
+    </div>
+    <div class="v676900-poster-bottom">
+      <div class="v676900-sequence"><b>EXECUÇÃO EM SEQUÊNCIA</b><div>${sequence.map((src,i)=>`<span class="v676900-seq-frame"><img src="${v676900Esc(src)}" alt="Etapa ${i+1}">${i<sequence.length-1?'<i>›</i>':''}</span>`).join('')}</div></div>
+      <div class="v676900-muscles"><b>MÚSCULOS TRABALHADOS</b><div class="v676900-muscle-content">${v676900MuscleMap(ex.group)}<p><strong>${muscle}</strong><span>Principal</span><em>${group}</em></p></div></div>
+    </div>
+    <footer>${title}</footer>`;
+  visual.appendChild(card);
+
+  card.querySelectorAll('img').forEach(img=>{
+    img.onerror=()=>{
+      img.onerror=null;
+      img.src='assets/exercises/media-pending-inicio.svg';
+      img.classList.add('v676900-img-fallback');
+    };
+  });
+}
+
 function bindExerciseImageZoom(){
   const s=byId('imgStart'), e=byId('imgEnd');
   if(s && !s.dataset.zoomBound){
@@ -3445,89 +3552,70 @@ function v676891SupinoFrames(){
     'assets/exercises/3d/supino-reto-frames-pro/frame-10.webp?v=676891'
   ];
 }
+function v676900VideoReady(ex){
+  return String(ex?.videoStatus||'pending')==='ready' && !!String(ex?.videoSrc||'').trim();
+}
 function openExerciseMotion(){
-  const start=byId('imgStart'), end=byId('imgEnd');
-  if(!start || !end) return;
+  if(!currentExercise)return;
   let ov=document.getElementById('exerciseMotion');
   if(!ov){
     ov=document.createElement('div');
     ov.id='exerciseMotion';
-    ov.className='exercise-motion';
+    ov.className='exercise-motion v676900-video-overlay';
     ov.innerHTML=`<button class="exercise-motion-close" aria-label="Fechar">×</button>
-      <div class="exercise-motion-card">
-        <div class="exercise-motion-top"><b>EXECUÇÃO DO MOVIMENTO</b><span id="motionLabel">DEMONSTRAÇÃO</span></div>
-        <div class="motion3d-stage">
-          <span id="motion3dBadge" class="motion3d-badge">3D • TREINO 2ª CIA</span>
-          <video id="motion3dVideo" muted playsinline loop preload="metadata"></video>
-          <img id="motionImage" alt="Demonstração da execução">
+      <div class="exercise-motion-card v676900-video-card">
+        <div class="exercise-motion-top"><b id="motionExerciseTitle">EXECUÇÃO DO MOVIMENTO</b><span>VÍDEO • TREINO 2ª CIA</span></div>
+        <div class="v676900-video-stage">
+          <video id="motion3dVideo" controls playsinline preload="metadata"></video>
+          <div id="v676900VideoPending" class="v676900-video-pending"><span>▶</span><b>VÍDEO EM PREPARAÇÃO</b><p>Este exercício já está preparado para receber o vídeo individual.</p></div>
         </div>
-        <div class="exercise-motion-progress"><i></i></div>
-        <small id="motionHelp">Demonstração visual • execute o movimento de forma controlada</small>
+        <small id="motionHelp">Demonstração técnica do exercício</small>
       </div>`;
     document.body.appendChild(ov);
     ov.addEventListener('click',e=>{
       if(e.target===ov || e.target.classList.contains('exercise-motion-close')) stopExerciseMotion();
     });
   }
-  ov.classList.add('show');
-  if(exerciseMotionTimer){clearInterval(exerciseMotionTimer);exerciseMotionTimer=null}
-  if(v676891IsSupinoRetoMotion()){
-    v676891StartFrameMotion(ov,{frames:v676891SupinoFrames()});
-    return;
-  }
-  const media=v676878Exercise3DMedia();
   const video=ov.querySelector('#motion3dVideo');
-  const img=ov.querySelector('#motionImage');
-  const label=ov.querySelector('#motionLabel');
-  const badge=ov.querySelector('#motion3dBadge');
+  const pending=ov.querySelector('#v676900VideoPending');
+  const title=ov.querySelector('#motionExerciseTitle');
   const help=ov.querySelector('#motionHelp');
-
-  if(media && media.video && video){
-    img.style.display='none';
+  title.textContent=String(currentExercise.name||'EXECUÇÃO DO MOVIMENTO').toUpperCase();
+  help.textContent=`${currentExercise.muscle||currentExercise.group||'Execução técnica'} • movimento controlado`;
+  ov.classList.add('show');
+  if(v676900VideoReady(currentExercise)){
+    pending.style.display='none';
     video.style.display='block';
-    badge.style.display='inline-flex';
-    label.textContent='ANIMAÇÃO 3D';
-    help.textContent='Atleta 3D padronizado • músculo principal destacado';
-    video.poster=media.poster||'';
-    video.onerror=()=>v676878StartLegacyMotion(ov,start,end);
-    video.src=media.video;
+    video.poster=currentExercise.videoPoster||'';
+    video.src=currentExercise.videoSrc;
+    video.load();
     const play=video.play();
-    if(play&&typeof play.catch==='function')play.catch(()=>v676878StartLegacyMotion(ov,start,end));
-    return;
+    if(play&&typeof play.catch==='function')play.catch(()=>{});
+  }else{
+    try{video.pause()}catch(e){}
+    video.removeAttribute('src');
+    video.load();
+    video.style.display='none';
+    pending.style.display='flex';
   }
-  if(media && Array.isArray(media.frames) && media.frames.length>1){
-    v676891StartFrameMotion(ov,media);
-    return;
-  }
-  if(media && media.poster){
-    if(video){try{video.pause()}catch(e){} video.removeAttribute('src'); video.style.display='none';}
-    if(exerciseMotionTimer){clearInterval(exerciseMotionTimer);exerciseMotionTimer=null;}
-    img.style.display='block';
-    if(badge)badge.style.display='inline-flex';
-    label.textContent='GUIA VISUAL 3D';
-    help.textContent='Guia 3D do Supino Reto • piloto da nova biblioteca visual';
-    img.onerror=()=>v676878StartLegacyMotion(ov,start,end);
-    img.onload=()=>{ img.style.display='block'; };
-    img.src=media.poster;
-    return;
-  }
-  v676878StartLegacyMotion(ov,start,end);
 }
-function updateMotionButton(hasRealistic){
+function updateMotionButton(){
   let btn=document.getElementById('motionBtn');
-  const visual=document.querySelector('.visual');
-  if(!visual) return;
+  const visual=document.querySelector('#exercise .visual');
+  if(!visual)return;
   if(!btn){
     btn=document.createElement('button');
     btn.id='motionBtn';
-    btn.className='motion-btn';
+    btn.className='motion-btn v676900-motion-btn';
     btn.type='button';
-    btn.innerHTML='▶ VER MOVIMENTO';
     visual.insertAdjacentElement('afterend',btn);
     btn.addEventListener('click',openExerciseMotion);
   }
-  btn.style.display=hasRealistic?'flex':'none';
+  btn.innerHTML='▶ VER MOVIMENTO';
+  btn.style.display='flex';
+  btn.disabled=false;
 }
+
 
 function smartWorkoutComparison(current){
   const prev=previousWorkoutSamePlan(current);
