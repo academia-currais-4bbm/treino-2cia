@@ -1,0 +1,8 @@
+TREINO 2ª CIA — v67.69.2
+
+Correção da demonstração visual:
+- O poster completo de cada exercício é exibido como uma única imagem, preservando o layout original.
+- Corrigida a sobreposição/duplicação dos componentes antigos de posição inicial/final.
+- Removido o rodapé HTML duplicado; o nome já faz parte do poster original.
+- VER EM TELA CHEIA amplia o poster completo.
+- VER MOVIMENTO continua reservado exclusivamente ao vídeo específico do exercício.

@@ -2498,17 +2498,18 @@ body.admin-modal-open{overflow:hidden}
 .visual.v676901-poster-active>.imgbox,
 .visual.v676901-poster-active>.execution2-flow,
 .visual.v676901-poster-active>.v676900-demo-card,
-.visual.v676901-poster-active>.v676881-inline3d{display:none!important}
-.v676901-poster-card{
-  width:100%;overflow:hidden;border-radius:20px;background:#070707;
-  border:1px solid rgba(255,255,255,.16);box-shadow:0 14px 34px rgba(0,0,0,.38);
+.visual.v676901-poster-active>.v676881-inline3d,
+.visual.v676901-poster-active>.execution2-visual,
+.visual.v676901-poster-active>div:not(.v676901-poster-card){display:none!important}
+.visual.v676901-poster-active>.v676901-poster-card{
+  display:block!important;width:100%!important;min-height:0!important;height:auto!important;
+  padding:0!important;margin:0!important;box-sizing:border-box!important;
+  overflow:hidden!important;border-radius:20px!important;background:#070707!important;
+  border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 14px 34px rgba(0,0,0,.38)!important;
+  grid-column:1!important;
 }
 .v676901-poster-card>img{
   display:block;width:100%;height:auto!important;max-height:none!important;aspect-ratio:auto!important;
   object-fit:contain!important;background:#070707;margin:0!important;
 }
-.v676901-poster-footer{
-  box-sizing:border-box;width:100%;padding:13px 22px;background:#ef1c24;color:#fff;
-  text-transform:uppercase;font-size:clamp(16px,3vw,26px);font-weight:1000;letter-spacing:.02em;text-align:left;
-}
-.v676901-poster-fallback .v676901-poster-footer:after{content:' • ARTE EM PREPARAÇÃO';font-size:.55em;opacity:.8}
+

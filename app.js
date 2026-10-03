@@ -3479,8 +3479,7 @@ function v676901ApplyExactPosterCard(){
 
   const poster=document.createElement('div');
   poster.className='v676901-poster-card';
-  poster.innerHTML=`<img alt="${v676900Esc(currentExercise.name||'Exercício')} — guia visual">
-    <div class="v676901-poster-footer">${v676900Esc(currentExercise.name||'EXERCÍCIO')}</div>`;
+  poster.innerHTML=`<img alt="${v676900Esc(currentExercise.name||'Exercício')} — guia visual">`;
   const img=poster.querySelector('img');
   img.src=v676901PosterSrc(currentExercise);
   img.onerror=()=>{
