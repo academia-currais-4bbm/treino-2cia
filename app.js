@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.69.4';
+const TREINO_2CIA_BUILD='67.69.5';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -2624,8 +2624,8 @@ function v6748RenderDashboard(){
   <div class="v6748-stats"><div><strong>${count}</strong><span>treinos</span></div><div><strong>${minutes}</strong><span>minutos</span></div><div><strong>🔥 ${streak}</strong><span>${streak===1?'semana na meta':'semanas na meta'}</span></div></div>
   <div class="v6748-goal"><div class="v6748-goal-head"><div><b>🎯 Meta semanal</b><span>${count}/${goal} treinos • ${pct}%</span></div><button type="button" onclick="v6748SetWeeklyGoal()">EDITAR</button></div><div class="v6748-progress"><i style="width:${pct}%"></i></div><small>${count>=goal?'Meta da semana alcançada. Excelente consistência!':`Faltam ${Math.max(0,goal-count)} ${goal-count===1?'treino':'treinos'} para sua meta.`}</small></div>
   <div class="v6748-chart"><div class="v6748-chart-head"><b>Atividade nos últimos dias</b><span>min/dia</span></div><div class="v6748-bars">${bars}</div></div>`;
-}
   v676847RenderGoalsAchievements(records);
+}
 /* ===== V67.49 — RECORDES PESSOAIS / CONQUISTAS ===== */
 const V6749_ACH_SEEN='t2_achievements_seen_v6749';
 function v6749FmtPace(sec,unit){
@@ -3360,7 +3360,7 @@ function v676881ApplyInline3DPilot(){
 
 
 /* =========================================================
-   V67.69.4 — CARD PADRONIZADO DE DEMONSTRAÇÃO
+   V67.69.5 — CARD PADRONIZADO DE DEMONSTRAÇÃO
    A arte da tela é única para todo o catálogo. O conteúdo
    (nome, músculo, imagens técnicas e dados) é preenchido
    dinamicamente; o vídeo é uma camada separada, associada
@@ -3779,7 +3779,7 @@ function v676847EditGoal(type){
 }
 window.v676847EditGoal=v676847EditGoal;
 function v676847RenderGoalsAchievements(records){
-  const goalsBox=byId('v676847Goals'), achBox=byId('v676847Achievements'); if(!goalsBox&&!achBox)return;
+  const goalsBox=byId('v676847Goals'), achBox=byId('v676847Achievements'), homeGoals=byId('v676847HomeGoals'), homeAchievements=byId('v676847HomeAchievements'); if(!goalsBox&&!achBox&&!homeGoals&&!homeAchievements)return;
   const now=new Date(), key=v676844MonthKey(now);
   const month=records.filter(w=>{const d=new Date(w.date);return !Number.isNaN(d.getTime())&&v676844MonthKey(d)===key});
   const cardio=month.reduce((a,w)=>a+Number(w.cardioDistanceKm||0)+(Number(w.swimDistanceMeters||0)/1000),0);
@@ -3790,14 +3790,14 @@ function v676847RenderGoalsAchievements(records){
   ];
   const goalsHtml=`<div class="v676847-head"><div><span>METAS PESSOAIS</span><h3>🎯 Seus objetivos do mês</h3></div><small>Não altera o Ranking</small></div><div class="v676847-goal-grid">${cards.map(c=>{const pct=Math.min(100,Math.round(c.value/c.target*100));const val=c.unit==='km'?c.value.toLocaleString('pt-BR',{maximumFractionDigits:1}):Math.round(c.value);return `<div class="v676847-goal"><div class="v676847-goal-top"><span>${c.icon}</span><div><b>${c.title}</b><small>${val} / ${String(c.target).replace('.',',')} ${c.unit}</small></div><button onclick="v676847EditGoal('${c.type}')">EDITAR</button></div><div class="v676847-track"><i style="width:${pct}%"></i></div><div class="v676847-foot"><span>${pct}% concluído</span><b>${pct>=100?'META ALCANÇADA ✓':`Faltam ${c.unit==='km'?Math.max(0,c.target-c.value).toLocaleString('pt-BR',{maximumFractionDigits:1}):Math.max(0,c.target-c.value)} ${c.unit}`}</b></div></div>`}).join('')}</div>`;
   if(goalsBox)goalsBox.innerHTML=goalsHtml;
-  const homeGoals=byId('v676847HomeGoals'); if(homeGoals)homeGoals.innerHTML=goalsHtml;
-  if(achBox){
+  if(homeGoals)homeGoals.innerHTML=goalsHtml;
+  if(achBox||homeAchievements){
     const d=v6749PerformanceData(), unlocked=d.achievements.filter(a=>a.ok).length;
     const achCard=a=>`<div class="v676847-ach ${a.ok?'unlocked':'locked'}"><span>${a.ok?a.icon:'🔒'}</span><div><b>${a.name}</b><small>${a.desc}</small></div>${a.ok?'<em>CONQUISTADA</em>':''}</div>`;
     const ordered=[...d.achievements.filter(a=>a.ok),...d.achievements.filter(a=>!a.ok)];
     const achievementsHtml=`<div class="v676847-head"><div><span>CONQUISTAS</span><h3>🏅 Sua coleção</h3></div><strong>${unlocked}/${d.achievements.length}</strong></div><div class="v676847-ach-grid">${ordered.map(achCard).join('')}</div>`;
     if(achBox)achBox.innerHTML=achievementsHtml;
-    const homeAchievements=byId('v676847HomeAchievements'); if(homeAchievements)homeAchievements.innerHTML=achievementsHtml;
+    if(homeAchievements)homeAchievements.innerHTML=achievementsHtml;
   }
 }
 
