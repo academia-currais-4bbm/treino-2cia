@@ -326,6 +326,17 @@
 <section id="plans" class="view">
     <div class="bar"><button onclick="appBack('workoutChooser',openWorkoutChooser)">←</button><h2 id="plansModeTitle">Treinos</h2></div>
 
+    <button class="v6770-smart-cta" type="button" onclick="openSmartCustomBuilder()">
+      <span class="v6770-smart-icon">🧠</span>
+      <span class="v6770-smart-copy">
+        <b>GERAR MEU TREINO</b>
+        <small>Responda algumas perguntas e deixe o aplicativo montar seu treino</small>
+      </span>
+      <span class="chev">›</span>
+    </button>
+
+    <div class="v6770-smart-divider"><span>OU</span></div>
+
     <button class="build-workout-cta" onclick="openCustomBuilder()">
       <span class="build-workout-icon">＋</span>
       <span class="build-workout-copy">
@@ -340,6 +351,264 @@
 
     <div class="section-label custom-label">MEUS TREINOS</div>
     <div id="customPlanList" class="stack"></div>
+  </section>
+
+  <section id="smartCustomBuilder" class="view">
+    <div class="bar">
+      <button type="button" onclick="appBack('plans',()=>openPlans('custom'))">←</button>
+      <h2>Gerar meu treino</h2>
+    </div>
+
+    <div class="v6770-smart-hero">
+      <span class="eyebrow">TREINO INTELIGENTE</span>
+      <h3>Vamos conhecer seu objetivo</h3>
+      <p>Responda algumas perguntas. O aplicativo usará suas respostas para montar um programa específico para você.</p>
+    </div>
+
+    <div class="card v6770-anam-card">
+      <div class="v6770-step-head">
+        <span>01</span>
+        <div>
+          <span class="eyebrow">OBJETIVO</span>
+          <h3>O que você quer alcançar?</h3>
+        </div>
+      </div>
+
+      <label>Objetivo principal
+        <select id="v6770Goal">
+          <option value="">Selecione</option>
+          <option value="weight_loss">Perder gordura / peso</option>
+          <option value="mass_gain">Ganhar massa muscular</option>
+          <option value="hypertrophy">Hipertrofia</option>
+          <option value="strength">Ganhar força</option>
+          <option value="conditioning">Melhorar condicionamento</option>
+          <option value="operational">Melhorar desempenho para o serviço</option>
+          <option value="recomposition">Perder gordura e ganhar massa</option>
+          <option value="general">Condicionamento geral</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="card v6770-anam-card">
+      <div class="v6770-step-head">
+        <span>02</span>
+        <div>
+          <span class="eyebrow">DADOS CORPORAIS</span>
+          <h3>Seu ponto de partida</h3>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <label>Peso atual (kg)
+          <input id="v6770CurrentWeight" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="Ex.: 80">
+        </label>
+
+        <label>Peso-meta (kg)
+          <input id="v6770TargetWeight" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="Ex.: 75">
+        </label>
+      </div>
+
+      <label>Altura (cm)
+        <input id="v6770Height" type="number" min="100" max="230" step="1" inputmode="numeric" placeholder="Ex.: 180">
+      </label>
+
+      <div id="v6770BmiBox" class="v6770-bmi-box" hidden></div>
+
+      <small class="v6770-note">
+        O IMC é uma medida de triagem e não substitui uma avaliação individual de composição corporal.
+      </small>
+    </div>
+
+    <div class="card v6770-anam-card">
+      <div class="v6770-step-head">
+        <span>03</span>
+        <div>
+          <span class="eyebrow">EXPERIÊNCIA</span>
+          <h3>Como você se considera?</h3>
+        </div>
+      </div>
+
+      <label>Nível de experiência
+        <select id="v6770Level">
+          <option value="">Selecione</option>
+          <option value="beginner">Iniciante</option>
+          <option value="intermediate">Intermediário</option>
+          <option value="advanced">Avançado</option>
+        </select>
+      </label>
+
+      <label>Há quanto tempo você treina?
+        <select id="v6770TrainingTime">
+          <option value="">Selecione</option>
+          <option value="new">Estou começando</option>
+          <option value="lt3">Menos de 3 meses</option>
+          <option value="3to6">3 a 6 meses</option>
+          <option value="6to12">6 a 12 meses</option>
+          <option value="1to2">1 a 2 anos</option>
+          <option value="2plus">Mais de 2 anos</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="card v6770-anam-card">
+      <div class="v6770-step-head">
+        <span>04</span>
+        <div>
+          <span class="eyebrow">ROTINA</span>
+          <h3>Como você pretende treinar?</h3>
+        </div>
+      </div>
+
+      <label>Quantos dias por semana?
+        <select id="v6770Days">
+          <option value="">Selecione</option>
+          <option value="1">1 dia</option>
+          <option value="2">2 dias</option>
+          <option value="3">3 dias</option>
+          <option value="4">4 dias</option>
+          <option value="5">5 dias</option>
+          <option value="6">6 dias</option>
+          <option value="7">7 dias</option>
+        </select>
+      </label>
+
+      <label>Quanto tempo pretende treinar por sessão?
+        <select id="v6770Minutes">
+          <option value="">Selecione</option>
+          <option value="20">20–30 minutos</option>
+          <option value="30">30–45 minutos</option>
+          <option value="45">45–60 minutos</option>
+          <option value="60">60–75 minutos</option>
+          <option value="75">75–90 minutos</option>
+          <option value="90">Mais de 90 minutos</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="card v6770-anam-card">
+      <div class="v6770-step-head">
+        <span>05</span>
+        <div>
+          <span class="eyebrow">LOCAL E EQUIPAMENTOS</span>
+          <h3>Onde você vai treinar?</h3>
+        </div>
+      </div>
+
+      <label>Estrutura disponível
+        <select id="v6770Gym">
+          <option value="">Selecione</option>
+          <option value="full">Academia estruturada / completa</option>
+          <option value="basic">Academia de bairro / poucos equipamentos</option>
+          <option value="home">Casa / equipamento limitado</option>
+        </select>
+      </label>
+
+      <div id="v6770EquipmentGrid" class="v6770-check-grid">
+        <label><input type="checkbox" value="dumbbells"> Halteres</label>
+        <label><input type="checkbox" value="barbell"> Barra</label>
+        <label><input type="checkbox" value="bench"> Banco</label>
+        <label><input type="checkbox" value="plates"> Anilhas</label>
+        <label><input type="checkbox" value="machines"> Máquinas</label>
+        <label><input type="checkbox" value="cables"> Cabos / polias</label>
+        <label><input type="checkbox" value="legpress"> Leg press</label>
+        <label><input type="checkbox" value="cardio"> Equipamentos de cardio</label>
+      </div>
+    </div>
+
+    <div class="card v6770-anam-card">
+      <div class="v6770-step-head">
+        <span>06</span>
+        <div>
+          <span class="eyebrow">MÚSCULOS</span>
+          <h3>O que você quer treinar?</h3>
+        </div>
+      </div>
+
+      <div class="v6770-choice-grid">
+        <label><input type="radio" name="v6770MuscleMode" value="all" checked> Todos os grupos musculares</label>
+        <label><input type="radio" name="v6770MuscleMode" value="selected"> Quero escolher os grupos</label>
+      </div>
+
+      <div id="v6770MuscleGroups" class="v6770-muscle-grid">
+        <label><input type="checkbox" value="Peito"> Peito</label>
+        <label><input type="checkbox" value="Costas"> Costas</label>
+        <label><input type="checkbox" value="Ombros"> Ombros</label>
+        <label><input type="checkbox" value="Bíceps"> Bíceps</label>
+        <label><input type="checkbox" value="Tríceps"> Tríceps</label>
+
+        <div class="v6770-leg-title">🦵 PERNAS — escolha por região</div>
+
+        <label><input type="checkbox" value="Quadríceps"> Quadríceps / anterior</label>
+        <label><input type="checkbox" value="Posterior de coxa"> Posterior de coxa</label>
+        <label><input type="checkbox" value="Glúteos"> Glúteos</label>
+        <label><input type="checkbox" value="Adutores"> Adutores</label>
+        <label><input type="checkbox" value="Abdutores"> Abdutores</label>
+        <label><input type="checkbox" value="Panturrilhas"> Panturrilhas</label>
+        <label><input type="checkbox" value="Tibial anterior"> Tibial anterior</label>
+
+        <div class="v6770-leg-title">CORE</div>
+
+        <label><input type="checkbox" value="Abdômen"> Abdômen</label>
+        <label><input type="checkbox" value="Lombar"> Lombar</label>
+      </div>
+    </div>
+
+    <div class="card v6770-anam-card">
+      <div class="v6770-step-head">
+        <span>07</span>
+        <div>
+          <span class="eyebrow">PRIORIDADES</span>
+          <h3>Quer dar atenção especial a algum grupo?</h3>
+        </div>
+      </div>
+
+      <select id="v6770Priority">
+        <option value="">Nenhuma prioridade específica</option>
+        <option value="Peito">Peito</option>
+        <option value="Costas">Costas</option>
+        <option value="Ombros">Ombros</option>
+        <option value="Braços">Braços</option>
+        <option value="Quadríceps">Quadríceps / anterior</option>
+        <option value="Posterior de coxa">Posterior de coxa</option>
+        <option value="Glúteos">Glúteos</option>
+        <option value="Panturrilhas">Panturrilhas</option>
+        <option value="Abdômen">Abdômen</option>
+      </select>
+
+      <label>Preferência de exercícios
+        <select id="v6770Preference">
+          <option value="mixed">Misturar máquinas e pesos livres</option>
+          <option value="free">Priorizar pesos livres</option>
+          <option value="machines">Priorizar máquinas</option>
+          <option value="app">Deixar o aplicativo decidir</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="card v6770-anam-card">
+      <div class="v6770-step-head">
+        <span>08</span>
+        <div>
+          <span class="eyebrow">LIMITAÇÕES</span>
+          <h3>Existe algo que devemos considerar?</h3>
+        </div>
+      </div>
+
+      <label>Limitações ou observações
+        <textarea id="v6770Limitations" rows="4" maxlength="500"
+          placeholder="Ex.: prefiro evitar determinado exercício, tenho alguma limitação de movimento, não gosto de determinado aparelho..."></textarea>
+      </label>
+
+      <div class="v6770-safety-note">
+        <b>⚠️ Importante</b>
+        <span>O aplicativo não substitui avaliação médica ou profissional de educação física. Em caso de dor, lesão ou condição de saúde, procure orientação profissional.</span>
+      </div>
+    </div>
+
+    <div class="v6770-anam-actions">
+      <button type="button" class="big red" onclick="generateSmartCustomWorkout()">🧠 GERAR MEU TREINO</button>
+      <button type="button" class="big" onclick="appBack('plans',()=>openPlans('custom'))">CANCELAR</button>
+    </div>
   </section>
 
   <section id="customBuilder" class="view">

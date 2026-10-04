@@ -2513,3 +2513,290 @@ body.admin-modal-open{overflow:hidden}
   object-fit:contain!important;background:#070707;margin:0!important;
 }
 
+
+/* ===== V67.70.0 — ANAMNESE / GERADOR INTELIGENTE ===== */
+.v6770-smart-cta{
+  width:100%;
+  display:grid;
+  grid-template-columns:44px 1fr 24px;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  padding:16px;
+  margin-bottom:10px;
+  border:1px solid #ff4444;
+  border-left:5px solid #ff2028;
+  border-radius:16px;
+  background:linear-gradient(145deg,#3b0909,#171717);
+  box-shadow:0 8px 24px rgba(0,0,0,.25)
+}
+
+.v6770-smart-icon{
+  font-size:29px;
+  text-align:center
+}
+
+.v6770-smart-copy b{
+  display:block;
+  font-size:17px
+}
+
+.v6770-smart-copy small{
+  display:block;
+  color:#c9c9c9;
+  margin-top:5px;
+  font-size:11px;
+  line-height:1.35
+}
+
+.v6770-smart-divider{
+  text-align:center;
+  color:#777;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:2px;
+  margin:5px 0 12px
+}
+
+.v6770-smart-divider span{
+  display:inline-block;
+  padding:0 10px;
+  background:#090909
+}
+
+.v6770-smart-hero{
+  margin-bottom:14px;
+  padding:20px 16px;
+  border:1px solid #512020;
+  border-radius:16px;
+  background:
+    radial-gradient(circle at 100% 0,rgba(226,27,35,.18),transparent 42%),
+    linear-gradient(145deg,#1d0808,#101010)
+}
+
+.v6770-smart-hero h3{
+  margin:7px 0 5px;
+  font-size:23px
+}
+
+.v6770-smart-hero p{
+  margin:0;
+  color:#aaa;
+  line-height:1.45;
+  font-size:13px
+}
+
+.v6770-anam-card{
+  border-left-color:#e21b23
+}
+
+.v6770-step-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px
+}
+
+.v6770-step-head>span{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#3a0707;
+  border:1px solid #e21b23;
+  color:#ff7777;
+  font-weight:900
+}
+
+.v6770-step-head h3{
+  margin:4px 0 0;
+  font-size:18px
+}
+
+.v6770-anam-card select{
+  width:100%;
+  margin:6px 0 12px;
+  background:#090909;
+  border:1px solid #444;
+  color:#fff;
+  border-radius:10px;
+  padding:12px;
+  font-size:16px
+}
+
+.v6770-anam-card textarea{
+  width:100%;
+  resize:vertical;
+  margin:6px 0 12px;
+  background:#090909;
+  border:1px solid #444;
+  color:#fff;
+  border-radius:10px;
+  padding:12px;
+  font-size:15px;
+  line-height:1.4
+}
+
+.v6770-bmi-box{
+  margin:3px 0 14px;
+  padding:13px;
+  border-radius:13px;
+  background:linear-gradient(145deg,#211006,#101010);
+  border:1px solid #6d4718
+}
+
+.v6770-bmi-title{
+  font-size:11px;
+  color:#ffd15c;
+  font-weight:900;
+  letter-spacing:1.2px;
+  margin-bottom:10px
+}
+
+.v6770-bmi-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px
+}
+
+.v6770-bmi-grid>div{
+  background:#0d0d0d;
+  border:1px solid #333;
+  border-radius:11px;
+  padding:11px 8px;
+  text-align:center
+}
+
+.v6770-bmi-grid span{
+  display:block;
+  color:#aaa;
+  font-size:10px
+}
+
+.v6770-bmi-grid strong{
+  display:block;
+  font-size:25px;
+  color:#fff;
+  margin:4px 0
+}
+
+.v6770-bmi-grid small{
+  display:block;
+  color:#ffcf68;
+  font-size:10px;
+  line-height:1.2
+}
+
+.v6770-bmi-range{
+  margin-top:8px;
+  padding:10px;
+  border-top:1px solid #343434;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:3px 10px
+}
+
+.v6770-bmi-range span{
+  color:#aaa;
+  font-size:11px
+}
+
+.v6770-bmi-range b{
+  color:#fff;
+  font-size:12px
+}
+
+.v6770-bmi-range small{
+  grid-column:1/-1;
+  color:#888;
+  font-size:10px
+}
+
+.v6770-note{
+  display:block;
+  color:#777;
+  font-size:10px;
+  line-height:1.35;
+  margin-top:4px
+}
+
+.v6770-check-grid,
+.v6770-muscle-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px
+}
+
+.v6770-check-grid label,
+.v6770-muscle-grid label,
+.v6770-choice-grid label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:44px;
+  padding:10px;
+  border:1px solid #333;
+  border-radius:10px;
+  background:#101010;
+  color:#ddd;
+  font-size:12px
+}
+
+.v6770-check-grid input,
+.v6770-muscle-grid input,
+.v6770-choice-grid input{
+  width:auto;
+  margin:0;
+  accent-color:#e21b23
+}
+
+.v6770-choice-grid{
+  display:grid;
+  gap:8px;
+  margin-bottom:10px
+}
+
+.v6770-leg-title{
+  grid-column:1/-1;
+  margin-top:5px;
+  padding:9px 2px 2px;
+  color:#ff696f;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1px
+}
+
+.v6770-safety-note{
+  display:grid;
+  gap:4px;
+  margin-top:4px;
+  padding:11px;
+  border-radius:11px;
+  background:#211b0b;
+  border:1px solid #594817;
+  color:#d6c47d;
+  font-size:11px;
+  line-height:1.4
+}
+
+.v6770-safety-note b{
+  color:#ffd65c
+}
+
+.v6770-anam-actions{
+  display:grid;
+  gap:10px;
+  margin:14px 0 25px
+}
+
+@media(max-width:480px){
+  .v6770-check-grid,
+  .v6770-muscle-grid{
+    grid-template-columns:1fr
+  }
+
+  .v6770-leg-title{
+    grid-column:1
+  }
+}

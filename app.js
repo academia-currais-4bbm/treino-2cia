@@ -312,6 +312,7 @@ function navStateSnapshot(viewId){
     view: viewId || document.querySelector('.view.active')?.id || 'home',
     currentGroup,
     currentListMode,
+    currentLegSubgroup,
     activePlanName,
     activePlanIndex,
     currentExerciseId: currentExercise?.id ?? null,
@@ -442,6 +443,25 @@ function v67610InternalBack(fallbackView='home',fallbackAction=null){
     // Se o usuário estiver numa subseção da Administração, o primeiro Voltar
     // deve ser consumido internamente e retornar ao Dashboard administrativo.
     const activeNow=document.querySelector('.view.active')?.id||'home';
+    // V67.70.0 — fluxo direto dos subgrupos de Pernas
+    if(activeNow==='list' && currentListMode==='leg-subgroup'){
+      navRestoring=true;
+      try{openLegSubgroups();}
+      finally{navRestoring=false;}
+      saveNavigationState('groups');
+      setTimeout(v67610ArmCloseWatcher,0);
+      return true;
+    }
+
+    if(activeNow==='groups' && currentListMode==='leg-subgroups'){
+      navRestoring=true;
+      try{openGroups();}
+      finally{navRestoring=false;}
+      saveNavigationState('groups');
+      setTimeout(v67610ArmCloseWatcher,0);
+      return true;
+    }
+
     if(activeNow==='admin' && typeof admin54GetCurrentTab==='function' && admin54GetCurrentTab()!=='dashboard'){
       admin54BackToDashboard();
       saveNavigationState('admin');
@@ -537,11 +557,134 @@ else ensureAppHistoryState();
 window.addEventListener('pageshow',()=>{ensureAppHistoryState();setTimeout(v67610ArmCloseWatcher,0)});
 
 
+let currentLegSubgroup=null;
 function exByName(n){return DATA.exercises.find(x=>x.name===n)}
+const V6770_LEG_SUBGROUPS={
+  quadriceps:{
+    title:"Quadríceps / anterior de coxa",
+    names:[
+      "Agachamento livre",
+      "Leg press 45°",
+      "Cadeira extensora",
+      "Afundo",
+      "Agachamento búlgaro",
+      "Hack squat"
+    ]
+  },
+  posterior:{
+    title:"Posterior de coxa",
+    names:[
+      "Mesa flexora",
+      "Cadeira flexora",
+      "Stiff"
+    ]
+  },
+  gluteos:{
+    title:"Glúteos",
+    names:[
+      "Elevação pélvica",
+      "Afundo",
+      "Agachamento búlgaro",
+      "Agachamento sumô"
+    ]
+  },
+  adutores:{
+    title:"Adutores",
+    names:[
+      "Cadeira adutora",
+      "Agachamento sumô"
+    ]
+  },
+  abdutores:{
+    title:"Abdutores",
+    names:[
+      "Cadeira abdutora"
+    ]
+  },
+  panturrilhas:{
+    title:"Panturrilhas",
+    names:[
+      "Panturrilha em pé",
+      "Panturrilha sentada"
+    ]
+  }
+};
+
+function openLegSubgroups(){
+  currentListMode="leg-subgroups";
+
+  currentLegSubgroup=null;
+
+  const bar=document.querySelector('#groups .bar');
+  const back=bar ? bar.querySelector('button') : null;
+  const title=bar ? bar.querySelector('h2') : null;
+
+  if(title) title.textContent="Pernas";
+  if(back) back.setAttribute("onclick","openGroups()");
+
+  byId('groupGrid').innerHTML=Object.entries(V6770_LEG_SUBGROUPS).map(([key,data])=>{
+    const count=data.names.filter(name=>
+      DATA.exercises.some(x=>x.group==="Pernas" && x.name===name)
+    ).length;
+
+    return `<button class="rowbtn" onclick="openLegSubgroup('${key}')">
+      <b>${data.title}</b>
+      <span>${count} exercícios</span>
+    </button>`;
+  }).join('');
+
+  showView('groups');
+}
+
+function openLegSubgroup(key){
+  const sub=V6770_LEG_SUBGROUPS[key];
+  if(!sub)return;
+
+  currentGroup="Pernas";
+  currentListMode="leg-subgroup";
+  currentLegSubgroup=key;
+
+  byId('listTitle').textContent=sub.title;
+
+  const names=new Set(sub.names);
+  const list=DATA.exercises.filter(x=>
+    x.group==="Pernas" && names.has(x.name)
+  );
+
+  renderExerciseButtons(list);
+  showView('list');
+}
+
 function openGroups(){
   currentListMode="group";
+
+  currentLegSubgroup=null;
+
+  const bar=document.querySelector('#groups .bar');
+  const back=bar ? bar.querySelector('button') : null;
+  const title=bar ? bar.querySelector('h2') : null;
+
+  if(title) title.textContent="Grupos musculares";
+  if(back) back.setAttribute("onclick","appBack('home')");
+
   const gs=[...new Set(DATA.exercises.map(x=>x.group))].filter(g=>g!=="Alongamento");
-  byId('groupGrid').innerHTML=gs.map(g=>`<button class="rowbtn" onclick="openGroup('${g.replaceAll("'","\\'")}')"><b>${g}</b><span>${DATA.exercises.filter(x=>x.group===g).length} exercícios</span></button>`).join('');
+
+  byId('groupGrid').innerHTML=gs.map(g=>{
+    const count=DATA.exercises.filter(x=>x.group===g).length;
+
+    if(g==="Pernas"){
+      return `<button class="rowbtn" onclick="openLegSubgroups()">
+        <b>${g}</b>
+        <span>${count} exercícios</span>
+      </button>`;
+    }
+
+    return `<button class="rowbtn" onclick="openGroup('${g.replaceAll("'","\\'")}')">
+      <b>${g}</b>
+      <span>${count} exercícios</span>
+    </button>`;
+  }).join('');
+
   showView('groups');
 }
 function openGroup(g){
@@ -1269,7 +1412,17 @@ function openPlan(name){
   if(startBox) startBox.innerHTML=`<button type="button" class="big red plan-start" onclick="startPlanWorkout(); return false;">▶ INICIAR ${name.split('—')[0].trim()}</button><small>${activePlanExercises.length} exercícios • registro série por série</small>`;
   showView('list');
 }
-function goListBack(){showView(currentListMode==="plan"?"plans":"groups")}
+function goListBack(){
+  if(currentListMode==="plan"){
+    showView("plans");
+    return;
+  }
+  if(currentListMode==="leg-subgroup"){
+    openLegSubgroups();
+    return;
+  }
+  showView("groups");
+}
 function renderExerciseButtons(list){
   byId('exerciseList').innerHTML=list.map((x,i)=>`<button class="rowbtn" onclick="${currentListMode==='plan'?`openPlanExercise(${i})`:`openExercise(${x.id})`}"><b>${i+1}. ${x.name}</b><span>${x.customMethodLabel?`⚙ ${x.customMethodLabel} • `:''}${x.sets} séries • ${x.reps} • descanso ${x.rest}s</span></button>`).join('');
 }
@@ -5107,6 +5260,213 @@ function openCustomPlan(id){
  byId('listTitle').textContent=w.name;renderExerciseButtons(activePlanExercises);const startBox=byId('planStartBox');
  if(startBox)startBox.innerHTML=`<button type="button" class="big red plan-start" onclick="startPlanWorkout(); return false;">▶ INICIAR TREINO</button><small>${activePlanExercises.length} exercícios • treino personalizado</small>`;showView('list')
 }
+
+/* ===== V67.70.0 — ANAMNESE / GERADOR INTELIGENTE ===== */
+const V6770_SMART_PROFILE_KEY='t2_smart_training_profile_v6770';
+
+function v6770BmiClass(bmi){
+  if(bmi<18.5)return 'Abaixo da faixa de referência';
+  if(bmi<25)return 'Faixa de referência';
+  if(bmi<30)return 'Sobrepeso';
+  if(bmi<35)return 'Obesidade grau I';
+  if(bmi<40)return 'Obesidade grau II';
+  return 'Obesidade grau III';
+}
+
+function v6770BmiWeightRange(heightCm){
+  const h=Number(heightCm)/100;
+  if(!Number.isFinite(h)||h<=0)return null;
+  return {
+    min:18.5*h*h,
+    max:24.9*h*h
+  };
+}
+
+function v6770UpdateBmi(){
+  const current=Number(byId('v6770CurrentWeight')?.value||0);
+  const target=Number(byId('v6770TargetWeight')?.value||0);
+  const height=Number(byId('v6770Height')?.value||0);
+  const box=byId('v6770BmiBox');
+  if(!box)return;
+
+  if(!current||!target||!height||height<100){
+    box.hidden=true;
+    box.innerHTML='';
+    return;
+  }
+
+  const h=height/100;
+  const currentBmi=current/(h*h);
+  const targetBmi=target/(h*h);
+  const range=v6770BmiWeightRange(height);
+
+  box.hidden=false;
+  box.innerHTML=`
+    <div class="v6770-bmi-title">⚖️ SEUS INDICADORES</div>
+    <div class="v6770-bmi-grid">
+      <div>
+        <span>IMC atual</span>
+        <strong>${currentBmi.toFixed(1).replace('.',',')}</strong>
+        <small>${v6770BmiClass(currentBmi)}</small>
+      </div>
+      <div>
+        <span>IMC no peso-meta</span>
+        <strong>${targetBmi.toFixed(1).replace('.',',')}</strong>
+        <small>${v6770BmiClass(targetBmi)}</small>
+      </div>
+    </div>
+    <div class="v6770-bmi-range">
+      <span>Faixa de referência do IMC</span>
+      <b>18,5 – 24,9</b>
+      <small>Para sua altura: aproximadamente ${range.min.toFixed(1).replace('.',',')} a ${range.max.toFixed(1).replace('.',',')} kg</small>
+    </div>
+  `;
+}
+
+function v6770CollectSmartProfile(){
+  const muscleMode=document.querySelector('input[name="v6770MuscleMode"]:checked')?.value||'all';
+  const muscles=[...document.querySelectorAll('#v6770MuscleGroups input[type="checkbox"]:checked')].map(x=>x.value);
+  const equipment=[...document.querySelectorAll('#v6770EquipmentGrid input[type="checkbox"]:checked')].map(x=>x.value);
+
+  return {
+    goal:byId('v6770Goal')?.value||'',
+    currentWeight:Number(byId('v6770CurrentWeight')?.value||0),
+    targetWeight:Number(byId('v6770TargetWeight')?.value||0),
+    height:Number(byId('v6770Height')?.value||0),
+    level:byId('v6770Level')?.value||'',
+    trainingTime:byId('v6770TrainingTime')?.value||'',
+    days:Number(byId('v6770Days')?.value||0),
+    minutes:Number(byId('v6770Minutes')?.value||0),
+    gym:byId('v6770Gym')?.value||'',
+    equipment,
+    muscleMode,
+    muscles,
+    priority:byId('v6770Priority')?.value||'',
+    preference:byId('v6770Preference')?.value||'mixed',
+    limitations:String(byId('v6770Limitations')?.value||'').trim(),
+    savedAt:new Date().toISOString()
+  };
+}
+
+function v6770ValidateSmartProfile(profile){
+  const required=[
+    ['goal','objetivo'],
+    ['currentWeight','peso atual'],
+    ['targetWeight','peso-meta'],
+    ['height','altura'],
+    ['level','nível de experiência'],
+    ['days','dias por semana'],
+    ['minutes','tempo por sessão'],
+    ['gym','estrutura disponível']
+  ];
+
+  for(const [key,label] of required){
+    if(!profile[key] || Number(profile[key])===0){
+      alert(`Informe seu ${label}.`);
+      return false;
+    }
+  }
+
+  if(profile.muscleMode==='selected'&&!profile.muscles.length){
+    alert('Selecione pelo menos um grupo muscular.');
+    return false;
+  }
+
+  if(profile.currentWeight<20||profile.currentWeight>400){
+    alert('Confira o peso atual informado.');
+    return false;
+  }
+
+  if(profile.targetWeight<20||profile.targetWeight>400){
+    alert('Confira o peso-meta informado.');
+    return false;
+  }
+
+  if(profile.height<100||profile.height>230){
+    alert('Confira sua altura.');
+    return false;
+  }
+
+  return true;
+}
+
+function openSmartCustomBuilder(){
+  showView('smartCustomBuilder');
+  v6770LoadSmartProfile();
+  setTimeout(()=>byId('v6770Goal')?.focus(),120);
+}
+
+function v6770LoadSmartProfile(){
+  let p=null;
+  try{p=JSON.parse(localStorage.getItem(V6770_SMART_PROFILE_KEY)||'null')}catch(e){}
+  if(!p)return;
+
+  const set=(id,v)=>{
+    const el=byId(id);
+    if(el&&v!==undefined&&v!==null)el.value=v;
+  };
+
+  set('v6770Goal',p.goal);
+  set('v6770CurrentWeight',p.currentWeight||'');
+  set('v6770TargetWeight',p.targetWeight||'');
+  set('v6770Height',p.height||'');
+  set('v6770Level',p.level);
+  set('v6770TrainingTime',p.trainingTime);
+  set('v6770Days',p.days);
+  set('v6770Minutes',p.minutes);
+  set('v6770Gym',p.gym);
+  set('v6770Priority',p.priority);
+  set('v6770Preference',p.preference);
+  set('v6770Limitations',p.limitations||'');
+
+  document.querySelectorAll('#v6770EquipmentGrid input[type="checkbox"]').forEach(x=>{
+    x.checked=p.equipment?.includes(x.value);
+  });
+
+  document.querySelectorAll('#v6770MuscleGroups input[type="checkbox"]').forEach(x=>{
+    x.checked=p.muscles?.includes(x.value);
+  });
+
+  const radio=document.querySelector(
+    `input[name="v6770MuscleMode"][value="${p.muscleMode||'all'}"]`
+  );
+
+  if(radio)radio.checked=true;
+
+  v6770UpdateBmi();
+}
+
+function v6770InitSmartForm(){
+  ['v6770CurrentWeight','v6770TargetWeight','v6770Height'].forEach(id=>{
+    byId(id)?.addEventListener('input',v6770UpdateBmi);
+  });
+}
+
+function generateSmartCustomWorkout(){
+  const profile=v6770CollectSmartProfile();
+
+  if(!v6770ValidateSmartProfile(profile))return;
+
+  try{
+    localStorage.setItem(
+      V6770_SMART_PROFILE_KEY,
+      JSON.stringify(profile)
+    );
+  }catch(e){}
+
+  alert('Perfil salvo com sucesso. A próxima etapa usará estas respostas para montar seu treino específico.');
+}
+
+window.openSmartCustomBuilder=openSmartCustomBuilder;
+window.generateSmartCustomWorkout=generateSmartCustomWorkout;
+window.v6770UpdateBmi=v6770UpdateBmi;
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',v6770InitSmartForm,{once:true});
+}else{
+  v6770InitSmartForm();
+}
+
 function openCustomBuilder(id=null){
  customBuilderEditingId=id;const saved=id?customWorkoutById(id):null;customBuilderSelected=saved?saved.exercises.map(customEntry):[];customConfigIndex=null;
  const name=byId('customWorkoutName');if(name)name.value=saved?saved.name:'';const title=byId('customBuilderTitle');if(title)title.textContent=saved?'Editar treino':'Montar meu treino';renderCustomBuilder();showView('customBuilder')
@@ -5261,7 +5621,8 @@ function restoreNavigationState(force=false){
   try{
     currentGroup=state.currentGroup||'';
     currentListMode=state.currentListMode||'group';
-    currentSet=Math.max(1,Number(state.currentSet)||1);
+            currentLegSubgroup=state.currentLegSubgroup||null;
+currentSet=Math.max(1,Number(state.currentSet)||1);
     navHistoryIndex=Number.isInteger(state.historyIndex)?state.historyIndex:null;
     restorePlanContext(state);
 
@@ -5270,12 +5631,16 @@ function restoreNavigationState(force=false){
         openPlans();
         break;
       case 'groups':
-        openGroups();
-        break;
+          if(state.currentListMode==='leg-subgroups'){
+            openLegSubgroups();
+          }else{
+            openGroups();
+          }
+          break;
       case 'list':
         if(state.currentListMode==='plan' && state.activePlanName){
-          if(state.activePlanName.startsWith('Personalizado — ')){
-            const customName=state.activePlanName.replace(/^Personalizado — /,'');
+          if(state.activePlanName.startsWith('Personalizado - ')){
+            const customName=state.activePlanName.replace(/^Personalizado - /,'');
             const w=getCustomWorkouts().find(x=>x.name===customName);
             if(w) openCustomPlan(w.id); else openPlans();
           }else if(DATA.plans[state.activePlanName]){
@@ -5283,12 +5648,15 @@ function restoreNavigationState(force=false){
           }else{
             openPlans();
           }
+        }else if(state.currentListMode==='leg-subgroup' && state.currentLegSubgroup){
+          openLegSubgroup(state.currentLegSubgroup);
         }else if(state.currentGroup){
           openGroup(state.currentGroup);
         }else{
           openGroups();
         }
         break;
+
       case 'exercise':
         if(state.currentExerciseId!=null){
           const inPlan=!!state.activePlanName && state.activePlanIndex>=0;
