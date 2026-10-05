@@ -8,36 +8,56 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
+<style id="t2BootRouteStyle">html.t2-boot-restoring .view{visibility:hidden!important;}</style>
+<script>document.documentElement.classList.add('t2-boot-restoring');</script>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="styles.css?v=677100">
 <script>
-/* v67.71.1-refresh-stable — restaura visualmente a última tela ANTES do primeiro paint.
-   O HTML original nasce com Home ativa; isso causava o flash/redirecionamento Home
-   antes da restauração assíncrona. O estado é somente informativo neste ponto;
-   app.js continua responsável pela restauração completa. */
+/* v67.71.2 — restauração de rota no reload, sem passar pela Home.
+   O Android/PWA nem sempre informa performance.navigation.type=reload.
+   Por isso o app grava uma marca curta no pagehide/beforeunload e usa também
+   o snapshot da navegação. Enquanto a rota é resolvida, as .view ficam ocultas
+   para que a Home inicial do HTML não apareça como uma etapa intermediária. */
 (function(){
   try{
     var nav=performance.getEntriesByType('navigation')[0];
-    if((nav&&nav.type==='reload') || (performance.navigation&&performance.navigation.type===1)){
-      var raw=sessionStorage.getItem('t2_nav_state_v6730_session');
-      var state=raw?JSON.parse(raw):null;
-      var route=state&&state.view&&state.view!=='home'?String(state.view):'';
-      var smart=null;
-      try{smart=JSON.parse(localStorage.getItem('t2_v6771_smart_route_v2')||'null')}catch(e){}
-      if(smart&&smart.savedAt&&Date.now()-Number(smart.savedAt)<=86400000){
-        if(smart.type==='builder') route='smartCustomBuilder';
-        else if(smart.type==='result') route='smartGeneratedResult';
-      }
-      if(route){
-        window.__t2EarlyReloadView=route;
-        document.addEventListener('DOMContentLoaded',function(){
-          var home=document.getElementById('home');
-          var target=document.getElementById(route);
-          if(home&&target){home.classList.remove('active');target.classList.add('active');}
-        },{once:true});
-      }
+    var navReload=(nav&&nav.type==='reload') || (performance.navigation&&performance.navigation.type===1);
+    var pendingRaw=sessionStorage.getItem('t2_reload_intent_v6772');
+    var pending=pendingRaw?JSON.parse(pendingRaw):null;
+    var pendingReload=!!(pending&&pending.ts&&Date.now()-Number(pending.ts)<=15000);
+    var isReload=navReload||pendingReload;
+    if(!isReload){
+      document.documentElement.classList.remove('t2-boot-restoring');
+      return;
     }
-  }catch(e){}
+    var raw=sessionStorage.getItem('t2_nav_state_v6730_session');
+    var state=raw?JSON.parse(raw):null;
+    var route=state&&state.view?String(state.view):'';
+    var smart=null;
+    try{smart=JSON.parse(localStorage.getItem('t2_v6771_smart_route_v2')||'null')}catch(e){}
+    if(smart&&smart.savedAt&&Date.now()-Number(smart.savedAt)<=86400000){
+      if(smart.type==='builder') route='smartCustomBuilder';
+      else if(smart.type==='result') route='smartGeneratedResult';
+    }
+    if(route&&route!=='home'){
+      window.__t2EarlyReloadView=route;
+      window.__t2ReloadIntent=true;
+      document.addEventListener('DOMContentLoaded',function(){
+        var target=document.getElementById(route);
+        if(target){
+          document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});
+          target.classList.add('active');
+        }
+        document.documentElement.classList.remove('t2-boot-restoring');
+        try{sessionStorage.removeItem('t2_reload_intent_v6772')}catch(e){}
+      },{once:true});
+    }else{
+      document.documentElement.classList.remove('t2-boot-restoring');
+      try{sessionStorage.removeItem('t2_reload_intent_v6772')}catch(e){}
+    }
+  }catch(e){
+    document.documentElement.classList.remove('t2-boot-restoring');
+  }
 })();
 </script>
 </head>

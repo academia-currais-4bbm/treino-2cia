@@ -292,7 +292,16 @@ function v6758ShowMotivation(forceLogin=false){
 const NAV_STATE_KEY='t2_nav_state_v6730_session';
 const LEGACY_NAV_STATE_KEY='t2_nav_state_v47';
 function navigationLoadType(){
-  try{return performance.getEntriesByType('navigation')[0]?.type||'navigate'}catch(e){return 'navigate'}
+  try{
+    const navType=performance.getEntriesByType('navigation')[0]?.type||'navigate';
+    if(navType==='reload')return 'reload';
+    const raw=sessionStorage.getItem('t2_reload_intent_v6772');
+    if(raw){
+      const x=JSON.parse(raw);
+      if(x?.ts&&Date.now()-Number(x.ts)<=15000)return 'reload';
+    }
+    return navType;
+  }catch(e){return 'navigate'}
 }
 const NAV_RESTORE_ON_BOOT = navigationLoadType()==='reload';
 // V67.71.1+ — o gerador de treino possui sua própria restauração local.
@@ -7168,7 +7177,11 @@ currentSet=Math.max(1,Number(state.currentSet)||1);
 window.addEventListener('pagehide',()=>{
   if(v676830IsCustomName())v676830WriteCheckpoint({status:'paused'});
   v67603SaveActivePlanState();
-  saveNavigationState(document.querySelector('.view.active')?.id||'home');
+  const active=document.querySelector('.view.active')?.id||'home';
+  saveNavigationState(active);
+  try{
+    sessionStorage.setItem('t2_reload_intent_v6772',JSON.stringify({ts:Date.now(),view:active}));
+  }catch(e){}
 });
 
 window.addEventListener('beforeunload',()=>{
@@ -7179,6 +7192,7 @@ window.addEventListener('beforeunload',()=>{
     const s=navStateSnapshot(active);
     s.scrollY=window.scrollY||0;
     sessionStorage.setItem(NAV_STATE_KEY,JSON.stringify(s));
+    sessionStorage.setItem('t2_reload_intent_v6772',JSON.stringify({ts:Date.now(),view:active}));
   }catch(e){}
 });
 
