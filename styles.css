@@ -2800,3 +2800,1294 @@ body.admin-modal-open{overflow:hidden}
     grid-column:1
   }
 }
+
+/* =========================================================
+   V67.71.0 — EXPERIÊNCIA VISUAL DO PERSONAL INTELIGENTE
+   ========================================================= */
+
+#smartCustomBuilder{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(226,27,35,.16),transparent 32%),
+    #080808;
+}
+
+#smartCustomBuilder .v6770-smart-hero{
+  position:relative;
+  overflow:hidden;
+  margin:10px 0 16px;
+  padding:24px 18px;
+  border-radius:24px;
+  border:1px solid rgba(226,27,35,.35);
+  background:
+    radial-gradient(circle at 90% 10%,rgba(226,27,35,.28),transparent 38%),
+    linear-gradient(145deg,#25090b,#0d0d0d 65%);
+  box-shadow:0 16px 35px rgba(0,0,0,.35);
+}
+
+#smartCustomBuilder .v6770-smart-hero:after{
+  content:"";
+  position:absolute;
+  right:-38px;
+  bottom:-55px;
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.06);
+  box-shadow:
+    0 0 0 20px rgba(255,255,255,.025),
+    0 0 0 40px rgba(255,255,255,.018);
+}
+
+#smartCustomBuilder .v6770-smart-hero h2{
+  position:relative;
+  z-index:2;
+  margin:0 0 8px;
+  font-size:28px;
+  line-height:1.05;
+  font-weight:1000;
+}
+
+#smartCustomBuilder .v6770-smart-hero p{
+  position:relative;
+  z-index:2;
+  margin:0;
+  max-width:340px;
+  color:#b8b8b8;
+  line-height:1.5;
+  font-size:12px;
+}
+
+#smartCustomBuilder .v6770-anam-card{
+  margin:12px 0;
+  padding:18px;
+  border-radius:22px;
+  border:1px solid #292929;
+  background:linear-gradient(145deg,#151515,#0d0d0d);
+  box-shadow:0 12px 28px rgba(0,0,0,.25);
+}
+
+#smartCustomBuilder .v6770-anam-card h3{
+  margin:0 0 6px;
+  font-size:21px;
+  line-height:1.15;
+}
+
+#smartCustomBuilder .v6770-anam-card>p{
+  margin:0 0 16px;
+  color:#8f8f8f;
+  font-size:11px;
+  line-height:1.45;
+}
+
+#smartCustomBuilder .v6770-anam-card label{
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    background .18s ease;
+}
+
+#smartCustomBuilder .v6770-anam-card label:active{
+  transform:scale(.98);
+}
+
+#smartCustomBuilder .v6770-check-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+#smartCustomBuilder .v6770-check-grid label{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:11px;
+  border-radius:15px;
+  border:1px solid #303030;
+  background:#111;
+  color:#ddd;
+  font-size:11px;
+  font-weight:800;
+}
+
+#smartCustomBuilder .v6770-check-grid label:has(input:checked){
+  border-color:#e21b23;
+  background:linear-gradient(145deg,#310b0d,#171717);
+  box-shadow:0 0 0 1px rgba(226,27,35,.2);
+}
+
+#smartCustomBuilder input[type="number"],
+#smartCustomBuilder input[type="text"],
+#smartCustomBuilder select,
+#smartCustomBuilder textarea{
+  width:100%;
+  box-sizing:border-box;
+  min-height:48px;
+  border-radius:13px;
+  border:1px solid #353535;
+  background:#0b0b0b;
+  color:#fff;
+  padding:12px 13px;
+  outline:none;
+}
+
+#smartCustomBuilder input:focus,
+#smartCustomBuilder select:focus,
+#smartCustomBuilder textarea:focus{
+  border-color:#e21b23;
+  box-shadow:0 0 0 3px rgba(226,27,35,.12);
+}
+
+#smartCustomBuilder .v6771-question-visual{
+  margin-bottom:18px;
+  padding:14px;
+  border-radius:17px;
+  background:
+    linear-gradient(135deg,#29090b,#111);
+  border:1px solid rgba(226,27,35,.32);
+}
+
+#smartCustomBuilder .v6771-question-visual>span{
+  box-shadow:0 8px 20px rgba(226,27,35,.12);
+}
+
+#smartCustomBuilder .v6771-step-nav{
+  margin-top:20px;
+}
+
+#smartCustomBuilder .v6771-step-nav button{
+  min-height:50px;
+  border-radius:14px;
+  font-weight:950;
+}
+
+/* Pernas completas */
+
+#smartCustomBuilder .v6771-leg-complete{
+  position:relative;
+  grid-column:1/-1 !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:12px;
+  min-height:82px;
+  padding:14px !important;
+  border-radius:18px !important;
+  border:1px solid #7e1b20 !important;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(226,27,35,.28),transparent 42%),
+    linear-gradient(145deg,#31090b,#121212) !important;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+
+#smartCustomBuilder .v6771-leg-complete input{
+  width:22px;
+  height:22px;
+  accent-color:#e21b23;
+  flex:0 0 auto;
+}
+
+#smartCustomBuilder .v6771-leg-complete span{
+  display:grid;
+  gap:4px;
+}
+
+#smartCustomBuilder .v6771-leg-complete b{
+  color:#fff;
+  font-size:13px;
+}
+
+#smartCustomBuilder .v6771-leg-complete small{
+  color:#a8a8a8;
+  font-size:9px;
+  line-height:1.35;
+}
+
+/* =========================================================
+   RESULTADO DO PERSONAL
+   ========================================================= */
+
+#smartGeneratedResult{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(226,27,35,.13),transparent 30%),
+    #080808;
+}
+
+#smartGeneratedResult .bar{
+  background:rgba(8,8,8,.94);
+  backdrop-filter:blur(12px);
+}
+
+.v6771-result-shell{
+  max-width:680px;
+  margin:auto;
+  padding:8px 14px 35px;
+}
+
+.v6771-result-hero{
+  position:relative;
+  overflow:hidden;
+  margin:8px 0 14px;
+  padding:25px 18px 20px;
+  border-radius:25px;
+  border:1px solid rgba(226,27,35,.4);
+  background:
+    radial-gradient(circle at 90% 5%,rgba(226,27,35,.34),transparent 35%),
+    linear-gradient(145deg,#29090b,#0e0e0e 68%);
+  box-shadow:0 16px 35px rgba(0,0,0,.4);
+}
+
+.v6771-result-icon{
+  width:58px;
+  height:58px;
+  display:grid;
+  place-items:center;
+  margin-bottom:15px;
+  border-radius:18px;
+  background:#3b0c0e;
+  border:1px solid #9b2228;
+  font-size:30px;
+  box-shadow:0 10px 25px rgba(0,0,0,.3);
+}
+
+.v6771-result-eyebrow{
+  display:block;
+  color:#ff5158;
+  font-size:9px;
+  font-weight:1000;
+  letter-spacing:.16em;
+}
+
+.v6771-result-hero h3{
+  margin:7px 0 9px;
+  font-size:29px;
+  line-height:1.03;
+}
+
+.v6771-result-hero p{
+  max-width:430px;
+  margin:0;
+  color:#aaa;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.v6771-profile-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:17px;
+}
+
+.v6771-profile-chips span{
+  padding:7px 9px;
+  border-radius:999px;
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.09);
+  color:#ddd;
+  font-size:9px;
+  font-weight:800;
+}
+
+.v6771-name-box{
+  margin:12px 0;
+  padding:16px;
+  border-radius:19px;
+  border:1px solid #2e2e2e;
+  background:#111;
+}
+
+.v6771-name-box label{
+  display:block;
+  margin-bottom:8px;
+  color:#ff555c;
+  font-size:9px;
+  font-weight:1000;
+  letter-spacing:.13em;
+}
+
+.v6771-name-box input{
+  width:100%;
+  box-sizing:border-box;
+  min-height:52px;
+  border-radius:14px;
+  border:1px solid #3a3a3a;
+  background:#090909;
+  color:#fff;
+  padding:13px;
+  font-size:16px;
+  font-weight:800;
+  outline:none;
+}
+
+.v6771-name-box input:focus{
+  border-color:#e21b23;
+  box-shadow:0 0 0 3px rgba(226,27,35,.12);
+}
+
+.v6771-name-box small{
+  display:block;
+  margin-top:8px;
+  color:#777;
+  font-size:9px;
+  line-height:1.35;
+}
+
+.v6771-ranking-note{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  margin:12px 0 18px;
+  padding:14px;
+  border-radius:17px;
+  border:1px solid #65551e;
+  background:linear-gradient(145deg,#211c0a,#111);
+}
+
+.v6771-ranking-note>span{
+  font-size:24px;
+}
+
+.v6771-ranking-note>div{
+  display:grid;
+  gap:4px;
+}
+
+.v6771-ranking-note b{
+  color:#ffda58;
+  font-size:12px;
+}
+
+.v6771-ranking-note small{
+  color:#aa9e72;
+  font-size:9px;
+  line-height:1.4;
+}
+
+.v6771-action-main{
+  margin-bottom:22px;
+}
+
+.v6771-primary-action{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  min-height:67px;
+  padding:12px 15px;
+  border:1px solid #e21b23;
+  border-radius:18px;
+  background:linear-gradient(145deg,#e21b23,#a70e14);
+  color:#fff;
+  text-align:left;
+  box-shadow:0 12px 28px rgba(226,27,35,.2);
+}
+
+.v6771-primary-action>span{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:rgba(0,0,0,.18);
+  font-size:21px;
+}
+
+.v6771-primary-action div{
+  display:grid;
+  gap:3px;
+}
+
+.v6771-primary-action b{
+  font-size:13px;
+}
+
+.v6771-primary-action small{
+  color:#ffd8da;
+  font-size:9px;
+}
+
+.v6771-section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:4px 2px 10px;
+}
+
+.v6771-section-title span{
+  color:#777;
+  font-size:9px;
+  font-weight:1000;
+  letter-spacing:.14em;
+}
+
+.v6771-section-title b{
+  color:#e21b23;
+  font-size:9px;
+}
+
+.v6771-days{
+  display:grid;
+  gap:12px;
+}
+
+.v6771-day-card{
+  overflow:hidden;
+  padding:0;
+  border-radius:21px;
+  border:1px solid #2d2d2d;
+  background:linear-gradient(145deg,#151515,#0e0e0e);
+  box-shadow:0 12px 28px rgba(0,0,0,.25);
+}
+
+.v6771-day-heading{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:17px 16px 13px;
+  background:linear-gradient(100deg,#1c1c1c,#121212);
+}
+
+.v6771-day-letter{
+  width:46px;
+  height:46px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  border-radius:15px;
+  background:#e21b23;
+  color:#fff;
+  font-size:20px;
+  font-weight:1000;
+  box-shadow:0 8px 18px rgba(226,27,35,.2);
+}
+
+.v6771-day-heading small{
+  display:block;
+  color:#e21b23;
+  font-size:8px;
+  font-weight:1000;
+  letter-spacing:.13em;
+}
+
+.v6771-day-heading h3{
+  margin:3px 0 0;
+  color:#fff;
+  font-size:17px;
+}
+
+.v6771-exercise-list{
+  padding:4px 15px;
+}
+
+.v6771-exercise-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid #252525;
+}
+
+.v6771-exercise-row:last-child{
+  border-bottom:0;
+}
+
+.v6771-exercise-row>span{
+  width:27px;
+  height:27px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  border-radius:9px;
+  background:#242424;
+  color:#999;
+  font-size:9px;
+  font-weight:1000;
+}
+
+.v6771-exercise-row div{
+  min-width:0;
+  display:grid;
+  gap:3px;
+}
+
+.v6771-exercise-row b{
+  color:#eee;
+  font-size:12px;
+}
+
+.v6771-exercise-row small{
+  color:#777;
+  font-size:9px;
+}
+
+.v6771-start-action{
+  width:calc(100% - 28px);
+  min-height:48px;
+  margin:4px 14px 14px;
+  border:1px solid #c7181f;
+  border-radius:13px;
+  background:#24090b;
+  color:#ff6268;
+  font-size:10px;
+  font-weight:1000;
+}
+
+.v6771-start-action:active{
+  transform:scale(.98);
+}
+
+.v6771-bottom-actions{
+  display:grid;
+  gap:8px;
+  margin-top:15px;
+}
+
+.v6771-secondary-action,
+.v6771-danger-action{
+  min-height:48px;
+  border-radius:14px;
+  font-size:10px;
+  font-weight:1000;
+}
+
+.v6771-secondary-action{
+  border:1px solid #3a3a3a;
+  background:#151515;
+  color:#ddd;
+}
+
+.v6771-danger-action{
+  border:1px solid #552024;
+  background:#170b0c;
+  color:#ff666d;
+}
+
+.v6771-secondary-action:active,
+.v6771-danger-action:active,
+.v6771-primary-action:active{
+  transform:scale(.985);
+}
+
+@media(max-width:420px){
+  #smartCustomBuilder .v6770-check-grid{
+    grid-template-columns:1fr;
+  }
+
+  .v6771-result-hero h3{
+    font-size:25px;
+  }
+
+  .v6771-profile-chips span{
+    font-size:8px;
+  }
+}
+
+
+/* =========================================================
+   V67.71.0 — ANAMNESE PROGRESSIVA / VISUAL FITNESS
+   ========================================================= */
+
+#smartCustomBuilder #v6771AnamProgress{
+  position:relative;
+  margin:4px 0 14px;
+  padding:13px 15px;
+  border-radius:17px;
+  border:1px solid #302525;
+  background:linear-gradient(145deg,#161111,#0d0d0d);
+}
+
+#smartCustomBuilder .v6771-progress-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:9px;
+}
+
+#smartCustomBuilder .v6771-progress-top span{
+  color:#777;
+  font-size:8px;
+  font-weight:1000;
+  letter-spacing:.14em;
+}
+
+#smartCustomBuilder .v6771-progress-top b{
+  color:#ff5259;
+  font-size:9px;
+  font-weight:1000;
+}
+
+#smartCustomBuilder .v6771-progress-track{
+  height:5px;
+  overflow:hidden;
+  border-radius:99px;
+  background:#272020;
+}
+
+#smartCustomBuilder .v6771-progress-track i{
+  display:block;
+  width:12.5%;
+  height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,#e21b23,#ff5960);
+  box-shadow:0 0 12px rgba(226,27,35,.45);
+  transition:width .3s ease;
+}
+
+#smartCustomBuilder .v6771-step-active{
+  animation:v6771StepIn .28s ease;
+}
+
+@keyframes v6771StepIn{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+#smartCustomBuilder .v6771-step-visual{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0 0 17px;
+  padding:11px;
+  border-radius:17px;
+  border:1px solid rgba(226,27,35,.28);
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(226,27,35,.24),
+      transparent 38%
+    ),
+    linear-gradient(145deg,#25090b,#111);
+}
+
+#smartCustomBuilder .v6771-step-art{
+  width:62px;
+  height:62px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  border-radius:17px;
+  border:1px solid #a32027;
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.08),
+      transparent 65%
+    ),
+    #2b090b;
+  font-size:31px;
+  box-shadow:0 8px 22px rgba(0,0,0,.3);
+}
+
+#smartCustomBuilder .v6771-step-visual>div:last-child{
+  display:grid;
+  gap:4px;
+}
+
+#smartCustomBuilder .v6771-step-visual span{
+  color:#ff565d;
+  font-size:8px;
+  font-weight:1000;
+  letter-spacing:.15em;
+}
+
+#smartCustomBuilder .v6771-step-visual b{
+  color:#fff;
+  font-size:14px;
+}
+
+#smartCustomBuilder #v6771AnamNav{
+  position:sticky;
+  bottom:78px;
+  z-index:30;
+  display:grid;
+  grid-template-columns:1fr 1.35fr;
+  gap:8px;
+  margin:14px 0 12px;
+  padding:9px;
+  border-radius:17px;
+  border:1px solid #302b2b;
+  background:rgba(11,11,11,.94);
+  backdrop-filter:blur(14px);
+  box-shadow:0 -8px 28px rgba(0,0,0,.4);
+}
+
+#smartCustomBuilder #v6771AnamNav button{
+  min-height:50px;
+  border-radius:13px;
+  font-size:10px;
+  font-weight:1000;
+}
+
+#smartCustomBuilder .v6771-nav-secondary{
+  border:1px solid #373737;
+  background:#151515;
+  color:#aaa;
+}
+
+#smartCustomBuilder .v6771-nav-secondary:disabled{
+  opacity:.35;
+}
+
+#smartCustomBuilder .v6771-nav-primary{
+  border:1px solid #e21b23;
+  background:linear-gradient(145deg,#e21b23,#a70e14);
+  color:#fff;
+  box-shadow:0 8px 20px rgba(226,27,35,.2);
+}
+
+#smartCustomBuilder .v6771-nav-primary:active,
+#smartCustomBuilder .v6771-nav-secondary:active{
+  transform:scale(.98);
+}
+
+#smartCustomBuilder .v6771-leg-complete{
+  grid-column:1/-1 !important;
+  position:relative;
+  display:flex !important;
+  align-items:center !important;
+  gap:12px;
+  min-height:82px;
+  padding:14px !important;
+  border-radius:18px !important;
+  border:1px solid #8c1e24 !important;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(226,27,35,.27),
+      transparent 45%
+    ),
+    linear-gradient(145deg,#31090b,#111) !important;
+}
+
+#smartCustomBuilder .v6771-leg-complete.is-active{
+  border-color:#ff3038 !important;
+  box-shadow:
+    0 0 0 1px rgba(226,27,35,.25),
+    0 10px 28px rgba(0,0,0,.3);
+}
+
+#smartCustomBuilder .v6771-leg-complete input{
+  width:23px;
+  height:23px;
+  flex:0 0 auto;
+  accent-color:#e21b23;
+}
+
+#smartCustomBuilder .v6771-leg-complete span{
+  display:grid;
+  gap:4px;
+}
+
+#smartCustomBuilder .v6771-leg-complete b{
+  color:#fff;
+  font-size:13px;
+}
+
+#smartCustomBuilder .v6771-leg-complete small{
+  color:#a9a9a9;
+  font-size:9px;
+  line-height:1.35;
+}
+
+#smartCustomBuilder .v6771-leg-locked{
+  opacity:.45;
+}
+
+@media(max-width:420px){
+  #smartCustomBuilder #v6771AnamNav{
+    bottom:74px;
+  }
+
+  #smartCustomBuilder .v6771-step-art{
+    width:56px;
+    height:56px;
+    font-size:27px;
+  }
+}
+
+
+
+/* V67.71.0 - CORREÇÃO DEFINITIVA DO TOQUE DA NAVEGAÇÃO DA ANAMNESE */
+#smartCustomBuilder #v6771AnamNav{
+  position:fixed !important;
+  left:16px !important;
+  right:16px !important;
+  bottom:82px !important;
+  z-index:2147483647 !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  isolation:isolate !important;
+}
+
+#smartCustomBuilder #v6771AnamNav button{
+  position:relative !important;
+  z-index:2147483647 !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  -webkit-user-select:none !important;
+  user-select:none !important;
+  -webkit-tap-highlight-color:rgba(255,255,255,.12) !important;
+}
+
+#smartCustomBuilder #v6771AnamNav button:before,
+#smartCustomBuilder #v6771AnamNav button:after{
+  pointer-events:none !important;
+}
+
+#smartCustomBuilder #v6771AnamNav button:active{
+  transform:scale(.97) !important;
+}
+
+@media(max-width:420px){
+  #smartCustomBuilder #v6771AnamNav{
+    left:12px !important;
+    right:12px !important;
+    bottom:74px !important;
+  }
+}
+
+/* V67.71.0 - ocultar ações antigas da anamnese */
+#smartCustomBuilder .v6770-anam-actions{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+#smartCustomBuilder .v6770-anam-actions button{
+  display:none !important;
+}
+
+
+/* V67.71.0 - BLOQUEIO DO FLASH INICIAL DA ANAMNESE */
+#smartCustomBuilder .v6770-anam-card{
+  display:none !important;
+}
+
+/* Quando o controlador progressivo estiver ativo,
+   somente a etapa atual será exibida */
+#smartCustomBuilder.v6771-progressive-ready .v6770-anam-card{
+  display:none !important;
+}
+
+#smartCustomBuilder.v6771-progressive-ready .v6770-anam-card.v6771-current-step{
+  display:block !important;
+}
+
+/* V67.71.0 - CORREÇÃO DEFINITIVA DA PRIMEIRA ABERTURA DA ANAMNESE */
+
+/* Antes do controlador progressivo assumir a tela,
+   a primeira etapa permanece visível. */
+#smartCustomBuilder:not(.v6771-progressive-ready) .v6770-anam-card:first-of-type{
+  display:block !important;
+}
+
+/* Quando o controlador estiver pronto,
+   somente a etapa atual poderá aparecer. */
+#smartCustomBuilder.v6771-progressive-ready .v6770-anam-card{
+  display:none !important;
+}
+
+#smartCustomBuilder.v6771-progressive-ready .v6770-anam-card.v6771-current-step{
+  display:block !important;
+}
+
+/* V6771_ANAMNESE_CSS_V2 */
+
+/* ==========================================================
+   ANAMNESE — ÁREA DE NAVEGAÇÃO SEM SOBREPOR OPÇÕES
+   ========================================================== */
+
+.v6771-anam-card{
+  position:relative;
+  overflow:visible !important;
+  padding-bottom:32px !important;
+}
+
+.v6771-anam-actions{
+  position:static !important;
+  inset:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  right:auto !important;
+  width:auto !important;
+  margin:28px 0 4px !important;
+  padding:14px !important;
+  z-index:2 !important;
+  background:linear-gradient(
+    180deg,
+    rgba(18,18,18,.72),
+    rgba(12,12,12,.98)
+  ) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:22px !important;
+  box-sizing:border-box !important;
+}
+
+.v6771-anam-actions button{
+  min-height:58px !important;
+}
+
+.v6771-anam-card input,
+.v6771-anam-card select,
+.v6771-anam-card textarea,
+.v6771-anam-card label{
+  scroll-margin-bottom:30px;
+}
+
+/* ==========================================================
+   VISUAL ANIMADO DA ANAMNESE
+   ========================================================== */
+
+.v6771-stage-visual{
+  position:relative;
+  width:100%;
+  height:118px;
+  margin:0 0 22px;
+  border-radius:24px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% 45%,
+      rgba(237,28,36,.22),
+      transparent 34%),
+    linear-gradient(135deg,
+      rgba(237,28,36,.16),
+      rgba(20,20,20,.94));
+  border:1px solid rgba(237,28,36,.24);
+  box-shadow:inset 0 0 35px rgba(237,28,36,.08);
+}
+
+.v6771-stage-visual .v6771-stage-icon{
+  position:relative;
+  z-index:3;
+  width:68px;
+  height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:20px;
+  background:rgba(237,28,36,.16);
+  border:1px solid rgba(255,255,255,.16);
+  font-size:38px;
+  box-shadow:
+    0 0 0 8px rgba(237,28,36,.05),
+    0 12px 35px rgba(0,0,0,.35);
+  animation:v6771StageFloat 2.8s ease-in-out infinite;
+}
+
+.v6771-stage-visual .v6771-stage-ring{
+  position:absolute;
+  width:88px;
+  height:88px;
+  border:1px solid rgba(237,28,36,.30);
+  border-radius:50%;
+  animation:v6771StagePulse 2.8s ease-out infinite;
+}
+
+.v6771-stage-visual .v6771-stage-ring.r2{
+  width:150px;
+  height:150px;
+  animation-delay:.7s;
+}
+
+.v6771-stage-visual .v6771-stage-ring.r3{
+  width:220px;
+  height:220px;
+  animation-delay:1.4s;
+}
+
+.v6771-stage-visual::before,
+.v6771-stage-visual::after{
+  content:"";
+  position:absolute;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#ff4b52;
+  box-shadow:0 0 15px rgba(255,75,82,.75);
+  animation:v6771StageOrbit 5s linear infinite;
+}
+
+.v6771-stage-visual::after{
+  width:5px;
+  height:5px;
+  animation-duration:7s;
+  animation-direction:reverse;
+  opacity:.7;
+}
+
+@keyframes v6771StageFloat{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-6px) scale(1.04)}
+}
+
+@keyframes v6771StagePulse{
+  0%{
+    transform:scale(.65);
+    opacity:.65;
+  }
+  70%{
+    transform:scale(1.18);
+    opacity:0;
+  }
+  100%{
+    transform:scale(1.18);
+    opacity:0;
+  }
+}
+
+@keyframes v6771StageOrbit{
+  from{transform:rotate(0deg) translateX(105px) rotate(0deg)}
+  to{transform:rotate(360deg) translateX(105px) rotate(-360deg)}
+}
+
+@media(max-width:600px){
+  .v6771-stage-visual{
+    height:104px;
+    border-radius:20px;
+  }
+
+  .v6771-stage-visual .v6771-stage-icon{
+    width:60px;
+    height:60px;
+    font-size:32px;
+  }
+
+  .v6771-anam-actions{
+    border-radius:18px !important;
+    padding:10px !important;
+  }
+
+  .v6771-anam-actions button{
+    min-height:54px !important;
+  }
+}
+
+/* =========================================================
+   v67.71.0 — AJUSTE FINAL DA ANAMNESE
+   Etapas 5/6 + rolagem + visuais animados
+   ========================================================= */
+
+/* A área da anamnese nunca deve esconder opções atrás dos botões */
+#smartCustomBuilder{
+  padding-bottom:220px !important;
+  overflow:visible !important;
+}
+
+#smartCustomBuilder .v6770-anam-card{
+  overflow:visible !important;
+  scroll-margin-top:24px;
+}
+
+#smartCustomBuilder .v6770-anam-card:nth-of-type(5),
+#smartCustomBuilder .v6770-anam-card:nth-of-type(6){
+  padding-bottom:42px !important;
+}
+
+/* Etapas com muitas opções */
+#smartCustomBuilder #v6770EquipmentGrid,
+#smartCustomBuilder #v6770MuscleGroups{
+  max-height:none !important;
+  height:auto !important;
+  overflow:visible !important;
+  padding-bottom:34px !important;
+}
+
+/* Evita que a barra de ações cubra as últimas opções */
+#smartCustomBuilder .v6770-anam-actions{
+  position:relative !important;
+  bottom:auto !important;
+  left:auto !important;
+  right:auto !important;
+  z-index:5 !important;
+  margin-top:30px !important;
+}
+
+/* =========================================================
+   ILUSTRAÇÕES ANIMADAS DAS ETAPAS
+   ========================================================= */
+
+#smartCustomBuilder .v6771-stage-visual{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:155px;
+  margin:8px 0 20px;
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(255,30,45,.20),transparent 48%),
+    linear-gradient(135deg,rgba(255,20,35,.13),rgba(255,255,255,.025));
+  border:1px solid rgba(255,60,70,.20);
+}
+
+#smartCustomBuilder .v6771-stage-ring{
+  position:absolute;
+  width:118px;
+  height:118px;
+  border:1px solid rgba(255,40,55,.28);
+  border-radius:50%;
+  animation:v6771RingPulse 3s ease-in-out infinite;
+}
+
+#smartCustomBuilder .v6771-stage-ring.r2{
+  width:92px;
+  height:92px;
+  animation-delay:.35s;
+}
+
+#smartCustomBuilder .v6771-stage-ring.r3{
+  width:145px;
+  height:145px;
+  animation-delay:.7s;
+}
+
+#smartCustomBuilder .v6771-stage-icon{
+  position:relative;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:88px;
+  height:88px;
+  border-radius:24px;
+  background:linear-gradient(145deg,#ff2638,#9e0009);
+  box-shadow:0 12px 34px rgba(255,20,35,.30);
+  font-size:45px;
+  animation:v6771IconFloat 2.8s ease-in-out infinite;
+}
+
+#smartCustomBuilder .v6771-stage-visual::before,
+#smartCustomBuilder .v6771-stage-visual::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  background:rgba(255,40,55,.10);
+  animation:v6771Particle 4s ease-in-out infinite;
+}
+
+#smartCustomBuilder .v6771-stage-visual::before{
+  width:12px;
+  height:12px;
+  top:25px;
+  left:22%;
+}
+
+#smartCustomBuilder .v6771-stage-visual::after{
+  width:8px;
+  height:8px;
+  bottom:28px;
+  right:24%;
+  animation-delay:1s;
+}
+
+@keyframes v6771RingPulse{
+  0%,100%{transform:scale(.92);opacity:.35}
+  50%{transform:scale(1.08);opacity:.85}
+}
+
+@keyframes v6771IconFloat{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-7px) scale(1.035)}
+}
+
+@keyframes v6771Particle{
+  0%,100%{transform:translateY(0);opacity:.25}
+  50%{transform:translateY(-16px);opacity:.9}
+}
+
+/* Visual mais forte nas etapas 5 e 6 */
+#smartCustomBuilder .v6770-anam-card:nth-of-type(5) .v6771-stage-icon,
+#smartCustomBuilder .v6770-anam-card:nth-of-type(6) .v6771-stage-icon{
+  width:96px;
+  height:96px;
+  font-size:49px;
+}
+
+/* Melhor área de toque para opções */
+#smartCustomBuilder input[type="checkbox"],
+#smartCustomBuilder input[type="radio"]{
+  accent-color:#ff2435;
+}
+
+#smartCustomBuilder label{
+  -webkit-tap-highlight-color:transparent;
+}
+
+
+/* v67.71.0 — segurança extra para grids longos */
+#smartCustomBuilder #v6770EquipmentGrid,
+#smartCustomBuilder #v6770MuscleGroups{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:12px !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+}
+
+#smartCustomBuilder #v6770EquipmentGrid label,
+#smartCustomBuilder #v6770MuscleGroups label{
+  min-height:64px;
+  box-sizing:border-box;
+}
+
+@media(max-width:480px){
+  #smartCustomBuilder #v6770EquipmentGrid,
+  #smartCustomBuilder #v6770MuscleGroups{
+    grid-template-columns:1fr 1fr !important;
+  }
+
+  #smartCustomBuilder{
+    padding-bottom:250px !important;
+  }
+}
+
+
+
+/* v67.71.1 — anamnese contínua e pernas completas */
+#smartCustomBuilder .v6770-anam-card{
+  display:block !important;
+}
+#smartCustomBuilder #v6771AnamProgress,
+#smartCustomBuilder #v6771AnamNav{
+  display:none !important;
+}
+#smartCustomBuilder .v6770-anam-actions{
+  display:grid !important;
+  gap:12px;
+  margin-top:18px;
+}
+#smartCustomBuilder .v6771-leg-complete{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  margin:8px 0 12px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;
+  background:rgba(220,0,0,.08);
+}
+#smartCustomBuilder .v6771-leg-complete input{
+  width:22px;
+  height:22px;
+  flex:0 0 auto;
+}
+#smartCustomBuilder .v6771-leg-complete span{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+#smartCustomBuilder .v6771-leg-complete small{
+  opacity:.75;
+}

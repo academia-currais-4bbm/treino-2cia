@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles.css?v=676894">
+<link rel="stylesheet" href="styles.css?v=677100">
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">
@@ -538,6 +538,14 @@
 
         <div class="v6770-leg-title">🦵 PERNAS — escolha por região</div>
 
+        <label class="v6771-leg-complete">
+          <input id="v6771LegComplete" type="checkbox" value="Pernas completas">
+          <span>
+            🦵 <b>PERNAS COMPLETAS</b>
+            <small>Quadríceps + posterior + glúteos + adutores + abdutores + panturrilhas</small>
+          </span>
+        </label>
+
         <label><input type="checkbox" value="Quadríceps"> Quadríceps / anterior</label>
         <label><input type="checkbox" value="Posterior de coxa"> Posterior de coxa</label>
         <label><input type="checkbox" value="Glúteos"> Glúteos</label>
@@ -607,6 +615,7 @@
 
     <div class="v6770-anam-actions">
       <button type="button" class="big red" onclick="generateSmartCustomWorkout()">🧠 GERAR MEU TREINO</button>
+      <button type="button" class="big" onclick="v6771ResetAnamnesis(); window.scrollTo({top:0,behavior:'smooth'});">🧹 ZERAR ANAMNESE</button>
       <button type="button" class="big" onclick="appBack('plans',()=>openPlans('custom'))">CANCELAR</button>
     </div>
   </section>
@@ -1088,7 +1097,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js?v=676905"></script>
-<script src="app.js?v=676905"></script>
+<script src="app.js?v=677100"></script>
 <div id="buildVersion" style="display:none">v67.69.5</div>
 
 <div id="exerciseAdjustModal" class="exercise-adjust-modal" hidden><div class="exercise-adjust-backdrop" onclick="window.closeExerciseAdjust()"></div><section class="exercise-adjust-sheet" role="dialog" aria-modal="true"><div class="exercise-adjust-head"><div><small>AJUSTES DURANTE O TREINO</small><h3 id="exerciseAdjustTitle">Exercício</h3></div><button type="button" class="exercise-adjust-close" onclick="window.closeExerciseAdjust()">×</button></div><div class="exercise-adjust-grid"><label>Séries<input id="exerciseAdjustSets" type="number" min="1" max="20" inputmode="numeric"></label><label>Descanso (seg)<input id="exerciseAdjustRest" type="number" min="0" max="600" step="5" inputmode="numeric"></label></div><div class="exercise-adjust-quick"><button type="button" onclick="window.adjustExerciseSets(-1)">− 1 SÉRIE</button><button type="button" onclick="window.adjustExerciseSets(1)">+ 1 SÉRIE</button></div><button type="button" class="big exercise-change-open" onclick="window.openExerciseChange()">⇄ TROCAR EXERCÍCIO</button>
