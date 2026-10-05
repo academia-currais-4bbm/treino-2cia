@@ -1,4 +1,4 @@
-const CACHE='t2cia-v67.71.1-refresh-route';
+const CACHE='t2cia-v67.69.1-poster-original';
 const RUNTIME='t2cia-runtime-v67.67.8';
 const SHELL=[
   './',

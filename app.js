@@ -291,76 +291,15 @@ function v6758ShowMotivation(forceLogin=false){
 
 const NAV_STATE_KEY='t2_nav_state_v6730_session';
 const LEGACY_NAV_STATE_KEY='t2_nav_state_v47';
-const V67713_RELOAD_ROUTE_KEY='t2_reload_route_v67713';
-function v67713ReadReloadRoute(){
-  try{
-    const x=JSON.parse(localStorage.getItem(V67713_RELOAD_ROUTE_KEY)||'null');
-    if(!x?.ts || Date.now()-Number(x.ts)>30000)return null;
-    return x;
-  }catch(e){return null}
-}
-function v67713ClearReloadRoute(){try{localStorage.removeItem(V67713_RELOAD_ROUTE_KEY)}catch(e){}}
-
 function navigationLoadType(){
-  try{
-    if(window.__t2UrlBootView && window.__t2UrlBootView!=='home')return 'reload';
-    const navType=performance.getEntriesByType('navigation')[0]?.type||'navigate';
-    if(navType==='reload')return 'reload';
-    const durable=v67713ReadReloadRoute();
-    if(durable?.view)return 'reload';
-    const raw=sessionStorage.getItem('t2_reload_intent_v6772');
-    if(raw){
-      const x=JSON.parse(raw);
-      if(x?.ts&&Date.now()-Number(x.ts)<=15000)return 'reload';
-    }
-    return navType;
-  }catch(e){return 'navigate'}
+  try{return performance.getEntriesByType('navigation')[0]?.type||'navigate'}catch(e){return 'navigate'}
 }
 const NAV_RESTORE_ON_BOOT = navigationLoadType()==='reload';
-// V67.71.1+ — o gerador de treino possui sua própria restauração local.
-// Durante o boot de um reload, não deixe uma chamada tardia à Home apagar
-// esse estado antes que o gerador consiga restaurá-lo.
-const V6771_SMART_ROUTE_KEY='t2_v6771_smart_route_v2';
-let v6771SmartRouteBootPending=false;
-let v6771SmartRouteBootDispatching=false;
-if(NAV_RESTORE_ON_BOOT){
-  try{
-    const smartBootRoute=JSON.parse(localStorage.getItem(V6771_SMART_ROUTE_KEY)||'null');
-    const fresh=smartBootRoute&&Number(smartBootRoute.savedAt||0)>0 &&
-      (Date.now()-Number(smartBootRoute.savedAt||0)<=24*60*60*1000);
-    v6771SmartRouteBootPending=!!fresh;
-  }catch(e){}
-}
-
-// V67.71.1-refresh-fix — o HTML nasce com a Home marcada como .active.
-// Em um reload dentro do Gerar Treino, precisamos trocar a view IMEDIATAMENTE,
-// antes do boot/login assíncrono. Assim nenhuma rotina de inicialização consegue
-// exibir a Home por um instante e transformar o refresh em redirecionamento.
-// A restauração detalhada (respostas, etapa e scroll) continua sendo feita pelo
-// controlador local do gerador mais abaixo.
-if(NAV_RESTORE_ON_BOOT && v6771SmartRouteBootPending){
-  try{
-    const earlyRoute=JSON.parse(localStorage.getItem(V6771_SMART_ROUTE_KEY)||'null');
-    if(earlyRoute?.type==='builder'){
-      const homeEl=document.getElementById('home');
-      const builderEl=document.getElementById('smartCustomBuilder');
-      if(homeEl&&builderEl){
-        homeEl.classList.remove('active');
-        builderEl.classList.add('active');
-      }
-    }
-  }catch(e){}
-}
 // V67.68.45 — congela o snapshot existente no EXATO início de um reload.
 // Algumas rotinas assíncronas de boot podem abrir/salvar a Home antes de a sessão
 // militar terminar de carregar. Sem esta cópia, isso sobrescrevia 'progress' e o
 // Atualizar da aba Evolução voltava indevidamente para a Home.
 let NAV_BOOT_RELOAD_SNAPSHOT=null;
-const V67713_BOOT_ROUTE=v67713ReadReloadRoute();
-if(NAV_RESTORE_ON_BOOT && V67713_BOOT_ROUTE?.view && V67713_BOOT_ROUTE.view!=='home'){
-  window.__t2EarlyReloadView=V67713_BOOT_ROUTE.view;
-  window.__t2ReloadIntent=true;
-}
 if(NAV_RESTORE_ON_BOOT){
   try{NAV_BOOT_RELOAD_SNAPSHOT=JSON.parse(sessionStorage.getItem(NAV_STATE_KEY)||'null')}catch(e){}
 }
@@ -568,64 +507,10 @@ function ensureAppHistoryState(){
   try{window.history.replaceState({t2App:true,t2NavVersion:67610},'',location.pathname+location.search)}catch(e){}
 }
 
-function v6771WriteUrlRoute(viewId){
-  try{
-    const u=new URL(location.href);
-    if(viewId && viewId!=='home') u.searchParams.set('t2v',String(viewId));
-    else u.searchParams.delete('t2v');
-    history.replaceState({...history.state,t2App:true,t2View:viewId||'home'},'',u.pathname+u.search+u.hash);
-  }catch(e){}
-}
-
 function showView(id){
-  /* V67.71.1-refresh-route — rota na URL vence o estado inicial da Home. */
-  if(id==='home' && window.__t2UrlBootView && window.__t2UrlBootView!=='home' && !navRestoring && !browserNavHandling){
-    const early=String(window.__t2UrlBootView);
-    if(byId(early)){ setTimeout(()=>{try{showView(early)}catch(e){}},0); return; }
-  }
-  if(id==='home' && NAV_RESTORE_ON_BOOT && !navRestoring && !browserNavHandling){
-    const durable=v67713ReadReloadRoute();
-    const early=String(window.__t2EarlyReloadView||durable?.view||'');
-    if(early && early!=='home' && byId(early)){
-      if(early==='smartCustomBuilder'||early==='smartGeneratedResult'){
-        setTimeout(()=>{try{window.restoreSmartRoute?.()}catch(e){}},0);
-      }else{
-        setTimeout(()=>{try{restoreNavigationState?.()}catch(e){}},0);
-      }
-      return;
-    }
-  }
-  /* v67.71.1-refresh-stable — durante um reload, nunca permita que uma chamada
-     tardia de showView('home') apareça antes da restauração da tela que estava aberta.
-     O valor foi capturado no index.html antes do primeiro paint. */
-  if(id==='home' && NAV_RESTORE_ON_BOOT && window.__t2EarlyReloadView && !navRestoring && !browserNavHandling){
-    const early=String(window.__t2EarlyReloadView);
-    if(early && early!=='home' && byId(early)){
-      if(typeof v6771SmartRouteBootPending!=='undefined' && v6771SmartRouteBootPending && typeof window.restoreSmartRoute==='function'){
-        setTimeout(()=>{try{window.restoreSmartRoute()}catch(e){}},0);
-      }
-      return;
-    }
-  }
-  /* v67.71.1 — durante um reload iniciado dentro do Gerar Treino, a rota
-     persistida tem prioridade absoluta sobre qualquer chamada tardia à Home.
-     Assim o refresh volta para a mesma página/etapa, e não para a Home. */
-  if(id==='home' && v6771SmartRouteBootPending){
-    if(!v6771SmartRouteBootDispatching){
-      v6771SmartRouteBootDispatching=true;
-      setTimeout(()=>{
-        try{
-          if(typeof window.restoreSmartRoute==='function')window.restoreSmartRoute();
-        }finally{
-          v6771SmartRouteBootDispatching=false;
-        }
-      },0);
-    }
-    return;
-  }
   /* v67.71.0 — ao sair do Gerar Meu Treino, não restaurar essa rota em outras páginas */
-  if(id!=='smartCustomBuilder' && id!=='smartGeneratedResult' && !v6771SmartRouteBootPending){
-    try{ localStorage.removeItem(V6771_SMART_ROUTE_KEY); }catch(e){}
+  if(id!=='smartCustomBuilder' && id!=='smartGeneratedResult'){
+    try{ localStorage.removeItem('t2_v6771_smart_route_v2'); }catch(e){}
     try{ localStorage.removeItem('t2_v6771_generator_return'); }catch(e){}
   }
   // V67.68.35 — no boot/reload, um personalizado ativo tem prioridade absoluta
@@ -641,7 +526,6 @@ function showView(id){
   }
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   target.classList.add('active');
-  v6771WriteUrlRoute(id);
   if(id==='home' && typeof v6738LoadFeed==='function')setTimeout(()=>v6738LoadFeed(false),60);
   if(id==='home' && typeof v6748RenderDashboard==='function')setTimeout(()=>v6748RenderDashboard(),20);
   if(!navRestoring)scrollTo({top:0,behavior:'smooth'});
@@ -6977,44 +6861,6 @@ function restorePlanContext(state){
 }
 
 function restoreNavigationState(force=false){
-  // V67.71.3 — a rota capturada no unload é a fonte de verdade do reload.
-  // Isto cobre Chromium/Android/PWA que reportam navigation.type como "navigate".
-  if(!force && NAV_RESTORE_ON_BOOT){
-    const durable=v67713ReadReloadRoute();
-    const route=String(window.__t2UrlBootView||window.__t2EarlyReloadView||durable?.view||'');
-    if(route && route!=='home' && byId(route)){
-      if(route==='smartCustomBuilder'||route==='smartGeneratedResult'){
-        v6771SmartRouteBootPending=true;
-        setTimeout(()=>window.restoreSmartRoute?.(),0);
-        return;
-      }
-      navRestoring=true;
-      try{
-        document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-        byId(route).classList.add('active');
-        requestAnimationFrame(()=>window.scrollTo({top:Number(durable?.scrollY)||0,behavior:'auto'}));
-      }finally{navRestoring=false}
-      v67713ClearReloadRoute();
-      return;
-    }
-  }
-  // V67.71.1 — o Gerar Treino usa uma rota local própria. Em um reload, ela
-  // deve vencer a restauração genérica da navegação, que historicamente podia
-  // terminar na Home antes do gerador restaurar sua própria etapa/scroll.
-  if(!force && v6771SmartRouteBootPending){
-    if(!v6771SmartRouteBootDispatching){
-      v6771SmartRouteBootDispatching=true;
-      setTimeout(()=>{
-        try{
-          if(typeof window.restoreSmartRoute==='function')window.restoreSmartRoute();
-        }finally{
-          v6771SmartRouteBootDispatching=false;
-        }
-      },0);
-    }
-    return;
-  }
-
   // V67.68.35 — restauração do personalizado é LOCAL e não depende de login/cloud.
   // Isso é essencial no reload/PWA: o checkpoint precisa vencer a Home antes da sessão remota terminar de carregar.
   const durableCustom=v676830ReadCheckpoint();
@@ -7243,11 +7089,7 @@ currentSet=Math.max(1,Number(state.currentSet)||1);
 window.addEventListener('pagehide',()=>{
   if(v676830IsCustomName())v676830WriteCheckpoint({status:'paused'});
   v67603SaveActivePlanState();
-  const active=document.querySelector('.view.active')?.id||'home';
-  saveNavigationState(active);
-  try{
-    sessionStorage.setItem('t2_reload_intent_v6772',JSON.stringify({ts:Date.now(),view:active}));
-  }catch(e){}
+  saveNavigationState(document.querySelector('.view.active')?.id||'home');
 });
 
 window.addEventListener('beforeunload',()=>{
@@ -7258,7 +7100,6 @@ window.addEventListener('beforeunload',()=>{
     const s=navStateSnapshot(active);
     s.scrollY=window.scrollY||0;
     sessionStorage.setItem(NAV_STATE_KEY,JSON.stringify(s));
-    sessionStorage.setItem('t2_reload_intent_v6772',JSON.stringify({ts:Date.now(),view:active}));
   }catch(e){}
 });
 
@@ -11379,7 +11220,7 @@ window.v6771InitProgressiveAnamnesis=
    na navegação normal do aplicativo.
    ========================================================= */
 (function(){
-  const ROUTE_KEY=V6771_SMART_ROUTE_KEY;
+  const ROUTE_KEY='t2_v6771_smart_route_v2';
   const PREVIEW_KEY='t2_v6771_smart_preview_v2';
   const RETURN_KEY='t2_v6771_generator_return';
   let restoring=false;
@@ -11414,7 +11255,7 @@ window.v6771InitProgressiveAnamnesis=
   function save(){
     try{
       if(builderVisible()){
-        const data={type:'builder',answers:answers(),step:step(),scrollY:window.scrollY,savedAt:Date.now()};
+        const data={type:'builder',answers:answers(),scrollY:window.scrollY,savedAt:Date.now()};
         localStorage.setItem(ROUTE_KEY,JSON.stringify(data));
         localStorage.setItem(RETURN_KEY,JSON.stringify(data));
         return;
@@ -11432,46 +11273,35 @@ window.v6771InitProgressiveAnamnesis=
   function clear(){
     try{localStorage.removeItem(ROUTE_KEY);localStorage.removeItem(RETURN_KEY);}catch(e){}
   }
-  function applyFullForm(restoredStep=0){
+  function applyFullForm(){
     const r=builder(); if(!r)return;
-    const cs=cards();
-    cs.forEach(c=>{c.style.setProperty('display','block','important');c.setAttribute('aria-hidden','false');});
+    cards().forEach(c=>{c.style.setProperty('display','block','important');c.setAttribute('aria-hidden','false');});
     const p=r.querySelector('#v6771AnamProgress'), n=r.querySelector('#v6771AnamNav');
     if(p)p.style.display='none'; if(n)n.style.display='none';
-    r.dataset.v6771Step=String(Math.max(0,Math.min(cs.length-1,Number(restoredStep)||0)));
-    r._v6771ProgressState={current:Number(r.dataset.v6771Step)||0};
+    r.dataset.v6771Step=String(0);
     if(typeof v6771InitProgressiveAnamnesis==='function')v6771InitProgressiveAnamnesis(false);
-    cs.forEach((c,index)=>{
-      c.style.setProperty('display',index===Number(r.dataset.v6771Step)?'block':'none','important');
-      c.setAttribute('aria-hidden',index===Number(r.dataset.v6771Step)?'false':'true');
-    });
-    const current=Number(r.dataset.v6771Step)||0;
-    const prev=r.querySelector('#v6771PrevStep'), next=r.querySelector('#v6771NextStep');
-    if(prev){prev.disabled=current===0;prev.textContent=current===0?'← INÍCIO':'← VOLTAR';}
-    if(next)next.textContent=current===cs.length-1?'🧠 GERAR MEU TREINO':'CONTINUAR →';
-    r.querySelectorAll('.v6771-current-step').forEach(el=>el.classList.remove('v6771-current-step'));
-    cs[current]?.classList.add('v6771-current-step');
+    cards().forEach(c=>{c.style.setProperty('display','block','important');c.setAttribute('aria-hidden','false');});
+    if(p)p.style.display='none'; if(n)n.style.display='none';
   }
   function restore(){
     let data=null, preview=null;
     try{data=JSON.parse(localStorage.getItem(ROUTE_KEY)||'null');preview=JSON.parse(localStorage.getItem(PREVIEW_KEY)||'null');}catch(e){}
-    if(!data){v6771SmartRouteBootPending=false;return;}
-    if(Date.now()-Number(data.savedAt||0)>24*60*60*1000){clear();v6771SmartRouteBootPending=false;return;}
+    if(!data)return;
+    if(Date.now()-Number(data.savedAt||0)>24*60*60*1000){clear();return;}
     restoring=true;
     if(data.type==='result' && preview && preview.days){
       window.v6771Preview=preview;
       v6771RenderResult(preview.days,preview.profile,{saved:!!preview.saved,savedDays:preview.savedDays,name:preview.name});
-      setTimeout(()=>{restoring=false;v6771SmartRouteBootPending=false;},400);
+      setTimeout(()=>{restoring=false;},400);
       return;
     }
     if(data.type==='builder'){
       if(!builderVisible())openSmartCustomBuilder(true);
       setTimeout(()=>{
         restoreAnswers(data.answers||{});
-        applyFullForm(Number(data.step)||0);
+        applyFullForm();
         window.scrollTo({top:Number(data.scrollY)||0,behavior:'auto'});
         restoring=false;
-        v6771SmartRouteBootPending=false;
       },180);
     }
   }
@@ -11484,14 +11314,6 @@ window.v6771InitProgressiveAnamnesis=
   window.addEventListener('pagehide',save);
   window.addEventListener('beforeunload',save);
   window.addEventListener('pageshow',()=>setTimeout(restore,180));
-  // Captura o ponto atual continuamente durante a rolagem. Isso evita perder
-  // os últimos pixels/etapa quando o usuário atualiza imediatamente após rolar.
-  let scrollSaveTimer=null;
-  window.addEventListener('scroll',()=>{
-    if(!builderVisible()&&!resultVisible())return;
-    clearTimeout(scrollSaveTimer);
-    scrollSaveTimer=setTimeout(save,80);
-  },{passive:true});
 
   setInterval(()=>{
     if(builderVisible()||resultVisible())save();
