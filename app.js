@@ -309,6 +309,26 @@ if(NAV_RESTORE_ON_BOOT){
     v6771SmartRouteBootPending=!!fresh;
   }catch(e){}
 }
+
+// V67.71.1-refresh-fix — o HTML nasce com a Home marcada como .active.
+// Em um reload dentro do Gerar Treino, precisamos trocar a view IMEDIATAMENTE,
+// antes do boot/login assíncrono. Assim nenhuma rotina de inicialização consegue
+// exibir a Home por um instante e transformar o refresh em redirecionamento.
+// A restauração detalhada (respostas, etapa e scroll) continua sendo feita pelo
+// controlador local do gerador mais abaixo.
+if(NAV_RESTORE_ON_BOOT && v6771SmartRouteBootPending){
+  try{
+    const earlyRoute=JSON.parse(localStorage.getItem(V6771_SMART_ROUTE_KEY)||'null');
+    if(earlyRoute?.type==='builder'){
+      const homeEl=document.getElementById('home');
+      const builderEl=document.getElementById('smartCustomBuilder');
+      if(homeEl&&builderEl){
+        homeEl.classList.remove('active');
+        builderEl.classList.add('active');
+      }
+    }
+  }catch(e){}
+}
 // V67.68.45 — congela o snapshot existente no EXATO início de um reload.
 // Algumas rotinas assíncronas de boot podem abrir/salvar a Home antes de a sessão
 // militar terminar de carregar. Sem esta cópia, isso sobrescrevia 'progress' e o
@@ -11372,6 +11392,14 @@ window.v6771InitProgressiveAnamnesis=
   window.addEventListener('pagehide',save);
   window.addEventListener('beforeunload',save);
   window.addEventListener('pageshow',()=>setTimeout(restore,180));
+  // Captura o ponto atual continuamente durante a rolagem. Isso evita perder
+  // os últimos pixels/etapa quando o usuário atualiza imediatamente após rolar.
+  let scrollSaveTimer=null;
+  window.addEventListener('scroll',()=>{
+    if(!builderVisible()&&!resultVisible())return;
+    clearTimeout(scrollSaveTimer);
+    scrollSaveTimer=setTimeout(save,80);
+  },{passive:true});
 
   setInterval(()=>{
     if(builderVisible()||resultVisible())save();
