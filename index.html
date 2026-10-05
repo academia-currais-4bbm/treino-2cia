@@ -538,6 +538,14 @@
 
         <div class="v6770-leg-title">🦵 PERNAS — escolha por região</div>
 
+        <label class="v6771-leg-complete">
+          <input id="v6771LegComplete" type="checkbox" value="Pernas completas">
+          <span>
+            🦵 <b>PERNAS COMPLETAS</b>
+            <small>Quadríceps + posterior + glúteos + adutores + abdutores + panturrilhas</small>
+          </span>
+        </label>
+
         <label><input type="checkbox" value="Quadríceps"> Quadríceps / anterior</label>
         <label><input type="checkbox" value="Posterior de coxa"> Posterior de coxa</label>
         <label><input type="checkbox" value="Glúteos"> Glúteos</label>
@@ -607,6 +615,7 @@
 
     <div class="v6770-anam-actions">
       <button type="button" class="big red" onclick="generateSmartCustomWorkout()">🧠 GERAR MEU TREINO</button>
+      <button type="button" class="big" onclick="v6771ResetAnamnesis(); window.scrollTo({top:0,behavior:'smooth'});">🧹 ZERAR ANAMNESE</button>
       <button type="button" class="big" onclick="appBack('plans',()=>openPlans('custom'))">CANCELAR</button>
     </div>
   </section>

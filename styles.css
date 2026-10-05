@@ -4054,33 +4054,40 @@ body.admin-modal-open{overflow:hidden}
 }
 
 
-/* V67.71.2 — ações explícitas do resultado do Gerador */
-.v6771-result-extra-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin:14px 0 22px;
-}
-.v6771-result-extra-actions button{
-  min-height:58px !important;
-}
-@media(max-width:560px){
-  .v6771-result-extra-actions{grid-template-columns:1fr;}
-}
 
-/* V67.71.2 — o botão antigo de geração permanece disponível na última etapa.
-   A navegação progressiva continua sendo a principal, mas não ocultamos a ação. */
-#smartCustomBuilder .v6770-anam-actions{
-  display:flex !important;
-  visibility:visible !important;
-  pointer-events:auto !important;
-  flex-direction:column;
-  gap:10px;
-  margin-top:18px !important;
-}
-#smartCustomBuilder .v6770-anam-actions button{
+/* v67.71.1 — anamnese contínua e pernas completas */
+#smartCustomBuilder .v6770-anam-card{
   display:block !important;
 }
-#smartCustomBuilder.v6771-progressive-ready .v6770-anam-actions{
-  display:flex !important;
+#smartCustomBuilder #v6771AnamProgress,
+#smartCustomBuilder #v6771AnamNav{
+  display:none !important;
+}
+#smartCustomBuilder .v6770-anam-actions{
+  display:grid !important;
+  gap:12px;
+  margin-top:18px;
+}
+#smartCustomBuilder .v6771-leg-complete{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  margin:8px 0 12px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;
+  background:rgba(220,0,0,.08);
+}
+#smartCustomBuilder .v6771-leg-complete input{
+  width:22px;
+  height:22px;
+  flex:0 0 auto;
+}
+#smartCustomBuilder .v6771-leg-complete span{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+#smartCustomBuilder .v6771-leg-complete small{
+  opacity:.75;
 }

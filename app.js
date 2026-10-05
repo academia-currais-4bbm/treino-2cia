@@ -508,15 +508,10 @@ function ensureAppHistoryState(){
 }
 
 function showView(id){
-  /* v67.71.2 — só abandona a rota do Gerador quando o usuário realmente sai dele.
-     Em um reload, a página inicial pode chamar showView('home') antes da restauração;
-     nesse caso a rota salva precisa sobreviver para que o Gerador seja restaurado. */
-  const previousView=document.querySelector('.view.active')?.id||null;
-  if(id!=='smartCustomBuilder' && (previousView==='smartCustomBuilder' || previousView==='smartGeneratedResult')){
-    try{
-      localStorage.removeItem('t2_v6771_smart_route_v2');
-      localStorage.removeItem('t2_v6771_smart_preview_v2');
-    }catch(e){}
+  /* v67.71.0 — ao sair do Gerar Meu Treino, não restaurar essa rota em outras páginas */
+  if(id!=='smartCustomBuilder' && id!=='smartGeneratedResult'){
+    try{ localStorage.removeItem('t2_v6771_smart_route_v2'); }catch(e){}
+    try{ localStorage.removeItem('t2_v6771_generator_return'); }catch(e){}
   }
   // V67.68.35 — no boot/reload, um personalizado ativo tem prioridade absoluta
   // sobre qualquer chamada tardia de Home. Libera assim que a restauração concluir.
@@ -1354,10 +1349,8 @@ async function v67675ResolveServicePresence(ended=new Date()){
     try{ st=await refreshServiceValidationStatus(); }catch(e){ console.warn('v67675 refresh presence:',e); }
   }
   const validatedAt=st?.validatedAt||null;
-  const expiresAt=st?.expiresAt||null;
   const sameWindow=st?.valid===true && validatedAt && serviceOperationalWindowKey(new Date(validatedAt))===endKey;
-  const activeRange=st?.valid===true && validatedAt && expiresAt && ended.getTime()>=new Date(validatedAt).getTime() && ended.getTime()<=new Date(expiresAt).getTime();
-  const valid=!!(sameWindow || activeRange);
+  const valid=!!sameWindow;
   if(valid){
     v66WorkoutServiceDay=true;
     try{sessionStorage.setItem(V66_SERVICE_KEY,'1')}catch(e){}
@@ -5449,11 +5442,13 @@ function v6771ResetAnamnesis(){
   }
 }
 
-function openSmartCustomBuilder(){
+function openSmartCustomBuilder(preserveState=false){
   showView('smartCustomBuilder');
 
   setTimeout(()=>{
-    v6771ResetAnamnesis();
+    if(!preserveState && !window.__v6771PreserveBuilderState){
+      v6771ResetAnamnesis();
+    }
     byId('v6770Goal')?.focus();
   },120);
 }
@@ -6042,8 +6037,7 @@ function v6771SaveProgram(days,profile,name){
     String(name||'Treino Personalizado').trim() ||
     'Treino Personalizado';
 
-  const existing=getCustomWorkouts()
-    .filter(x=>!x.smartGenerated);
+  const existing=getCustomWorkouts();
 
   const saved=days.map(day=>({
     id:`${planId}_${day.day}`,
@@ -6087,21 +6081,13 @@ function v6771SaveProgram(days,profile,name){
 
 function v6771DiscardPreview(){
   window.v6771Preview=null;
-
-  try{
-    localStorage.removeItem('t2_v6771_smart_route_v2');
-    localStorage.removeItem('t2_v6771_smart_preview_v2');
-  }catch(e){}
-
   showView('smartCustomBuilder');
 
   setTimeout(()=>{
-    if(typeof v6771ResetAnamnesis==='function'){
-      v6771ResetAnamnesis();
-    }else if(window.v6771Go){
+    if(window.v6771Go){
       window.v6771Go(0);
     }
-  },80);
+  },50);
 }
 
 function v6771SavePreview(){
@@ -6145,12 +6131,11 @@ function v6771SavePreview(){
     }
   );
 
-  alert(
-    'Treino salvo com sucesso em Meus Treinos.'
-  );
-
   const executeNow=confirm(
-    'Treino salvo em Meus Treinos.\n\nDeseja executar o primeiro treino agora?\n\nOK = EXECUTAR AGORA\nCancelar = SALVAR PARA DEPOIS'
+    'Treino salvo com sucesso em Meus Treinos.\n\n' +
+    'Deseja executar o treino agora?\n\n' +
+    'OK = executar agora\n' +
+    'Cancelar = deixar salvo para executar depois'
   );
 
   if(executeNow){
@@ -6370,15 +6355,6 @@ function v6771RenderResult(days,profile,state={}){
 
         </button>
 
-      </div>
-
-      <div class="v6771-result-extra-actions">
-        <button type="button" class="v6771-secondary-action" onclick="v6771DiscardPreview()">
-          ↻ REFAZER ANAMNESE
-        </button>
-        <button type="button" class="v6771-start-action" onclick="v6771StartPreviewDay(0)">
-          ▶ EXECUTAR PRIMEIRO TREINO
-        </button>
       </div>
 
       <div class="v6771-section-title">
@@ -10930,284 +10906,38 @@ admin52RankingRows=function(rows,limit){
 
 function v6771InitProgressiveAnamnesis(reset=false){
   const root=byId('smartCustomBuilder');
-
   if(!root)return;
 
-  const cards=[
-    ...root.querySelectorAll('.v6770-anam-card')
-  ];
+  const cards=[...root.querySelectorAll('.v6770-anam-card')];
+  if(cards.length!==8)return;
 
-  if(cards.length!==8){
-    console.warn(
-      'V67.71.0: esperado 8 cards da anamnese; encontrados:',
-      cards.length
-    );
-    return;
-  }
+  cards.forEach((card,index)=>{
+    card.style.setProperty('display','block','important');
+    card.style.removeProperty('visibility');
+    card.classList.remove('v6771-step-active','v6771-current-step','v6771-step-active');
+    card.setAttribute('aria-hidden','false');
 
-  let progress=root.querySelector(
-    '#v6771AnamProgress'
-  );
-
-  let nav=root.querySelector(
-    '#v6771AnamNav'
-  );
-
-  if(!progress){
-    progress=document.createElement('div');
-
-    progress.id='v6771AnamProgress';
-
-    progress.innerHTML=`
-      <div class="v6771-progress-top">
-        <span id="v6771ProgressLabel">
-          ETAPA 01 DE 08
-        </span>
-
-        <b id="v6771ProgressTitle">
-          OBJETIVO
-        </b>
-      </div>
-
-      <div class="v6771-progress-track">
-        <i id="v6771ProgressFill"></i>
-      </div>
-    `;
-
-    const hero=root.querySelector('.v6770-smart-hero');
-
-    if(hero){
-      hero.insertAdjacentElement(
-        'afterend',
-        progress
-      );
-    }else{
-      root.insertBefore(progress,root.firstChild);
-    }
-  }
-
-  if(!nav){
-    nav=document.createElement('div');
-
-    nav.id='v6771AnamNav';
-
-    nav.innerHTML=`
-      <button
-        id="v6771PrevStep"
-        type="button"
-        class="v6771-nav-secondary">
-        ← VOLTAR
-      </button>
-
-      <button
-        id="v6771NextStep"
-        type="button"
-        class="v6771-nav-primary">
-        CONTINUAR →
-      </button>
-    `;
-
-    const actions=root.querySelector(
-      '.v6770-anam-actions'
-    );
-
-    if(actions){
-      actions.insertAdjacentElement(
-        'beforebegin',
-        nav
-      );
-    }else{
-      root.appendChild(nav);
-    }
-  }
-
-  const state=root._v6771ProgressState||{
-    current:0
-  };
-
-  root._v6771ProgressState=state;
-
-  const titles=[
-    'OBJETIVO',
-    'SEU PONTO DE PARTIDA',
-    'EXPERIÊNCIA',
-    'SUA ROTINA',
-    'LOCAL E EQUIPAMENTOS',
-    'MÚSCULOS',
-    'PRIORIDADE',
-    'LIMITAÇÕES'
-  ];
-
-  const art=[
-    '🎯',
-    '⚖️',
-    '💪',
-    '📅',
-    '🏋️',
-    '🧠',
-    '⭐',
-    '🛡️'
-  ];
-
-  function renderStep(){
-    cards.forEach((card,i)=>{
-        card.style.setProperty(
-            'display',
-            i===state.current ? 'block' : 'none',
-            'important'
-        );
-    });
-
-    const index=Math.max(
-      0,
-      Math.min(7,state.current)
-    );
-
-    state.current=index;
-
-    cards.forEach((card,i)=>{
-      card.style.display=
-        i===index ? '' : 'none';
-
-      card.classList.toggle(
-        'v6771-step-active',
-        i===index
-      );
-    });
-
-    let visual=
-      cards[index].querySelector(
-        '.v6771-step-visual'
-      );
-
+    let visual=card.querySelector('.v6771-step-visual');
     if(!visual){
+      const art=['🎯','⚖️','💪','📅','🏋️','🧠','⭐','🛡️'][index];
+      const title=['OBJETIVO','SEU PONTO DE PARTIDA','EXPERIÊNCIA','SUA ROTINA','LOCAL E EQUIPAMENTOS','MÚSCULOS','PRIORIDADE','LIMITAÇÕES'][index];
       visual=document.createElement('div');
-
       visual.className='v6771-step-visual';
-
-      visual.innerHTML=`
-        <div class="v6771-step-art">
-          ${art[index]}
-        </div>
-
-        <div>
-          <span>ETAPA ${String(index+1).padStart(2,'0')}</span>
-          <b>${titles[index]}</b>
-        </div>
-      `;
-
-      cards[index]
-        .querySelector('.v6770-step-head')
-        ?.insertAdjacentElement(
-          'afterend',
-          visual
-        );
+      visual.innerHTML=`<div class="v6771-step-art">${art}</div><div><span>ETAPA ${String(index+1).padStart(2,'0')}</span><b>${title}</b></div>`;
+      card.querySelector('.v6770-step-head')?.insertAdjacentElement('afterend',visual);
     }
+  });
 
-    const label=byId('v6771ProgressLabel');
-    const title=byId('v6771ProgressTitle');
-    const fill=byId('v6771ProgressFill');
+  const progress=root.querySelector('#v6771AnamProgress');
+  const nav=root.querySelector('#v6771AnamNav');
+  if(progress)progress.style.display='none';
+  if(nav)nav.style.display='none';
 
-    if(label){
-      label.textContent=
-        `ETAPA ${String(index+1).padStart(2,'0')} DE 08`;
-    }
+  const actions=root.querySelector('.v6770-anam-actions');
+  if(actions)actions.style.display='grid';
 
-    if(title){
-      title.textContent=titles[index];
-    }
-
-    if(fill){
-      fill.style.width=
-        `${((index+1)/8)*100}%`;
-    }
-
-    const prevBtn=byId('v6771PrevStep');
-    const nextBtn=byId('v6771NextStep');
-
-    if(prevBtn){
-        prevBtn.onclick=previous;
-      prevBtn.disabled=index===0;
-      prevBtn.textContent=
-        index===0
-          ? '← INÍCIO'
-          : '← VOLTAR';
-    }
-
-    if(nextBtn){
-        nextBtn.onclick=next;
-      nextBtn.textContent=
-        index===7
-          ? '🧠 GERAR MEU TREINO'
-          : 'CONTINUAR →';
-    }
-
-    const actions=root.querySelector(
-      '.v6770-anam-actions'
-    );
-
-    if(actions){
-      actions.style.display='none';
-    }
-
-    v6771InstallCompleteLegOption();
-    v6771SyncLegComplete();
-
-    window.scrollTo({
-      top:0,
-      behavior:'smooth'
-    });
-  }
-
-  function next(){
-    if(state.current>=7){
-      const generate=root.querySelector(
-        'button[onclick*="generateSmartCustomWorkout"]'
-      );
-
-      if(generate){
-        generate.click();
-      }
-
-      return;
-    }
-
-    state.current++;
-    renderStep();
-  }
-
-  function previous(){
-    if(state.current<=0){
-      return;
-    }
-
-    state.current--;
-    renderStep();
-  }
-
-  const prev=byId('v6771PrevStep');
-
-  if(prev&&!prev.dataset.bound){
-    prev.dataset.bound='1';
-    prev.addEventListener(
-      'click',
-      previous
-    );
-  }
-
-  if(next&&!next.dataset.bound){
-    next.dataset.bound='1';
-    next.addEventListener(
-      'click',
-      next
-    );
-  }
-
-  if(reset){
-    state.current=0;
-  }
-
-  renderStep();
+  v6771InstallCompleteLegOption();
+  v6771SyncLegComplete();
 }
 
 window.v6771InitProgressiveAnamnesis=
@@ -11484,1023 +11214,110 @@ window.v6771InitProgressiveAnamnesis=
   }
 })();
 
-/* V6771_ANAMNESE_FIX_V2 */
+/* =========================================================
+   v67.71.1 — RESTAURAÇÃO LIMPA DO GERADOR
+   Uma única fonte para refresh/segundo plano, sem interferir
+   na navegação normal do aplicativo.
+   ========================================================= */
 (function(){
+  const ROUTE_KEY='t2_v6771_smart_route_v2';
+  const PREVIEW_KEY='t2_v6771_smart_preview_v2';
+  const RETURN_KEY='t2_v6771_generator_return';
+  let restoring=false;
 
-  const ROUTE_KEY = 't2_v6771_smart_route_v2';
-  const PREVIEW_KEY = 't2_v6771_smart_preview_v2';
-
-  const stageVisuals = [
-    ['🎯','OBJETIVO','Defina onde você quer chegar.'],
-    ['📏','SEU PERFIL','Conheça seu ponto de partida.'],
-    ['🏋️','EXPERIÊNCIA','O treino acompanha seu nível.'],
-    ['📅','SUA ROTINA','Vamos adaptar o treino ao seu tempo.'],
-    ['🏢','ESTRUTURA','Usaremos o que você realmente tem disponível.'],
-    ['🦵','SEU CORPO','Escolha os músculos que quer trabalhar.'],
-    ['⭐','PRIORIDADES','Defina onde quer colocar mais foco.'],
-    ['🛡️','SEGURANÇA','Respeitaremos suas limitações.']
-  ];
-
-  function visible(el){
-    if(!el) return false;
-    if(el.hidden) return false;
-    const st=getComputedStyle(el);
-    return st.display!=='none' && st.visibility!=='hidden';
+  function builder(){return document.getElementById('smartCustomBuilder');}
+  function result(){return document.getElementById('smartGeneratedResult');}
+  function visible(el){return !!el && el.offsetParent!==null && getComputedStyle(el).display!=='none' && !el.hidden;}
+  function builderVisible(){return visible(builder());}
+  function resultVisible(){return visible(result());}
+  function cards(){const r=builder();return r?[...r.querySelectorAll('.v6770-anam-card')]:[];}
+  function step(){
+    const r=builder(); const cs=cards();
+    if(!r||!cs.length)return 0;
+    const n=Number(r.dataset.v6771Step||0);
+    return Math.max(0,Math.min(cs.length-1,Number.isFinite(n)?n:0));
   }
-
-  function builderVisible(){
-    return visible(document.getElementById('smartCustomBuilder'));
-  }
-
-  function resultVisible(){
-    return visible(document.getElementById('smartGeneratedResult'));
-  }
-
-  function getBuilderCards(){
-    return Array.from(document.querySelectorAll('#smartCustomBuilder .v6771-anam-card'));
-  }
-
-  function getCurrentStep(){
-    const cards=getBuilderCards();
-    if(!cards.length) return 0;
-
-    let index=cards.findIndex(card=>{
-      return card.classList.contains('v6771-current-step') && visible(card);
+  function answers(){
+    const r=builder(); const out={}; if(!r)return out;
+    r.querySelectorAll('input[id],select[id],textarea[id]').forEach(el=>{
+      out[el.id]=(el.type==='checkbox'||el.type==='radio')?!!el.checked:el.value;
     });
-
-    if(index<0){
-      index=cards.findIndex(card=>visible(card));
-    }
-
-    return index<0 ? 0 : index;
+    return out;
   }
-
-  function collectAnswers(){
-    const builder=document.getElementById('smartCustomBuilder');
-    if(!builder) return {};
-
-    const data={};
-
-    builder.querySelectorAll('input[id],select[id],textarea[id]').forEach(el=>{
-      if(el.type==='checkbox' || el.type==='radio'){
-        data[el.id]=!!el.checked;
-      }else{
-        data[el.id]=el.value;
-      }
-    });
-
-    return data;
-  }
-
   function restoreAnswers(data){
-    if(!data) return;
-
-    Object.keys(data).forEach(id=>{
-      const el=document.getElementById(id);
-      if(!el) return;
-
-      if(el.type==='checkbox' || el.type==='radio'){
-        el.checked=!!data[id];
-        try{
-          el.dispatchEvent(new Event('change',{bubbles:true}));
-        }catch(e){}
-      }else{
-        el.value=data[id];
-        try{
-          el.dispatchEvent(new Event('input',{bubbles:true}));
-          el.dispatchEvent(new Event('change',{bubbles:true}));
-        }catch(e){}
-      }
+    Object.entries(data||{}).forEach(([id,v])=>{
+      const el=document.getElementById(id); if(!el)return;
+      if(el.type==='checkbox'||el.type==='radio')el.checked=!!v; else el.value=v??'';
     });
+    if(typeof v6770UpdateBmi==='function')v6770UpdateBmi();
+    if(typeof v6771SyncLegComplete==='function')v6771SyncLegComplete();
   }
-
-  function saveRoute(){
-    if(resultVisible()){
-      try{
-        const preview=window.v6771Preview;
-
-        if(preview && preview.days){
-          localStorage.setItem(
-            PREVIEW_KEY,
-            JSON.stringify(preview)
-          );
-        }
-
-        localStorage.setItem(
-          ROUTE_KEY,
-          JSON.stringify({
-            type:'result',
-            savedAt:Date.now()
-          })
-        );
-      }catch(e){}
-      return;
-    }
-
-    if(builderVisible()){
-      try{
-        localStorage.setItem(
-          ROUTE_KEY,
-          JSON.stringify({
-            type:'builder',
-            step:getCurrentStep(),
-            answers:collectAnswers(),
-            savedAt:Date.now()
-          })
-        );
-      }catch(e){}
-      return;
-    }
-
-    try{
-      localStorage.removeItem(ROUTE_KEY);
-    }catch(e){}
-  }
-
-  function restoreStep(step){
-    const cards=getBuilderCards();
-    if(!cards.length) return;
-
-    step=Math.max(0,Math.min(cards.length-1,Number(step)||0));
-
-    cards.forEach((card,i)=>{
-      const active=i===step;
-
-      card.classList.toggle('v6771-current-step',active);
-
-      card.style.display=active ? '' : 'none';
-      card.setAttribute('aria-hidden',active ? 'false' : 'true');
-    });
-
-    const builder=document.getElementById('smartCustomBuilder');
-
-    if(builder){
-      builder.classList.add('v6771-progressive-ready');
-      builder.dataset.v6771Step=String(step);
-    }
-
-    const progressText=document.querySelector(
-      '#smartCustomBuilder .v6771-step-progress'
-    );
-
-    if(progressText){
-      progressText.textContent=
-        `ETAPA ${String(step+1).padStart(2,'0')} DE ${String(cards.length).padStart(2,'0')}`;
-    }
-
-    const current=cards[step];
-
-    if(current){
-      setTimeout(()=>{
-        current.scrollIntoView({
-          behavior:'auto',
-          block:'start'
-        });
-      },80);
-    }
-  }
-
-  function injectStageVisuals(){
-    const cards=getBuilderCards();
-
-    cards.forEach((card,index)=>{
-      if(card.querySelector('.v6771-stage-visual')) return;
-
-      const visualData=stageVisuals[index] || stageVisuals[0];
-
-      const visual=document.createElement('div');
-      visual.className='v6771-stage-visual';
-      visual.setAttribute('aria-hidden','true');
-
-      visual.innerHTML=`
-        <span class="v6771-stage-ring"></span>
-        <span class="v6771-stage-ring r2"></span>
-        <span class="v6771-stage-ring r3"></span>
-        <span class="v6771-stage-icon">${visualData[0]}</span>
-      `;
-
-      const head=card.querySelector('.v6771-step-head');
-
-      if(head){
-        head.insertAdjacentElement('afterend',visual);
-      }else{
-        card.insertAdjacentElement('afterbegin',visual);
-      }
-    });
-  }
-
-  function restoreSmartRoute(){
-    let route=null;
-    let preview=null;
-
-    try{
-      route=JSON.parse(localStorage.getItem(ROUTE_KEY)||'null');
-      preview=JSON.parse(localStorage.getItem(PREVIEW_KEY)||'null');
-    }catch(e){
-      route=null;
-      preview=null;
-    }
-
-    if(!route) return;
-
-    setTimeout(()=>{
-      try{
-
-        if(route.type==='result' && preview && preview.days){
-
-          window.v6771Preview=preview;
-
-          if(typeof window.v6771RenderResult==='function'){
-            window.v6771RenderResult(
-              preview.days,
-              preview.profile
-            );
-          }
-
-          setTimeout(injectStageVisuals,150);
-          return;
-        }
-
-        if(route.type==='builder'){
-
-          if(typeof window.openSmartCustomBuilder==='function'){
-            window.openSmartCustomBuilder();
-          }
-
-          setTimeout(()=>{
-            injectStageVisuals();
-            restoreAnswers(route.answers||{});
-            restoreStep(route.step||0);
-          },180);
-        }
-
-      }catch(e){
-        console.warn('v6771 restore:',e);
-      }
-    },300);
-  }
-
-  /*
-   * O resultado fica salvo localmente enquanto ainda não foi
-   * salvo em Meus Treinos. Assim, atualizar a página não destrói
-   * a programação recém-gerada.
-   */
-  const originalRenderResult=window.v6771RenderResult;
-
-  if(typeof originalRenderResult==='function'){
-    window.v6771RenderResult=function(){
-      const result=originalRenderResult.apply(this,arguments);
-
-      setTimeout(()=>{
-        try{
-          if(window.v6771Preview){
-            localStorage.setItem(
-              PREVIEW_KEY,
-              JSON.stringify(window.v6771Preview)
-            );
-          }
-
-          localStorage.setItem(
-            ROUTE_KEY,
-            JSON.stringify({
-              type:'result',
-              savedAt:Date.now()
-            })
-          );
-        }catch(e){}
-
-        injectStageVisuals();
-      },80);
-
-      return result;
-    };
-  }
-
-  const originalDiscard=window.v6771DiscardPreview;
-
-  if(typeof originalDiscard==='function'){
-    window.v6771DiscardPreview=function(){
-      try{
-        localStorage.removeItem(ROUTE_KEY);
-        localStorage.removeItem(PREVIEW_KEY);
-      }catch(e){}
-
-      return originalDiscard.apply(this,arguments);
-    };
-  }
-
-  const originalDelete=window.v6771DeleteProgram;
-
-  if(typeof originalDelete==='function'){
-    window.v6771DeleteProgram=function(){
-      try{
-        localStorage.removeItem(ROUTE_KEY);
-        localStorage.removeItem(PREVIEW_KEY);
-      }catch(e){}
-
-      return originalDelete.apply(this,arguments);
-    };
-  }
-
-  document.addEventListener('DOMContentLoaded',()=>{
-    injectStageVisuals();
-
-    setTimeout(restoreSmartRoute,450);
-
-    setInterval(()=>{
-      if(builderVisible() || resultVisible()){
-        injectStageVisuals();
-        saveRoute();
-      }
-    },500);
-  });
-
-  window.addEventListener('beforeunload',saveRoute);
-
-  /*
-   * Reforça a correção mesmo quando outra rotina do aplicativo
-   * altera o estilo dos cards.
-   */
-  document.addEventListener('click',()=>{
-    setTimeout(()=>{
-      if(builderVisible()){
-        injectStageVisuals();
-
-        const route=getCurrentStep();
-        const cards=getBuilderCards();
-
-        if(cards.length){
-          cards.forEach((card,i)=>{
-            if(i!==route && !card.classList.contains('v6771-current-step')){
-              card.style.display='none';
-            }
-          });
-        }
-      }
-    },60);
-  });
-
-})();
-
-/* =========================================================
-   v67.71.0 — GUARDIÃO FINAL DA ANAMNESE
-   Mantém Gerar Meu Treino + etapa atual após atualização.
-   ========================================================= */
-
-(function(){
-
-  const V6771_ROUTE_GUARD_KEY='t2_v6771_anam_route_guard';
-
-  function v6771Builder(){
-    return document.getElementById('smartCustomBuilder');
-  }
-
-  function v6771Cards(){
-    const root=v6771Builder();
-    return root
-      ? Array.from(root.querySelectorAll('.v6770-anam-card'))
-      : [];
-  }
-
-  function v6771BuilderVisible(){
-    const root=v6771Builder();
-    if(!root)return false;
-
-    const style=getComputedStyle(root);
-
-    return (
-      style.display!=='none' &&
-      root.classList.contains('active')
-    ) || (
-      root.offsetParent!==null &&
-      !root.hidden
-    );
-  }
-
-  function v6771ReadStep(){
-    const root=v6771Builder();
-    if(!root)return 0;
-
-    const raw=
-      root.dataset.v6771Step ||
-      root._v6771ProgressState?.current ||
-      root.__v6771ProgressState?.current ||
-      0;
-
-    const n=Number(raw);
-
-    return Math.max(
-      0,
-      Math.min(7,Number.isFinite(n)?n:0)
-    );
-  }
-
-  function v6771SaveAnamRoute(){
-    const root=v6771Builder();
-
-    if(!root)return;
-
-    const cards=v6771Cards();
-
-    if(!cards.length)return;
-
-    const step=v6771ReadStep();
-
-    try{
-      localStorage.setItem(
-        V6771_ROUTE_GUARD_KEY,
-        JSON.stringify({
-          type:'builder',
-          step,
-          savedAt:Date.now()
-        })
-      );
-    }catch(e){}
-  }
-
-  function v6771ClearAnamRoute(){
-    try{
-      localStorage.removeItem(V6771_ROUTE_GUARD_KEY);
-    }catch(e){}
-  }
-
-  function v6771RestoreAnamRoute(){
-    let route=null;
-
-    try{
-      route=JSON.parse(
-        localStorage.getItem(V6771_ROUTE_GUARD_KEY)||'null'
-      );
-    }catch(e){
-      route=null;
-    }
-
-    if(!route || route.type!=='builder')return;
-
-    const root=v6771Builder();
-
-    if(!root)return;
-
-    const cards=v6771Cards();
-
-    if(cards.length<8){
-      setTimeout(v6771RestoreAnamRoute,150);
-      return;
-    }
-
-    /* Abre novamente a tela de gerar treino */
-    if(typeof window.openSmartCustomBuilder==='function'){
-      try{
-        window.openSmartCustomBuilder();
-      }catch(e){}
-    }
-
-    setTimeout(function(){
-
-      const fresh=v6771Cards();
-
-      if(!fresh.length)return;
-
-      const step=Math.max(
-        0,
-        Math.min(
-          fresh.length-1,
-          Number(route.step)||0
-        )
-      );
-
-      fresh.forEach(function(card,index){
-        const active=index===step;
-
-        card.style.display=active?'':'none';
-
-        card.classList.toggle(
-          'v6771-current-step',
-          active
-        );
-
-        card.setAttribute(
-          'aria-hidden',
-          active?'false':'true'
-        );
-      });
-
-      root.dataset.v6771Step=String(step);
-
-      if(
-        typeof window.v6771InitProgressiveAnamnesis==='function'
-      ){
-        try{
-          window.v6771InitProgressiveAnamnesis(true);
-        }catch(e){}
-      }
-
-      setTimeout(function(){
-        const current=fresh[step];
-
-        if(current){
-          current.scrollIntoView({
-            behavior:'auto',
-            block:'start'
-          });
-        }
-      },100);
-
-    },220);
-  }
-
-  /* Salva continuamente somente enquanto a anamnese está aberta */
-  setInterval(function(){
-
-    if(v6771BuilderVisible()){
-      v6771SaveAnamRoute();
-    }
-
-  },350);
-
-  /* Atualização / retorno do navegador */
-  window.addEventListener('pageshow',function(){
-    setTimeout(v6771RestoreAnamRoute,80);
-    setTimeout(v6771RestoreAnamRoute,350);
-    setTimeout(v6771RestoreAnamRoute,800);
-  });
-
-  document.addEventListener('visibilitychange',function(){
-
-    if(document.visibilityState==='visible'){
-      setTimeout(v6771RestoreAnamRoute,100);
-    }
-
-  });
-
-  /* Também tenta depois que o restante do app terminar o boot */
-  document.addEventListener('DOMContentLoaded',function(){
-
-    setTimeout(v6771RestoreAnamRoute,150);
-    setTimeout(v6771RestoreAnamRoute,500);
-    setTimeout(v6771RestoreAnamRoute,1200);
-
-  });
-
-  /*
-   * Ao clicar em Home/Treinos/Ferramentas/Evolução,
-   * consideramos que o militar saiu intencionalmente
-   * da anamnese e removemos a rota pendente.
-   */
-  document.addEventListener('click',function(e){
-
-    const target=e.target.closest('button,a');
-
-    if(!target)return;
-
-    const txt=(target.innerText||'').trim().toLowerCase();
-
-    const onclick=String(
-      target.getAttribute('onclick')||''
-    ).toLowerCase();
-
-    if(
-      /^(início|inicio|treinos|ferramentas|evolução|evolucao)$/.test(txt) ||
-      /showview\(['"](?:home|plans|tools|evolution)/.test(onclick)
-    ){
-      v6771ClearAnamRoute();
-    }
-
-  },true);
-
-  /*
-   * Quando chegar ao resultado, a rota de anamnese deixa de ser
-   * necessária.
-   */
-  const observer=new MutationObserver(function(){
-
-    const result=document.getElementById('smartGeneratedResult');
-
-    if(
-      result &&
-      result.offsetParent!==null
-    ){
-      v6771ClearAnamRoute();
-    }
-
-  });
-
-  if(document.documentElement){
-    observer.observe(
-      document.documentElement,
-      {
-        childList:true,
-        subtree:true,
-        attributes:true,
-        attributeFilter:['style','class']
-      }
-    );
-  }
-
-})();
-
-
-/* =========================================================
-   v67.71.0 — RETORNO AO GERADOR APÓS SAIR DO APP
-   Mantém exatamente a etapa/tela em que o militar estava.
-   ========================================================= */
-
-(function(){
-
-  const KEY='t2_v6771_generator_return';
-
-  function builder(){
-    return document.getElementById('smartCustomBuilder');
-  }
-
-  function result(){
-    return document.getElementById('smartGeneratedResult');
-  }
-
-  function getCards(){
-    const root=builder();
-    return root
-      ? Array.from(root.querySelectorAll('.v6770-anam-card'))
-      : [];
-  }
-
-  function builderIsVisible(){
-    const root=builder();
-
-    if(!root)return false;
-
-    return (
-      root.offsetParent!==null &&
-      getComputedStyle(root).display!=='none' &&
-      !root.hidden
-    );
-  }
-
-  function resultIsVisible(){
-    const el=result();
-
-    if(!el)return false;
-
-    return (
-      el.offsetParent!==null &&
-      getComputedStyle(el).display!=='none' &&
-      !el.hidden
-    );
-  }
-
-  function currentStep(){
-
-    const root=builder();
-
-    if(!root)return 0;
-
-    const cards=getCards();
-
-    if(!cards.length)return 0;
-
-    const state=
-      root._v6771ProgressState ||
-      root.__v6771ProgressState ||
-      window.__v6771ProgressState;
-
-    if(
-      state &&
-      Number.isFinite(Number(state.current))
-    ){
-      return Math.max(
-        0,
-        Math.min(7,Number(state.current))
-      );
-    }
-
-    const data=Number(root.dataset.v6771Step);
-
-    if(Number.isFinite(data)){
-      return Math.max(
-        0,
-        Math.min(7,data)
-      );
-    }
-
-    const active=cards.findIndex(card=>{
-      return (
-        card.classList.contains('v6771-current-step') ||
-        card.classList.contains('v6771-step-active')
-      );
-    });
-
-    return active>=0 ? active : 0;
-  }
-
   function save(){
-
     try{
-
-      if(resultIsVisible()){
-
-        localStorage.setItem(
-          KEY,
-          JSON.stringify({
-            type:'result',
-            savedAt:Date.now()
-          })
-        );
-
+      if(builderVisible()){
+        const data={type:'builder',answers:answers(),scrollY:window.scrollY,savedAt:Date.now()};
+        localStorage.setItem(ROUTE_KEY,JSON.stringify(data));
+        localStorage.setItem(RETURN_KEY,JSON.stringify(data));
         return;
       }
-
-      if(builderIsVisible()){
-
-        localStorage.setItem(
-          KEY,
-          JSON.stringify({
-            type:'builder',
-            step:currentStep(),
-            savedAt:Date.now()
-          })
-        );
-
+      if(resultVisible()){
+        const preview=window.v6771Preview;
+        if(preview) localStorage.setItem(PREVIEW_KEY,JSON.stringify(preview));
+        const data={type:'result',savedAt:Date.now()};
+        localStorage.setItem(ROUTE_KEY,JSON.stringify(data));
+        localStorage.setItem(RETURN_KEY,JSON.stringify(data));
+        return;
       }
-
     }catch(e){}
-
   }
-
-  function read(){
-
-    try{
-
-      const data=JSON.parse(
-        localStorage.getItem(KEY)||'null'
-      );
-
-      if(!data)return null;
-
-      if(
-        Date.now()-Number(data.savedAt||0)
-        > 24*60*60*1000
-      ){
-        localStorage.removeItem(KEY);
-        return null;
-      }
-
-      return data;
-
-    }catch(e){
-
-      return null;
-
-    }
-
+  function clear(){
+    try{localStorage.removeItem(ROUTE_KEY);localStorage.removeItem(RETURN_KEY);}catch(e){}
   }
-
-  function applyStep(step){
-
-    const root=builder();
-    const cards=getCards();
-
-    if(!root || cards.length<8)return false;
-
-    step=Math.max(
-      0,
-      Math.min(7,Number(step)||0)
-    );
-
-    const state=
-      root._v6771ProgressState ||
-      root.__v6771ProgressState ||
-      window.__v6771ProgressState ||
-      {current:0};
-
-    state.current=step;
-
-    root._v6771ProgressState=state;
-    root.__v6771ProgressState=state;
-    window.__v6771ProgressState=state;
-
-    root.dataset.v6771Step=String(step);
-
-    cards.forEach((card,index)=>{
-
-      const active=index===step;
-
-      card.style.display=
-        active ? '' : 'none';
-
-      card.classList.toggle(
-        'v6771-current-step',
-        active
-      );
-
-      card.classList.toggle(
-        'v6771-step-active',
-        active
-      );
-
-      card.setAttribute(
-        'aria-hidden',
-        active ? 'false' : 'true'
-      );
-
-    });
-
-    const label=
-      document.getElementById('v6771ProgressLabel');
-
-    const title=
-      document.getElementById('v6771ProgressTitle');
-
-    const fill=
-      document.getElementById('v6771ProgressFill');
-
-    const titles=[
-      'OBJETIVO',
-      'SEU PONTO DE PARTIDA',
-      'EXPERIÊNCIA',
-      'SUA ROTINA',
-      'LOCAL E EQUIPAMENTOS',
-      'MÚSCULOS',
-      'PRIORIDADE',
-      'LIMITAÇÕES'
-    ];
-
-    if(label){
-      label.textContent=
-        `ETAPA ${String(step+1).padStart(2,'0')} DE 08`;
-    }
-
-    if(title){
-      title.textContent=
-        titles[step]||'';
-    }
-
-    if(fill){
-      fill.style.width=
-        `${((step+1)/8)*100}%`;
-    }
-
-    return true;
+  function applyFullForm(){
+    const r=builder(); if(!r)return;
+    cards().forEach(c=>{c.style.setProperty('display','block','important');c.setAttribute('aria-hidden','false');});
+    const p=r.querySelector('#v6771AnamProgress'), n=r.querySelector('#v6771AnamNav');
+    if(p)p.style.display='none'; if(n)n.style.display='none';
+    r.dataset.v6771Step=String(0);
+    if(typeof v6771InitProgressiveAnamnesis==='function')v6771InitProgressiveAnamnesis(false);
+    cards().forEach(c=>{c.style.setProperty('display','block','important');c.setAttribute('aria-hidden','false');});
+    if(p)p.style.display='none'; if(n)n.style.display='none';
   }
-
   function restore(){
-
-    const data=read();
-
+    let data=null, preview=null;
+    try{data=JSON.parse(localStorage.getItem(ROUTE_KEY)||'null');preview=JSON.parse(localStorage.getItem(PREVIEW_KEY)||'null');}catch(e){}
     if(!data)return;
-
-    /*
-     * Resultado final
-     */
-    if(data.type==='result'){
-
-      if(
-        typeof window.restoreSmartRoute==='function'
-      ){
-        try{
-          window.restoreSmartRoute();
-          return;
-        }catch(e){}
-      }
-
+    if(Date.now()-Number(data.savedAt||0)>24*60*60*1000){clear();return;}
+    restoring=true;
+    if(data.type==='result' && preview && preview.days){
+      window.v6771Preview=preview;
+      v6771RenderResult(preview.days,preview.profile,{saved:!!preview.saved,savedDays:preview.savedDays,name:preview.name});
+      setTimeout(()=>{restoring=false;},400);
       return;
     }
-
-    /*
-     * Gerador / anamnese
-     */
     if(data.type==='builder'){
-
-      const root=builder();
-
-      if(!root){
-
-        setTimeout(restore,150);
-
-        return;
-      }
-
-      const cards=getCards();
-
-      if(cards.length<8){
-
-        setTimeout(restore,150);
-
-        return;
-      }
-
-      /*
-       * Abrimos o gerador somente se ele não estiver aberto.
-       */
-      if(!builderIsVisible()){
-
-        if(
-          typeof window.openSmartCustomBuilder==='function'
-        ){
-
-          try{
-            window.openSmartCustomBuilder();
-          }catch(e){}
-
-        }
-      }
-
-      /*
-       * O openSmartCustomBuilder pode zerar para a Etapa 01.
-       * Por isso aplicamos a etapa salva depois dele.
-       */
-      setTimeout(function(){
-
-        applyStep(data.step);
-
+      if(!builderVisible())openSmartCustomBuilder(true);
+      setTimeout(()=>{
+        restoreAnswers(data.answers||{});
+        applyFullForm();
+        window.scrollTo({top:Number(data.scrollY)||0,behavior:'auto'});
+        restoring=false;
       },180);
-
-      setTimeout(function(){
-
-        applyStep(data.step);
-
-      },500);
-
-      setTimeout(function(){
-
-        applyStep(data.step);
-
-      },1000);
-
     }
-
   }
+  window.restoreSmartRoute=restore;
 
-  /*
-   * PRINCIPAL CORREÇÃO:
-   * quando o Android manda o app para segundo plano,
-   * salvamos imediatamente a posição atual.
-   */
-  document.addEventListener(
-    'visibilitychange',
-    function(){
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden')save();
+    else if(document.visibilityState==='visible')setTimeout(restore,120);
+  });
+  window.addEventListener('pagehide',save);
+  window.addEventListener('beforeunload',save);
+  window.addEventListener('pageshow',()=>setTimeout(restore,180));
 
-      if(
-        document.visibilityState==='hidden'
-      ){
+  setInterval(()=>{
+    if(builderVisible()||resultVisible())save();
+  },1000);
 
-        save();
-
-      }else if(
-        document.visibilityState==='visible'
-      ){
-
-        setTimeout(restore,100);
-        setTimeout(restore,450);
-        setTimeout(restore,1000);
-
-      }
-
-    }
-  );
-
-  /*
-   * Também salva antes de sair da página.
-   */
-  window.addEventListener(
-    'pagehide',
-    save
-  );
-
-  window.addEventListener(
-    'beforeunload',
-    save
-  );
-
-  /*
-   * pageshow cobre retorno pelo navegador/WebView.
-   */
-  window.addEventListener(
-    'pageshow',
-    function(){
-
-      setTimeout(restore,120);
-      setTimeout(restore,500);
-      setTimeout(restore,1000);
-
-    }
-  );
-
-  /*
-   * Guarda continuamente a posição enquanto o usuário
-   * está dentro do gerador.
-   */
-  setInterval(function(){
-
-    if(
-      builderIsVisible() ||
-      resultIsVisible()
-    ){
-
-      save();
-
-    }
-
-  },500);
-
+  window.__v6771ClearRoute=clear;
 })();
-
