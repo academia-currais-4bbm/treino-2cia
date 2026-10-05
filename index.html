@@ -10,6 +10,36 @@
 <title>Treino 2ª CIA</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="styles.css?v=677100">
+<script>
+/* v67.71.1-refresh-stable — restaura visualmente a última tela ANTES do primeiro paint.
+   O HTML original nasce com Home ativa; isso causava o flash/redirecionamento Home
+   antes da restauração assíncrona. O estado é somente informativo neste ponto;
+   app.js continua responsável pela restauração completa. */
+(function(){
+  try{
+    var nav=performance.getEntriesByType('navigation')[0];
+    if((nav&&nav.type==='reload') || (performance.navigation&&performance.navigation.type===1)){
+      var raw=sessionStorage.getItem('t2_nav_state_v6730_session');
+      var state=raw?JSON.parse(raw):null;
+      var route=state&&state.view&&state.view!=='home'?String(state.view):'';
+      var smart=null;
+      try{smart=JSON.parse(localStorage.getItem('t2_v6771_smart_route_v2')||'null')}catch(e){}
+      if(smart&&smart.savedAt&&Date.now()-Number(smart.savedAt)<=86400000){
+        if(smart.type==='builder') route='smartCustomBuilder';
+        else if(smart.type==='result') route='smartGeneratedResult';
+      }
+      if(route){
+        window.__t2EarlyReloadView=route;
+        document.addEventListener('DOMContentLoaded',function(){
+          var home=document.getElementById('home');
+          var target=document.getElementById(route);
+          if(home&&target){home.classList.remove('active');target.classList.add('active');}
+        },{once:true});
+      }
+    }
+  }catch(e){}
+})();
+</script>
 </head>
 <body><div id="prToast" class="pr-toast"></div>
 <div id="splash" class="splash v6758-motivation" aria-hidden="true">

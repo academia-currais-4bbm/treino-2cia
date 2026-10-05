@@ -542,6 +542,18 @@ function ensureAppHistoryState(){
 }
 
 function showView(id){
+  /* v67.71.1-refresh-stable — durante um reload, nunca permita que uma chamada
+     tardia de showView('home') apareça antes da restauração da tela que estava aberta.
+     O valor foi capturado no index.html antes do primeiro paint. */
+  if(id==='home' && NAV_RESTORE_ON_BOOT && window.__t2EarlyReloadView && !navRestoring && !browserNavHandling){
+    const early=String(window.__t2EarlyReloadView);
+    if(early && early!=='home' && byId(early)){
+      if(typeof v6771SmartRouteBootPending!=='undefined' && v6771SmartRouteBootPending && typeof window.restoreSmartRoute==='function'){
+        setTimeout(()=>{try{window.restoreSmartRoute()}catch(e){}},0);
+      }
+      return;
+    }
+  }
   /* v67.71.1 — durante um reload iniciado dentro do Gerar Treino, a rota
      persistida tem prioridade absoluta sobre qualquer chamada tardia à Home.
      Assim o refresh volta para a mesma página/etapa, e não para a Home. */
