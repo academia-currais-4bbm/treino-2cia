@@ -1,0 +1,36 @@
+TREINO 2ª CIA — v67.71.2
+
+CORREÇÕES E MELHORIAS
+
+1. GERADOR — RESTAURAÇÃO APÓS ATUALIZAÇÃO
+- Ao atualizar a página enquanto o militar está no Gerador, o app permanece no Gerador.
+- Mantém a etapa atual da anamnese.
+- Mantém as respostas preenchidas.
+- Não redireciona para o Home.
+
+2. GERADOR — SAIR DO APP E VOLTAR
+- Mantém a etapa e as respostas enquanto o Gerador estiver em uso.
+
+3. GERADOR — NAVEGAR PARA OUTRA PÁGINA
+- Ao sair do Gerador para outra área, a rota do Gerador é descartada.
+- Atualizar a outra página não restaura o Gerador.
+
+4. NOVA ANAMNESE
+- Ao abrir novamente Gerar Meu Treino, a anamnese começa zerada.
+- Refazer Anamnese também limpa as respostas anteriores.
+
+5. RESULTADO DO TREINO PERSONALIZADO
+- Mantido SALVAR TREINO.
+- Após salvar, o militar pode escolher executar o primeiro treino imediatamente ou deixar salvo para depois.
+- EXECUTAR AGORA abre o primeiro treino para execução.
+- SALVAR PARA DEPOIS mantém a programação em Meus Treinos sem iniciar.
+- Adicionado botão REFAZER ANAMNESE.
+- Mantido botão para executar o primeiro treino diretamente.
+- Restaurado o botão GERAR MEU TREINO na etapa final da anamnese.
+
+6. VALIDAÇÃO / RANKING / FEED / EVOLUÇÃO
+- Reforçada a reconciliação da presença validada na conclusão do treino para evitar divergência entre a validação do servidor e o registro local.
+- Mantida a regra oficial: gerar ou salvar não pontua; somente a execução que cumpre os critérios pode pontuar.
+
+OBSERVAÇÃO
+- Não foram alteradas as demais áreas do aplicativo nesta atualização.
