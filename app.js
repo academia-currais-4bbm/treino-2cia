@@ -291,17 +291,31 @@ function v6758ShowMotivation(forceLogin=false){
 
 const NAV_STATE_KEY='t2_nav_state_v6730_session';
 const LEGACY_NAV_STATE_KEY='t2_nav_state_v47';
+const NAV_RELOAD_MARKER_KEY='t2_nav_reload_marker_v6771';
 function navigationLoadType(){
   try{return performance.getEntriesByType('navigation')[0]?.type||'navigate'}catch(e){return 'navigate'}
 }
-const NAV_RESTORE_ON_BOOT = navigationLoadType()==='reload';
+// Android/PWA pode reportar um refresh como `navigate`. O marcador é gravado
+// no descarregamento do documento e serve apenas como fallback para esse caso.
+function readReloadMarker(){
+  try{
+    const m=JSON.parse(sessionStorage.getItem(NAV_RELOAD_MARKER_KEY)||'null');
+    if(!m || !m.ts || (Date.now()-Number(m.ts))>30000)return null;
+    return m;
+  }catch(e){return null}
+}
+const NAV_RELOAD_MARKER=readReloadMarker();
+const NAV_RESTORE_ON_BOOT = navigationLoadType()==='reload' || !!NAV_RELOAD_MARKER;
 // V67.68.45 — congela o snapshot existente no EXATO início de um reload.
 // Algumas rotinas assíncronas de boot podem abrir/salvar a Home antes de a sessão
 // militar terminar de carregar. Sem esta cópia, isso sobrescrevia 'progress' e o
 // Atualizar da aba Evolução voltava indevidamente para a Home.
 let NAV_BOOT_RELOAD_SNAPSHOT=null;
 if(NAV_RESTORE_ON_BOOT){
-  try{NAV_BOOT_RELOAD_SNAPSHOT=JSON.parse(sessionStorage.getItem(NAV_STATE_KEY)||'null')}catch(e){}
+  try{
+    NAV_BOOT_RELOAD_SNAPSHOT = NAV_RELOAD_MARKER?.snapshot || JSON.parse(sessionStorage.getItem(NAV_STATE_KEY)||'null');
+    sessionStorage.removeItem(NAV_RELOAD_MARKER_KEY);
+  }catch(e){}
 }
 let navRestoring=false;
 let navHistoryIndex=null;
@@ -7089,7 +7103,9 @@ currentSet=Math.max(1,Number(state.currentSet)||1);
 window.addEventListener('pagehide',()=>{
   if(v676830IsCustomName())v676830WriteCheckpoint({status:'paused'});
   v67603SaveActivePlanState();
-  saveNavigationState(document.querySelector('.view.active')?.id||'home');
+  const active=document.querySelector('.view.active')?.id||'home';
+  saveNavigationState(active);
+  try{sessionStorage.setItem(NAV_RELOAD_MARKER_KEY,JSON.stringify({ts:Date.now(),snapshot:navStateSnapshot(active)}))}catch(e){}
 });
 
 window.addEventListener('beforeunload',()=>{
@@ -7100,6 +7116,7 @@ window.addEventListener('beforeunload',()=>{
     const s=navStateSnapshot(active);
     s.scrollY=window.scrollY||0;
     sessionStorage.setItem(NAV_STATE_KEY,JSON.stringify(s));
+    sessionStorage.setItem(NAV_RELOAD_MARKER_KEY,JSON.stringify({ts:Date.now(),snapshot:s}));
   }catch(e){}
 });
 
