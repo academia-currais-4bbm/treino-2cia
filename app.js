@@ -6131,16 +6131,10 @@ function v6771SavePreview(){
     }
   );
 
-  const executeNow=confirm(
+  alert(
     'Treino salvo com sucesso em Meus Treinos.\n\n' +
-    'Deseja executar o treino agora?\n\n' +
-    'OK = executar agora\n' +
-    'Cancelar = deixar salvo para executar depois'
+    'Você poderá executá-lo quando quiser.'
   );
-
-  if(executeNow){
-    v6771StartPreviewDay(0);
-  }
 }
 
 function v6771StartPreviewDay(index){
@@ -6335,21 +6329,38 @@ function v6771RenderResult(days,profile,state={}){
         </div>
       </div>
 
-      <div class="v6771-action-main">
+      <div class="v6771-action-main v6771-result-choice-actions">
 
         <button
           class="v6771-primary-action"
           type="button"
-          onclick="v6771SavePreview()">
+          onclick="v6771StartPreviewDay(0)">
+
+          <span>▶️</span>
+
+          <div>
+            <b>INICIAR TREINO AGORA</b>
+            <small>
+              Começar o primeiro treino da programação
+            </small>
+          </div>
+
+        </button>
+
+        <button
+          class="v6771-secondary-action v6771-save-choice-action"
+          type="button"
+          onclick="v6771SavePreview()"
+          ${saved?'disabled':''}>
 
           <span>💾</span>
 
           <div>
-            <b>${saved?'SALVO EM MEUS TREINOS':'SALVAR TREINO'}</b>
+            <b>${saved?'TREINO SALVO':'SALVAR PARA DEPOIS'}</b>
             <small>
               ${saved?
-                'Sua programação já está guardada':
-                'Fazer depois, quando quiser'}
+                'Sua programação já está guardada em Meus Treinos':
+                'Guardar a programação sem iniciar agora'}
             </small>
           </div>
 
@@ -11072,7 +11083,7 @@ window.v6771InitProgressiveAnamnesis=
     if(next){
       next.textContent=
         state.current===7
-          ? '🧠 GERAR MEU TREINO'
+          ? '🧠 RECEBA SEU TREINO'
           : 'CONTINUAR →';
     }
 
