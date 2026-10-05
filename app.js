@@ -7067,6 +7067,19 @@ currentSet=Math.max(1,Number(state.currentSet)||1);
       case 'customBuilder':
         openCustomBuilder(state.customBuilderEditingId||null);
         break;
+      case 'smartCustomBuilder':
+        // O gerador inteligente possui um estado próprio (anamnese + respostas + etapa).
+        // No reload, a restauração da rota geral deve respeitar essa tela em vez de
+        // cair no default/Home. O módulo v67.71.1 restaura respostas e scroll.
+        if(typeof window.restoreSmartRoute==='function') window.restoreSmartRoute();
+        else if(typeof openSmartCustomBuilder==='function') openSmartCustomBuilder(true);
+        break;
+      case 'smartGeneratedResult':
+        // Mesma regra para o resultado gerado: não deixar uma segunda restauração
+        // assíncrona sobrescrever a tela correta com a Home.
+        if(typeof window.restoreSmartRoute==='function') window.restoreSmartRoute();
+        else showView('smartGeneratedResult');
+        break;
       case 'workoutDone':
         renderHistory();
         showView('history');
