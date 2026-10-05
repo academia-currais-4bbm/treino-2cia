@@ -8414,6 +8414,19 @@ async function cloudLogout(){
 }
 async function cloudInit(){
   cloudLoadSession(); try{v6718RenderHomeProfilePhoto();}catch(e){}
+
+  /* V67.71.1 — restauração visual imediata no refresh.
+     Quando já existe uma sessão local e o documento foi recarregado, não
+     esperamos a validação/sincronização do Supabase para descobrir a tela.
+     O snapshot local é suficiente para exibir imediatamente a mesma página;
+     a validação remota continua em paralelo e não altera a navegação quando
+     a sessão permanece válida. Isso elimina a tela preta de 2–3s nas telas
+     normais, sem tocar no fluxo de login. */
+  if(cloudSession?.token && NAV_RESTORE_ON_BOOT){
+    try{ restoreNavigationState(false); }
+    catch(e){ console.warn('Falha na restauração visual imediata:',e); }
+  }
+
   if(!cloudConfigured()){cloudShowGate();cloudMsg('Configuração da nuvem ausente.','error');return;}
 
   if(cloudSession?.token){
