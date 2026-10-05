@@ -300,7 +300,6 @@ const NAV_RESTORE_ON_BOOT = navigationLoadType()==='reload';
 // esse estado antes que o gerador consiga restaurá-lo.
 const V6771_SMART_ROUTE_KEY='t2_v6771_smart_route_v2';
 let v6771SmartRouteBootPending=false;
-let v6771SmartRouteBootDispatching=false;
 if(NAV_RESTORE_ON_BOOT){
   try{
     const smartBootRoute=JSON.parse(localStorage.getItem(V6771_SMART_ROUTE_KEY)||'null');
@@ -522,22 +521,6 @@ function ensureAppHistoryState(){
 }
 
 function showView(id){
-  /* v67.71.1 — durante um reload iniciado dentro do Gerar Treino, a rota
-     persistida tem prioridade absoluta sobre qualquer chamada tardia à Home.
-     Assim o refresh volta para a mesma página/etapa, e não para a Home. */
-  if(id==='home' && v6771SmartRouteBootPending){
-    if(!v6771SmartRouteBootDispatching){
-      v6771SmartRouteBootDispatching=true;
-      setTimeout(()=>{
-        try{
-          if(typeof window.restoreSmartRoute==='function')window.restoreSmartRoute();
-        }finally{
-          v6771SmartRouteBootDispatching=false;
-        }
-      },0);
-    }
-    return;
-  }
   /* v67.71.0 — ao sair do Gerar Meu Treino, não restaurar essa rota em outras páginas */
   if(id!=='smartCustomBuilder' && id!=='smartGeneratedResult' && !v6771SmartRouteBootPending){
     try{ localStorage.removeItem(V6771_SMART_ROUTE_KEY); }catch(e){}
@@ -6891,23 +6874,6 @@ function restorePlanContext(state){
 }
 
 function restoreNavigationState(force=false){
-  // V67.71.1 — o Gerar Treino usa uma rota local própria. Em um reload, ela
-  // deve vencer a restauração genérica da navegação, que historicamente podia
-  // terminar na Home antes do gerador restaurar sua própria etapa/scroll.
-  if(!force && v6771SmartRouteBootPending){
-    if(!v6771SmartRouteBootDispatching){
-      v6771SmartRouteBootDispatching=true;
-      setTimeout(()=>{
-        try{
-          if(typeof window.restoreSmartRoute==='function')window.restoreSmartRoute();
-        }finally{
-          v6771SmartRouteBootDispatching=false;
-        }
-      },0);
-    }
-    return;
-  }
-
   // V67.68.35 — restauração do personalizado é LOCAL e não depende de login/cloud.
   // Isso é essencial no reload/PWA: o checkpoint precisa vencer a Home antes da sessão remota terminar de carregar.
   const durableCustom=v676830ReadCheckpoint();
