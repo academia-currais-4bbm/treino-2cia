@@ -291,10 +291,22 @@ function v6758ShowMotivation(forceLogin=false){
 
 const NAV_STATE_KEY='t2_nav_state_v6730_session';
 const LEGACY_NAV_STATE_KEY='t2_nav_state_v47';
+const V67713_RELOAD_ROUTE_KEY='t2_reload_route_v67713';
+function v67713ReadReloadRoute(){
+  try{
+    const x=JSON.parse(localStorage.getItem(V67713_RELOAD_ROUTE_KEY)||'null');
+    if(!x?.ts || Date.now()-Number(x.ts)>30000)return null;
+    return x;
+  }catch(e){return null}
+}
+function v67713ClearReloadRoute(){try{localStorage.removeItem(V67713_RELOAD_ROUTE_KEY)}catch(e){}}
+
 function navigationLoadType(){
   try{
     const navType=performance.getEntriesByType('navigation')[0]?.type||'navigate';
     if(navType==='reload')return 'reload';
+    const durable=v67713ReadReloadRoute();
+    if(durable?.view)return 'reload';
     const raw=sessionStorage.getItem('t2_reload_intent_v6772');
     if(raw){
       const x=JSON.parse(raw);
@@ -343,6 +355,11 @@ if(NAV_RESTORE_ON_BOOT && v6771SmartRouteBootPending){
 // militar terminar de carregar. Sem esta cópia, isso sobrescrevia 'progress' e o
 // Atualizar da aba Evolução voltava indevidamente para a Home.
 let NAV_BOOT_RELOAD_SNAPSHOT=null;
+const V67713_BOOT_ROUTE=v67713ReadReloadRoute();
+if(NAV_RESTORE_ON_BOOT && V67713_BOOT_ROUTE?.view && V67713_BOOT_ROUTE.view!=='home'){
+  window.__t2EarlyReloadView=V67713_BOOT_ROUTE.view;
+  window.__t2ReloadIntent=true;
+}
 if(NAV_RESTORE_ON_BOOT){
   try{NAV_BOOT_RELOAD_SNAPSHOT=JSON.parse(sessionStorage.getItem(NAV_STATE_KEY)||'null')}catch(e){}
 }
@@ -551,6 +568,19 @@ function ensureAppHistoryState(){
 }
 
 function showView(id){
+  /* v67.71.3 — uma rota capturada no unload tem prioridade absoluta durante o reload. */
+  if(id==='home' && NAV_RESTORE_ON_BOOT && !navRestoring && !browserNavHandling){
+    const durable=v67713ReadReloadRoute();
+    const early=String(window.__t2EarlyReloadView||durable?.view||'');
+    if(early && early!=='home' && byId(early)){
+      if(early==='smartCustomBuilder'||early==='smartGeneratedResult'){
+        setTimeout(()=>{try{window.restoreSmartRoute?.()}catch(e){}},0);
+      }else{
+        setTimeout(()=>{try{restoreNavigationState?.()}catch(e){}},0);
+      }
+      return;
+    }
+  }
   /* v67.71.1-refresh-stable — durante um reload, nunca permita que uma chamada
      tardia de showView('home') apareça antes da restauração da tela que estava aberta.
      O valor foi capturado no index.html antes do primeiro paint. */
@@ -6932,6 +6962,27 @@ function restorePlanContext(state){
 }
 
 function restoreNavigationState(force=false){
+  // V67.71.3 — a rota capturada no unload é a fonte de verdade do reload.
+  // Isto cobre Chromium/Android/PWA que reportam navigation.type como "navigate".
+  if(!force && NAV_RESTORE_ON_BOOT){
+    const durable=v67713ReadReloadRoute();
+    const route=String(window.__t2EarlyReloadView||durable?.view||'');
+    if(route && route!=='home' && byId(route)){
+      if(route==='smartCustomBuilder'||route==='smartGeneratedResult'){
+        v6771SmartRouteBootPending=true;
+        setTimeout(()=>window.restoreSmartRoute?.(),0);
+        return;
+      }
+      navRestoring=true;
+      try{
+        document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+        byId(route).classList.add('active');
+        requestAnimationFrame(()=>window.scrollTo({top:Number(durable?.scrollY)||0,behavior:'auto'}));
+      }finally{navRestoring=false}
+      v67713ClearReloadRoute();
+      return;
+    }
+  }
   // V67.71.1 — o Gerar Treino usa uma rota local própria. Em um reload, ela
   // deve vencer a restauração genérica da navegação, que historicamente podia
   // terminar na Home antes do gerador restaurar sua própria etapa/scroll.

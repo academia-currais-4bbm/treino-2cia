@@ -13,51 +13,44 @@
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="styles.css?v=677100">
 <script>
-/* v67.71.2 — restauração de rota no reload, sem passar pela Home.
-   O Android/PWA nem sempre informa performance.navigation.type=reload.
-   Por isso o app grava uma marca curta no pagehide/beforeunload e usa também
-   o snapshot da navegação. Enquanto a rota é resolvida, as .view ficam ocultas
-   para que a Home inicial do HTML não apareça como uma etapa intermediária. */
+/* v67.71.3 — rota de reload capturada antes do boot.
+   Não depende de performance.navigation.type, que pode ser "navigate" no Android/PWA. */
 (function(){
-  try{
-    var nav=performance.getEntriesByType('navigation')[0];
-    var navReload=(nav&&nav.type==='reload') || (performance.navigation&&performance.navigation.type===1);
-    var pendingRaw=sessionStorage.getItem('t2_reload_intent_v6772');
-    var pending=pendingRaw?JSON.parse(pendingRaw):null;
-    var pendingReload=!!(pending&&pending.ts&&Date.now()-Number(pending.ts)<=15000);
-    var isReload=navReload||pendingReload;
-    if(!isReload){
-      document.documentElement.classList.remove('t2-boot-restoring');
-      return;
-    }
-    var raw=sessionStorage.getItem('t2_nav_state_v6730_session');
-    var state=raw?JSON.parse(raw):null;
-    var route=state&&state.view?String(state.view):'';
-    var smart=null;
-    try{smart=JSON.parse(localStorage.getItem('t2_v6771_smart_route_v2')||'null')}catch(e){}
-    if(smart&&smart.savedAt&&Date.now()-Number(smart.savedAt)<=86400000){
-      if(smart.type==='builder') route='smartCustomBuilder';
-      else if(smart.type==='result') route='smartGeneratedResult';
-    }
-    if(route&&route!=='home'){
-      window.__t2EarlyReloadView=route;
-      window.__t2ReloadIntent=true;
-      document.addEventListener('DOMContentLoaded',function(){
-        var target=document.getElementById(route);
-        if(target){
-          document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});
-          target.classList.add('active');
-        }
-        document.documentElement.classList.remove('t2-boot-restoring');
-        try{sessionStorage.removeItem('t2_reload_intent_v6772')}catch(e){}
-      },{once:true});
-    }else{
-      document.documentElement.classList.remove('t2-boot-restoring');
-      try{sessionStorage.removeItem('t2_reload_intent_v6772')}catch(e){}
-    }
-  }catch(e){
-    document.documentElement.classList.remove('t2-boot-restoring');
+  var KEY='t2_reload_route_v67713';
+  function read(){try{var x=JSON.parse(localStorage.getItem(KEY)||'null');return x&&x.ts&&Date.now()-Number(x.ts)<=30000?x:null}catch(e){return null}}
+  function write(){
+    try{
+      var active=document.querySelector('.view.active');
+      var view=active&&active.id?active.id:'home';
+      var x={view:view,scrollY:window.scrollY||0,ts:Date.now()};
+      localStorage.setItem(KEY,JSON.stringify(x));
+    }catch(e){}
   }
+  /* Este listener é registrado no HEAD, antes do restante do app. */
+  window.addEventListener('pagehide',write,true);
+  window.addEventListener('beforeunload',write,true);
+  var saved=read();
+  if(!saved){
+    document.documentElement.classList.remove('t2-boot-restoring');
+    return;
+  }
+  window.__t2ReloadRoute67713=saved;
+  window.__t2EarlyReloadView=saved.view||'home';
+  window.__t2ReloadIntent=true;
+  /* Esconde todas as views até DOMContentLoaded para a Home inicial do HTML
+     nunca aparecer como etapa intermediária. */
+  document.addEventListener('DOMContentLoaded',function(){
+    try{
+      var route=String(saved.view||'home');
+      var target=document.getElementById(route);
+      if(target){
+        document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});
+        target.classList.add('active');
+        requestAnimationFrame(function(){window.scrollTo(0,Number(saved.scrollY)||0)});
+      }
+    }catch(e){}
+    document.documentElement.classList.remove('t2-boot-restoring');
+  },{once:true});
 })();
 </script>
 </head>
