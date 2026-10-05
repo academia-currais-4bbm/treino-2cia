@@ -4092,41 +4092,46 @@ body.admin-modal-open{overflow:hidden}
   opacity:.75;
 }
 
-
-/* =========================================================
-   v67.71.1 — NOVO FLUXO DO TREINO GERADO
-   Ações explícitas: iniciar agora ou salvar para depois.
-   ========================================================= */
-#smartGeneratedResult .v6771-result-choice-actions{
-  display:grid;
-  gap:12px;
+/* V67.71.1 — fluxo final da anamnese */
+#smartCustomBuilder #v6771FinalAnamActions{
+  display:grid !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+  position:relative !important;
+  z-index:5 !important;
+  margin:22px 0 40px !important;
+  padding:14px !important;
+  gap:12px !important;
 }
-
-#smartGeneratedResult .v6771-save-choice-action{
+#smartCustomBuilder #v6771FinalAnamActions button{
+  display:block !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+  width:100% !important;
+  min-height:58px !important;
+}
+#smartGeneratedResult .v6771-result-choice-actions{
+  display:grid !important;
+  gap:12px !important;
+}
+#smartGeneratedResult .v6771-save-choice-action,
+#smartGeneratedResult .v6771-result-choice-actions .v6771-secondary-action{
   width:100%;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:12px;
   text-align:left;
-  cursor:pointer;
 }
-
-#smartGeneratedResult .v6771-save-choice-action > span{
+#smartGeneratedResult .v6771-result-choice-actions .v6771-secondary-action > span{
   font-size:1.25rem;
 }
-
-#smartGeneratedResult .v6771-save-choice-action > div{
+#smartGeneratedResult .v6771-result-choice-actions .v6771-secondary-action > div{
   display:flex;
   flex-direction:column;
   gap:2px;
 }
-
-#smartGeneratedResult .v6771-save-choice-action small{
+#smartGeneratedResult .v6771-result-choice-actions .v6771-secondary-action small{
   opacity:.78;
-}
-
-#smartGeneratedResult .v6771-save-choice-action:disabled{
-  opacity:.72;
-  cursor:default;
 }

@@ -326,7 +326,7 @@
 <section id="plans" class="view">
     <div class="bar"><button onclick="appBack('workoutChooser',openWorkoutChooser)">←</button><h2 id="plansModeTitle">Treinos</h2></div>
 
-    <button class="v6770-smart-cta" type="button" onclick="openSmartCustomBuilder()">
+    <button id="smartGenerateCta" class="v6770-smart-cta" type="button" onclick="openSmartCustomBuilder()">
       <span class="v6770-smart-icon">🧠</span>
       <span class="v6770-smart-copy">
         <b>GERAR MEU TREINO</b>
@@ -335,7 +335,7 @@
       <span class="chev">›</span>
     </button>
 
-    <div class="v6770-smart-divider"><span>OU</span></div>
+    <div id="smartGenerateDivider" class="v6770-smart-divider"><span>OU</span></div>
 
     <button class="build-workout-cta" onclick="openCustomBuilder()">
       <span class="build-workout-icon">＋</span>
@@ -613,10 +613,9 @@
       </div>
     </div>
 
-    <div class="v6770-anam-actions">
-      <button type="button" class="big red" onclick="generateSmartCustomWorkout()">🧠 GERAR MEU TREINO</button>
-      <button type="button" class="big" onclick="v6771ResetAnamnesis(); window.scrollTo({top:0,behavior:'smooth'});">🧹 ZERAR ANAMNESE</button>
-      <button type="button" class="big" onclick="appBack('plans',()=>openPlans('custom'))">CANCELAR</button>
+    <div id="v6771FinalAnamActions" class="v6770-anam-actions v6771-final-anam-actions">
+      <button type="button" class="big red" onclick="generateSmartCustomWorkout()">🧠 RECEBA SEU TREINO</button>
+      <button type="button" class="big" onclick="v6771ResetAnamnesis(); window.scrollTo({top:0,behavior:'smooth'});">🧹 REFAZER ANAMNESE</button>
     </div>
   </section>
 
