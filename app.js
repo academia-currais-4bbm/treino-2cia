@@ -303,6 +303,7 @@ function v67713ClearReloadRoute(){try{localStorage.removeItem(V67713_RELOAD_ROUT
 
 function navigationLoadType(){
   try{
+    if(window.__t2UrlBootView && window.__t2UrlBootView!=='home')return 'reload';
     const navType=performance.getEntriesByType('navigation')[0]?.type||'navigate';
     if(navType==='reload')return 'reload';
     const durable=v67713ReadReloadRoute();
@@ -567,8 +568,21 @@ function ensureAppHistoryState(){
   try{window.history.replaceState({t2App:true,t2NavVersion:67610},'',location.pathname+location.search)}catch(e){}
 }
 
+function v6771WriteUrlRoute(viewId){
+  try{
+    const u=new URL(location.href);
+    if(viewId && viewId!=='home') u.searchParams.set('t2v',String(viewId));
+    else u.searchParams.delete('t2v');
+    history.replaceState({...history.state,t2App:true,t2View:viewId||'home'},'',u.pathname+u.search+u.hash);
+  }catch(e){}
+}
+
 function showView(id){
-  /* v67.71.3 — uma rota capturada no unload tem prioridade absoluta durante o reload. */
+  /* V67.71.1-refresh-route — rota na URL vence o estado inicial da Home. */
+  if(id==='home' && window.__t2UrlBootView && window.__t2UrlBootView!=='home' && !navRestoring && !browserNavHandling){
+    const early=String(window.__t2UrlBootView);
+    if(byId(early)){ setTimeout(()=>{try{showView(early)}catch(e){}},0); return; }
+  }
   if(id==='home' && NAV_RESTORE_ON_BOOT && !navRestoring && !browserNavHandling){
     const durable=v67713ReadReloadRoute();
     const early=String(window.__t2EarlyReloadView||durable?.view||'');
@@ -627,6 +641,7 @@ function showView(id){
   }
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   target.classList.add('active');
+  v6771WriteUrlRoute(id);
   if(id==='home' && typeof v6738LoadFeed==='function')setTimeout(()=>v6738LoadFeed(false),60);
   if(id==='home' && typeof v6748RenderDashboard==='function')setTimeout(()=>v6748RenderDashboard(),20);
   if(!navRestoring)scrollTo({top:0,behavior:'smooth'});
@@ -6966,7 +6981,7 @@ function restoreNavigationState(force=false){
   // Isto cobre Chromium/Android/PWA que reportam navigation.type como "navigate".
   if(!force && NAV_RESTORE_ON_BOOT){
     const durable=v67713ReadReloadRoute();
-    const route=String(window.__t2EarlyReloadView||durable?.view||'');
+    const route=String(window.__t2UrlBootView||window.__t2EarlyReloadView||durable?.view||'');
     if(route && route!=='home' && byId(route)){
       if(route==='smartCustomBuilder'||route==='smartGeneratedResult'){
         v6771SmartRouteBootPending=true;

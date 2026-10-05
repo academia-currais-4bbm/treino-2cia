@@ -9,9 +9,24 @@
 <meta name="theme-color" content="#8b0000">
 <title>Treino 2ª CIA</title>
 <style id="t2BootRouteStyle">html.t2-boot-restoring .view{visibility:hidden!important;}</style>
-<script>document.documentElement.classList.add('t2-boot-restoring');</script>
+<script>
+document.documentElement.classList.add('t2-boot-restoring');
+/* V67.71.1-refresh-route: a rota curta na própria URL é a fonte de verdade
+   durante o primeiro paint. Isso evita depender de pagehide/localStorage para
+   descobrir a tela após F5/reload em Android/PWA. */
+(function(){
+  try{
+    var p=new URL(location.href);
+    var route=p.searchParams.get('t2v') || (location.hash.match(/^#t2v=([^&]+)/)||[])[1] || '';
+    route=decodeURIComponent(route);
+    if(!route || !/^[A-Za-z0-9_-]+$/.test(route)) return;
+    window.__t2UrlBootView=route;
+    window.__t2ReloadIntent=true;
+  }catch(e){}
+})();
+</script>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles.css?v=677100">
+<link rel="stylesheet" href="styles.css?v=677101-refreshroute">
 <script>
 /* v67.71.3 — rota de reload capturada antes do boot.
    Não depende de performance.navigation.type, que pode ser "navigate" no Android/PWA. */
@@ -29,7 +44,9 @@
   /* Este listener é registrado no HEAD, antes do restante do app. */
   window.addEventListener('pagehide',write,true);
   window.addEventListener('beforeunload',write,true);
+  var urlView=window.__t2UrlBootView||'';
   var saved=read();
+  if(urlView && urlView!=='home') saved={view:urlView,scrollY:0,ts:Date.now(),fromUrl:true};
   if(!saved){
     document.documentElement.classList.remove('t2-boot-restoring');
     return;
@@ -1139,7 +1156,7 @@
 
 <script src="cloud-config.js?v=67.7"></script>
 <script src="data.js?v=676905"></script>
-<script src="app.js?v=677100"></script>
+<script src="app.js?v=677101-refreshroute"></script>
 <div id="buildVersion" style="display:none">v67.69.5</div>
 
 <div id="exerciseAdjustModal" class="exercise-adjust-modal" hidden><div class="exercise-adjust-backdrop" onclick="window.closeExerciseAdjust()"></div><section class="exercise-adjust-sheet" role="dialog" aria-modal="true"><div class="exercise-adjust-head"><div><small>AJUSTES DURANTE O TREINO</small><h3 id="exerciseAdjustTitle">Exercício</h3></div><button type="button" class="exercise-adjust-close" onclick="window.closeExerciseAdjust()">×</button></div><div class="exercise-adjust-grid"><label>Séries<input id="exerciseAdjustSets" type="number" min="1" max="20" inputmode="numeric"></label><label>Descanso (seg)<input id="exerciseAdjustRest" type="number" min="0" max="600" step="5" inputmode="numeric"></label></div><div class="exercise-adjust-quick"><button type="button" onclick="window.adjustExerciseSets(-1)">− 1 SÉRIE</button><button type="button" onclick="window.adjustExerciseSets(1)">+ 1 SÉRIE</button></div><button type="button" class="big exercise-change-open" onclick="window.openExerciseChange()">⇄ TROCAR EXERCÍCIO</button>
