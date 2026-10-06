@@ -1,4 +1,4 @@
-const CACHE='t2cia-v67.69.2-poster-original';
+const CACHE='t2cia-v67.69.2-poster-original-v67724';
 const RUNTIME='t2cia-runtime-v67.67.9';
 const SHELL=[
   './',
@@ -16,7 +16,6 @@ const SHELL=[
   'trilha-treino-2cia.mp3',
   'share-card-premium-v67631.png'
 ];
-
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
@@ -26,7 +25,6 @@ self.addEventListener('install',event=>{
     await self.skipWaiting();
   })());
 });
-
 self.addEventListener('activate',event=>{
   event.waitUntil((async()=>{
     const keys=await caches.keys();
@@ -34,7 +32,6 @@ self.addEventListener('activate',event=>{
     await self.clients.claim();
   })());
 });
-
 function isAppShell(url){
   return url.pathname.endsWith('/') ||
     url.pathname.endsWith('/index.html') ||
@@ -44,13 +41,11 @@ function isAppShell(url){
     url.pathname.endsWith('/cloud-config.js') ||
     url.pathname.endsWith('/manifest.json');
 }
-
 self.addEventListener('fetch',event=>{
   const req=event.request;
   if(req.method!=='GET')return;
   const url=new URL(req.url);
   if(url.origin!==self.location.origin)return;
-
   if(isAppShell(url)){
     event.respondWith((async()=>{
       try{
@@ -66,7 +61,6 @@ self.addEventListener('fetch',event=>{
     })());
     return;
   }
-
   event.respondWith((async()=>{
     const cached=await caches.match(req);
     if(cached)return cached;
@@ -80,9 +74,8 @@ self.addEventListener('fetch',event=>{
     }catch(e){
       return Response.error();
     }
-  })());
+  })();
 });
-
 
 /* ===== V67.60.0 — WEB PUSH + ICONE PEQUENO + DEEP LINK ROBUSTO ===== */
 self.addEventListener('push',event=>{
@@ -104,7 +97,6 @@ self.addEventListener('push',event=>{
     await self.registration.showNotification(title,options);
   })());
 });
-
 self.addEventListener('notificationclick',event=>{
   event.notification.close();
   event.waitUntil((async()=>{
