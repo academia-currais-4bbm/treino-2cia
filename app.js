@@ -3654,8 +3654,9 @@ function v676901PosterSrc(ex){
     'Crucifixo com halteres':'assets/exercises/posters/crucifixo-com-halteres.webp',
     'Supino reto com halteres':'assets/exercises/posters/supino-reto-com-halteres.webp'
   };
-  if(exact[n])return exact[n]+'?v=67694';
-  return ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
+  const base=exact[n]||ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
+  const sep=base.includes('?')?'&':'?';
+  return base+sep+'v=67710';
 }
 function v676901ApplyExactPosterCard(){
   const visual=document.querySelector('#exercise .visual');
