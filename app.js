@@ -3654,13 +3654,14 @@ function v676901PosterSrc(ex){
     'Crucifixo com halteres':'assets/exercises/posters/crucifixo-com-halteres.webp',
     'Supino reto com halteres':'assets/exercises/posters/supino-reto-com-halteres.webp',
     'Crossover médio':'assets/exercises/posters/crossover-medio.webp',
-    'Mesa flexora':'assets/exercises/posters/mesa-flexora.webp',
-    'Cadeira flexora':'assets/exercises/posters/cadeira-flexora.webp',
-    'Stiff':'assets/exercises/posters/stiff.webp'
+    'Afundo':'assets/exercises/posters/afundo.webp',
+    'Agachamento búlgaro':'assets/exercises/posters/agachamento-bulgaro.webp',
+    'Elevação pélvica':'assets/exercises/posters/elevacao-pelvica.webp',
+    'Agachamento sumô':'assets/exercises/posters/agachamento-sumo.webp'
   };
   const base=exact[n]||ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
   const sep=base.includes('?')?'&':'?';
-  return base+sep+'v=67721';
+  return base+sep+'v=67722';
 }
 function v676901ApplyExactPosterCard(){
   const visual=document.querySelector('#exercise .visual');
