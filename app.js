@@ -3657,11 +3657,15 @@ function v676901PosterSrc(ex){
     'Afundo':'assets/exercises/posters/afundo.webp',
     'Agachamento búlgaro':'assets/exercises/posters/agachamento-bulgaro.webp',
     'Elevação pélvica':'assets/exercises/posters/elevacao-pelvica.webp',
-    'Agachamento sumô':'assets/exercises/posters/agachamento-sumo.webp'
+    'Agachamento sumô':'assets/exercises/posters/agachamento-sumo.webp',
+    'Mesa flexora':'assets/exercises/posters/mesa-flexora.webp',
+    'Cadeira flexora':'assets/exercises/posters/cadeira-flexora.webp',
+    'Stiff':'assets/exercises/posters/stiff.webp',
+    'Cadeira adutora':'assets/exercises/posters/cadeira-adutora.webp'
   };
   const base=exact[n]||ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
   const sep=base.includes('?')?'&':'?';
-  return base+sep+'v=67722';
+  return base+sep+'v=67723';
 }
 function v676901ApplyExactPosterCard(){
   const visual=document.querySelector('#exercise .visual');
