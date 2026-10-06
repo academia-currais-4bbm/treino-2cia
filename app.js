@@ -1378,10 +1378,14 @@ function openPlans(mode='all'){
   const customLabel=document.querySelector('#plans .custom-label');
   const customBox=byId('customPlanList');
   const build=document.querySelector('#plans .build-workout-cta');
+  const smartCta=byId('smartGenerateCta');
+  const smartDivider=byId('smartGenerateDivider');
   const readyLabel=document.querySelector('#plans .section-label:not(.custom-label)');
   const title=byId('plansModeTitle');
 
   if(mode==='custom'){
+    if(smartCta)smartCta.style.display='';
+    if(smartDivider)smartDivider.style.display='';
     if(title)title.textContent='Treino personalizado';
     if(grid)grid.style.display='none';
     if(readyLabel)readyLabel.style.display='none';
@@ -1389,6 +1393,8 @@ function openPlans(mode='all'){
     if(customLabel)customLabel.style.display='';
     if(customBox)customBox.style.display='';
   }else if(mode==='ready'){
+    if(smartCta)smartCta.style.display='none';
+    if(smartDivider)smartDivider.style.display='none';
     if(title)title.textContent='Treino pronto';
     if(grid)grid.style.display='';
     if(readyLabel)readyLabel.style.display='';
@@ -1396,6 +1402,8 @@ function openPlans(mode='all'){
     if(customLabel)customLabel.style.display='none';
     if(customBox)customBox.style.display='none';
   }else{
+    if(smartCta)smartCta.style.display='none';
+    if(smartDivider)smartDivider.style.display='none';
     if(title)title.textContent='Treinos';
     if(grid)grid.style.display='';
     if(readyLabel)readyLabel.style.display='';
