@@ -8423,6 +8423,22 @@ async function cloudLogout(){
 async function cloudInit(){
   cloudLoadSession(); try{v6718RenderHomeProfilePhoto();}catch(e){}
 
+  /* V67.71.1 — abertura imediata sem tela vazia.
+     Em uma abertura nova do app, a sessão local já identifica o militar.
+     Não precisamos aguardar validar/sincronizar no Supabase para mostrar a Home.
+     O conteúdo remoto continua sendo sincronizado em seguida.
+     Em um reload, a restauração específica da página continua tendo prioridade. */
+  if(cloudSession?.token && !NAV_RESTORE_ON_BOOT){
+    try{
+      const active=document.querySelector('.view.active');
+      if(!active || active.id!=='home'){
+        document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+        byId('home')?.classList.add('active');
+        window.scrollTo({top:0,behavior:'auto'});
+      }
+    }catch(e){ console.warn('Falha ao exibir Home imediatamente:',e); }
+  }
+
   /* V67.71.1 — restauração visual imediata no refresh.
      Quando já existe uma sessão local e o documento foi recarregado, não
      esperamos a validação/sincronização do Supabase para descobrir a tela.
