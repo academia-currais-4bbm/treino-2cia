@@ -3652,11 +3652,12 @@ function v676901PosterSrc(ex){
     'Supino inclinado':'assets/exercises/posters/supino-inclinado.webp',
     'Supino declinado':'assets/exercises/posters/supino-declinado.webp',
     'Crucifixo com halteres':'assets/exercises/posters/crucifixo-com-halteres.webp',
-    'Supino reto com halteres':'assets/exercises/posters/supino-reto-com-halteres.webp'
+    'Supino reto com halteres':'assets/exercises/posters/supino-reto-com-halteres.webp',
+    'Crossover médio':'assets/exercises/posters/crossover-medio.webp'
   };
   const base=exact[n]||ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
   const sep=base.includes('?')?'&':'?';
-  return base+sep+'v=67718';
+  return base+sep+'v=67719';
 }
 function v676901ApplyExactPosterCard(){
   const visual=document.querySelector('#exercise .visual');
