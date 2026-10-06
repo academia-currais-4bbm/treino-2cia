@@ -1386,13 +1386,13 @@ window.APP_DATA = {
       "Rosca martelo",
       "Rosca Scott"
     ],
-    "Treino C — Pernas": [
-      "Agachamento livre",
-      "Leg press 45°",
+    "Treino C — Quadríceps + Panturrilhas": [
+      "Hack squat",
+      "Agachamento búlgaro",
       "Cadeira extensora",
-      "Mesa flexora",
-      "Stiff",
-      "Elevação pélvica",
+      "Afundo",
+      "Agachamento sumô",
+      "Panturrilha sentada",
       "Panturrilha em pé"
     ],
     "Treino D — Ombros + Core": [
@@ -1403,6 +1403,42 @@ window.APP_DATA = {
       "Prancha frontal",
       "Prancha lateral",
       "Dead bug"
+    ],
+    "Treino E — Peito + Ombros": [
+      "Supino inclinado com halteres",
+      "Peck deck",
+      "Crossover alto",
+      "Flexão de braços",
+      "Desenvolvimento na máquina",
+      "Elevação frontal",
+      "Elevação lateral no cabo"
+    ],
+    "Treino F — Costas + Bíceps": [
+      "Puxada neutra",
+      "Remada cavalinho",
+      "Remada articulada",
+      "Pulldown unilateral",
+      "Rosca alternada",
+      "Rosca inclinada",
+      "Rosca martelo na corda"
+    ],
+    "Treino G — Posteriores + Glúteos": [
+      "Mesa flexora",
+      "Cadeira flexora",
+      "Stiff",
+      "Elevação pélvica",
+      "Agachamento búlgaro",
+      "Cadeira abdutora",
+      "Glúteo deitado"
+    ],
+    "Treino H — Braços + Core": [
+      "Rosca Scott",
+      "Rosca concentrada",
+      "Rosca na polia",
+      "Tríceps barra",
+      "Tríceps unilateral polia",
+      "Ab wheel",
+      "Pallof press"
     ]
   },
   "catalogVersion": "67.69.1",
