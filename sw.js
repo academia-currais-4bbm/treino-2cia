@@ -1,6 +1,6 @@
-/* TREINO 2ª CIA — CORREÇÃO SEGURA DE CACHE DAS PANTURRILHAS v67728 */
-const CACHE='t2cia-panturrilhas-safe-v67728';
-const RUNTIME='t2cia-runtime-safe-v67728';
+/* TREINO 2ª CIA — CORREÇÃO SEGURA DE CACHE DOS EXERCÍCIOS DE ABDÔMEN v67729 */
+const CACHE='t2cia-abdomen-safe-v67729';
+const RUNTIME='t2cia-runtime-abdomen-safe-v67729';
 
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
@@ -17,10 +17,26 @@ self.addEventListener('activate',event=>{
   })());
 });
 
-function isPanturrilhaPoster(url){
+function isAbdomenPoster(url){
   const p=url.pathname.toLowerCase();
-  return p.endsWith('/assets/exercises/posters/panturrilha-em-pe.webp') ||
-         p.endsWith('/assets/exercises/posters/panturrilha-sentada.webp');
+  const names=[
+    'crunch-tradicional',
+    'crunch-na-polia',
+    'prancha-frontal',
+    'prancha-lateral',
+    'elevacao-de-pernas',
+    'abdominal-bicicleta',
+    'abdominal-obliquo',
+    'dead-bug',
+    'crunch-invertido',
+    'abdominal-na-maquina',
+    'ab-wheel',
+    'hollow-body',
+    'russian-twist',
+    'pallof-press',
+    'bird-dog'
+  ];
+  return names.some(name=>p.endsWith('/assets/exercises/posters/'+name+'.webp'));
 }
 
 function isAppShell(url){
@@ -51,13 +67,13 @@ self.addEventListener('fetch',event=>{
   const url=new URL(req.url);
   if(url.origin!==self.location.origin)return;
 
-  // Estas duas imagens SEMPRE são buscadas novamente no GitHub Pages,
-  // evitando a imagem antiga que ficou presa no cache.
-  if(isPanturrilhaPoster(url)){
+  // Estes 15 posters SEMPRE são buscados novamente no GitHub Pages,
+  // evitando imagens antigas que ficaram presas no cache.
+  if(isAbdomenPoster(url)){
     event.respondWith((async()=>{
       try{
         const freshUrl=new URL(req.url);
-        freshUrl.searchParams.set('_pant67728','1');
+        freshUrl.searchParams.set('_abd67729','1');
         const fresh=await fetch(new Request(freshUrl.toString(),{
           method:'GET',
           headers:req.headers,
