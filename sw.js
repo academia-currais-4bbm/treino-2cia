@@ -1,5 +1,5 @@
-const CACHE='t2cia-v67.69.1-poster-original';
-const RUNTIME='t2cia-runtime-v67.67.8';
+const CACHE='t2cia-v67.69.2-poster-original';
+const RUNTIME='t2cia-runtime-v67.67.9';
 const SHELL=[
   './',
   'index.html',
