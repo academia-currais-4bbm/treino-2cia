@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.69.0';
+const TREINO_2CIA_BUILD='67.71.0';
 /* Treino 2ª CIA — v67.68.36 */
 
 const DATA=window.APP_DATA;
@@ -291,17 +291,31 @@ function v6758ShowMotivation(forceLogin=false){
 
 const NAV_STATE_KEY='t2_nav_state_v6730_session';
 const LEGACY_NAV_STATE_KEY='t2_nav_state_v47';
+const NAV_RELOAD_MARKER_KEY='t2_nav_reload_marker_v6771';
 function navigationLoadType(){
   try{return performance.getEntriesByType('navigation')[0]?.type||'navigate'}catch(e){return 'navigate'}
 }
-const NAV_RESTORE_ON_BOOT = navigationLoadType()==='reload';
+// Android/PWA pode reportar um refresh como `navigate`. O marcador é gravado
+// no descarregamento do documento e serve apenas como fallback para esse caso.
+function readReloadMarker(){
+  try{
+    const m=JSON.parse(sessionStorage.getItem(NAV_RELOAD_MARKER_KEY)||'null');
+    if(!m || !m.ts || (Date.now()-Number(m.ts))>30000)return null;
+    return m;
+  }catch(e){return null}
+}
+const NAV_RELOAD_MARKER=readReloadMarker();
+const NAV_RESTORE_ON_BOOT = navigationLoadType()==='reload' || !!NAV_RELOAD_MARKER;
 // V67.68.45 — congela o snapshot existente no EXATO início de um reload.
 // Algumas rotinas assíncronas de boot podem abrir/salvar a Home antes de a sessão
 // militar terminar de carregar. Sem esta cópia, isso sobrescrevia 'progress' e o
 // Atualizar da aba Evolução voltava indevidamente para a Home.
 let NAV_BOOT_RELOAD_SNAPSHOT=null;
 if(NAV_RESTORE_ON_BOOT){
-  try{NAV_BOOT_RELOAD_SNAPSHOT=JSON.parse(sessionStorage.getItem(NAV_STATE_KEY)||'null')}catch(e){}
+  try{
+    NAV_BOOT_RELOAD_SNAPSHOT = NAV_RELOAD_MARKER?.snapshot || JSON.parse(sessionStorage.getItem(NAV_STATE_KEY)||'null');
+    sessionStorage.removeItem(NAV_RELOAD_MARKER_KEY);
+  }catch(e){}
 }
 let navRestoring=false;
 let navHistoryIndex=null;
@@ -312,6 +326,7 @@ function navStateSnapshot(viewId){
     view: viewId || document.querySelector('.view.active')?.id || 'home',
     currentGroup,
     currentListMode,
+    currentLegSubgroup,
     activePlanName,
     activePlanIndex,
     currentExerciseId: currentExercise?.id ?? null,
@@ -442,6 +457,25 @@ function v67610InternalBack(fallbackView='home',fallbackAction=null){
     // Se o usuário estiver numa subseção da Administração, o primeiro Voltar
     // deve ser consumido internamente e retornar ao Dashboard administrativo.
     const activeNow=document.querySelector('.view.active')?.id||'home';
+    // V67.70.0 — fluxo direto dos subgrupos de Pernas
+    if(activeNow==='list' && currentListMode==='leg-subgroup'){
+      navRestoring=true;
+      try{openLegSubgroups();}
+      finally{navRestoring=false;}
+      saveNavigationState('groups');
+      setTimeout(v67610ArmCloseWatcher,0);
+      return true;
+    }
+
+    if(activeNow==='groups' && currentListMode==='leg-subgroups'){
+      navRestoring=true;
+      try{openGroups();}
+      finally{navRestoring=false;}
+      saveNavigationState('groups');
+      setTimeout(v67610ArmCloseWatcher,0);
+      return true;
+    }
+
     if(activeNow==='admin' && typeof admin54GetCurrentTab==='function' && admin54GetCurrentTab()!=='dashboard'){
       admin54BackToDashboard();
       saveNavigationState('admin');
@@ -488,6 +522,11 @@ function ensureAppHistoryState(){
 }
 
 function showView(id){
+  /* v67.71.0 — ao sair do Gerar Meu Treino, não restaurar essa rota em outras páginas */
+  if(id!=='smartCustomBuilder' && id!=='smartGeneratedResult'){
+    try{ localStorage.removeItem('t2_v6771_smart_route_v2'); }catch(e){}
+    try{ localStorage.removeItem('t2_v6771_generator_return'); }catch(e){}
+  }
   // V67.68.35 — no boot/reload, um personalizado ativo tem prioridade absoluta
   // sobre qualquer chamada tardia de Home. Libera assim que a restauração concluir.
   if(id==='home' && v676832BootRestoreLock && !v676832BootRestoreDone){
@@ -537,11 +576,134 @@ else ensureAppHistoryState();
 window.addEventListener('pageshow',()=>{ensureAppHistoryState();setTimeout(v67610ArmCloseWatcher,0)});
 
 
+let currentLegSubgroup=null;
 function exByName(n){return DATA.exercises.find(x=>x.name===n)}
+const V6770_LEG_SUBGROUPS={
+  quadriceps:{
+    title:"Quadríceps / anterior de coxa",
+    names:[
+      "Agachamento livre",
+      "Leg press 45°",
+      "Cadeira extensora",
+      "Afundo",
+      "Agachamento búlgaro",
+      "Hack squat"
+    ]
+  },
+  posterior:{
+    title:"Posterior de coxa",
+    names:[
+      "Mesa flexora",
+      "Cadeira flexora",
+      "Stiff"
+    ]
+  },
+  gluteos:{
+    title:"Glúteos",
+    names:[
+      "Elevação pélvica",
+      "Afundo",
+      "Agachamento búlgaro",
+      "Agachamento sumô"
+    ]
+  },
+  adutores:{
+    title:"Adutores",
+    names:[
+      "Cadeira adutora",
+      "Agachamento sumô"
+    ]
+  },
+  abdutores:{
+    title:"Abdutores",
+    names:[
+      "Cadeira abdutora"
+    ]
+  },
+  panturrilhas:{
+    title:"Panturrilhas",
+    names:[
+      "Panturrilha em pé",
+      "Panturrilha sentada"
+    ]
+  }
+};
+
+function openLegSubgroups(){
+  currentListMode="leg-subgroups";
+
+  currentLegSubgroup=null;
+
+  const bar=document.querySelector('#groups .bar');
+  const back=bar ? bar.querySelector('button') : null;
+  const title=bar ? bar.querySelector('h2') : null;
+
+  if(title) title.textContent="Pernas";
+  if(back) back.setAttribute("onclick","openGroups()");
+
+  byId('groupGrid').innerHTML=Object.entries(V6770_LEG_SUBGROUPS).map(([key,data])=>{
+    const count=data.names.filter(name=>
+      DATA.exercises.some(x=>x.group==="Pernas" && x.name===name)
+    ).length;
+
+    return `<button class="rowbtn" onclick="openLegSubgroup('${key}')">
+      <b>${data.title}</b>
+      <span>${count} exercícios</span>
+    </button>`;
+  }).join('');
+
+  showView('groups');
+}
+
+function openLegSubgroup(key){
+  const sub=V6770_LEG_SUBGROUPS[key];
+  if(!sub)return;
+
+  currentGroup="Pernas";
+  currentListMode="leg-subgroup";
+  currentLegSubgroup=key;
+
+  byId('listTitle').textContent=sub.title;
+
+  const names=new Set(sub.names);
+  const list=DATA.exercises.filter(x=>
+    x.group==="Pernas" && names.has(x.name)
+  );
+
+  renderExerciseButtons(list);
+  showView('list');
+}
+
 function openGroups(){
   currentListMode="group";
+
+  currentLegSubgroup=null;
+
+  const bar=document.querySelector('#groups .bar');
+  const back=bar ? bar.querySelector('button') : null;
+  const title=bar ? bar.querySelector('h2') : null;
+
+  if(title) title.textContent="Grupos musculares";
+  if(back) back.setAttribute("onclick","appBack('home')");
+
   const gs=[...new Set(DATA.exercises.map(x=>x.group))].filter(g=>g!=="Alongamento");
-  byId('groupGrid').innerHTML=gs.map(g=>`<button class="rowbtn" onclick="openGroup('${g.replaceAll("'","\\'")}')"><b>${g}</b><span>${DATA.exercises.filter(x=>x.group===g).length} exercícios</span></button>`).join('');
+
+  byId('groupGrid').innerHTML=gs.map(g=>{
+    const count=DATA.exercises.filter(x=>x.group===g).length;
+
+    if(g==="Pernas"){
+      return `<button class="rowbtn" onclick="openLegSubgroups()">
+        <b>${g}</b>
+        <span>${count} exercícios</span>
+      </button>`;
+    }
+
+    return `<button class="rowbtn" onclick="openGroup('${g.replaceAll("'","\\'")}')">
+      <b>${g}</b>
+      <span>${count} exercícios</span>
+    </button>`;
+  }).join('');
+
   showView('groups');
 }
 function openGroup(g){
@@ -1216,10 +1378,14 @@ function openPlans(mode='all'){
   const customLabel=document.querySelector('#plans .custom-label');
   const customBox=byId('customPlanList');
   const build=document.querySelector('#plans .build-workout-cta');
+  const smartCta=byId('smartGenerateCta');
+  const smartDivider=byId('smartGenerateDivider');
   const readyLabel=document.querySelector('#plans .section-label:not(.custom-label)');
   const title=byId('plansModeTitle');
 
   if(mode==='custom'){
+    if(smartCta)smartCta.style.display='';
+    if(smartDivider)smartDivider.style.display='';
     if(title)title.textContent='Treino personalizado';
     if(grid)grid.style.display='none';
     if(readyLabel)readyLabel.style.display='none';
@@ -1227,6 +1393,8 @@ function openPlans(mode='all'){
     if(customLabel)customLabel.style.display='';
     if(customBox)customBox.style.display='';
   }else if(mode==='ready'){
+    if(smartCta)smartCta.style.display='none';
+    if(smartDivider)smartDivider.style.display='none';
     if(title)title.textContent='Treino pronto';
     if(grid)grid.style.display='';
     if(readyLabel)readyLabel.style.display='';
@@ -1234,6 +1402,8 @@ function openPlans(mode='all'){
     if(customLabel)customLabel.style.display='none';
     if(customBox)customBox.style.display='none';
   }else{
+    if(smartCta)smartCta.style.display='none';
+    if(smartDivider)smartDivider.style.display='none';
     if(title)title.textContent='Treinos';
     if(grid)grid.style.display='';
     if(readyLabel)readyLabel.style.display='';
@@ -1269,7 +1439,17 @@ function openPlan(name){
   if(startBox) startBox.innerHTML=`<button type="button" class="big red plan-start" onclick="startPlanWorkout(); return false;">▶ INICIAR ${name.split('—')[0].trim()}</button><small>${activePlanExercises.length} exercícios • registro série por série</small>`;
   showView('list');
 }
-function goListBack(){showView(currentListMode==="plan"?"plans":"groups")}
+function goListBack(){
+  if(currentListMode==="plan"){
+    showView("plans");
+    return;
+  }
+  if(currentListMode==="leg-subgroup"){
+    openLegSubgroups();
+    return;
+  }
+  showView("groups");
+}
 function renderExerciseButtons(list){
   byId('exerciseList').innerHTML=list.map((x,i)=>`<button class="rowbtn" onclick="${currentListMode==='plan'?`openPlanExercise(${i})`:`openExercise(${x.id})`}"><b>${i+1}. ${x.name}</b><span>${x.customMethodLabel?`⚙ ${x.customMethodLabel} • `:''}${x.sets} séries • ${x.reps} • descanso ${x.rest}s</span></button>`).join('');
 }
@@ -2624,6 +2804,7 @@ function v6748RenderDashboard(){
   <div class="v6748-stats"><div><strong>${count}</strong><span>treinos</span></div><div><strong>${minutes}</strong><span>minutos</span></div><div><strong>🔥 ${streak}</strong><span>${streak===1?'semana na meta':'semanas na meta'}</span></div></div>
   <div class="v6748-goal"><div class="v6748-goal-head"><div><b>🎯 Meta semanal</b><span>${count}/${goal} treinos • ${pct}%</span></div><button type="button" onclick="v6748SetWeeklyGoal()">EDITAR</button></div><div class="v6748-progress"><i style="width:${pct}%"></i></div><small>${count>=goal?'Meta da semana alcançada. Excelente consistência!':`Faltam ${Math.max(0,goal-count)} ${goal-count===1?'treino':'treinos'} para sua meta.`}</small></div>
   <div class="v6748-chart"><div class="v6748-chart-head"><b>Atividade nos últimos dias</b><span>min/dia</span></div><div class="v6748-bars">${bars}</div></div>`;
+  v676847RenderGoalsAchievements(records);
 }
 /* ===== V67.49 — RECORDES PESSOAIS / CONQUISTAS ===== */
 const V6749_ACH_SEEN='t2_achievements_seen_v6749';
@@ -3359,7 +3540,7 @@ function v676881ApplyInline3DPilot(){
 
 
 /* =========================================================
-   V67.69.0 — CARD PADRONIZADO DE DEMONSTRAÇÃO
+   V67.69.5 — CARD PADRONIZADO DE DEMONSTRAÇÃO
    A arte da tela é única para todo o catálogo. O conteúdo
    (nome, músculo, imagens técnicas e dados) é preenchido
    dinamicamente; o vídeo é uma camada separada, associada
@@ -3468,11 +3649,23 @@ function v676901PosterSrc(ex){
   if(!ex)return '';
   const n=String(ex.name||'').trim();
   const exact={
-    'Cadeira abdutora':'assets/exercises/posters/cadeira-abdutora.webp'
+    'Supino inclinado':'assets/exercises/posters/supino-inclinado.webp',
+    'Supino declinado':'assets/exercises/posters/supino-declinado.webp',
+    'Crucifixo com halteres':'assets/exercises/posters/crucifixo-com-halteres.webp',
+    'Supino reto com halteres':'assets/exercises/posters/supino-reto-com-halteres.webp',
+    'Crossover médio':'assets/exercises/posters/crossover-medio.webp',
+    'Afundo':'assets/exercises/posters/afundo.webp',
+    'Agachamento búlgaro':'assets/exercises/posters/agachamento-bulgaro.webp',
+    'Elevação pélvica':'assets/exercises/posters/elevacao-pelvica.webp',
+    'Agachamento sumô':'assets/exercises/posters/agachamento-sumo.webp',
+    'Mesa flexora':'assets/exercises/posters/mesa-flexora.webp',
+    'Cadeira flexora':'assets/exercises/posters/cadeira-flexora.webp',
+    'Stiff':'assets/exercises/posters/stiff.webp',
+    'Cadeira adutora':'assets/exercises/posters/cadeira-adutora.webp'
   };
   const base=exact[n]||ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
   const sep=base.includes('?')?'&':'?';
-  return base+sep+'v=67726';
+  return base+sep+'v=67723';
 }
 function v676901ApplyExactPosterCard(){
   const visual=document.querySelector('#exercise .visual');
@@ -3485,8 +3678,7 @@ function v676901ApplyExactPosterCard(){
 
   const poster=document.createElement('div');
   poster.className='v676901-poster-card';
-  poster.innerHTML=`<img alt="${v676900Esc(currentExercise.name||'Exercício')} — guia visual">
-    <div class="v676901-poster-footer">${v676900Esc(currentExercise.name||'EXERCÍCIO')}</div>`;
+  poster.innerHTML=`<img alt="${v676900Esc(currentExercise.name||'Exercício')} — guia visual">`;
   const img=poster.querySelector('img');
   img.src=v676901PosterSrc(currentExercise);
   img.onerror=()=>{
@@ -3777,7 +3969,7 @@ function v676847EditGoal(type){
 }
 window.v676847EditGoal=v676847EditGoal;
 function v676847RenderGoalsAchievements(records){
-  const goalsBox=byId('v676847Goals'), achBox=byId('v676847Achievements'); if(!goalsBox&&!achBox)return;
+  const goalsBox=byId('v676847Goals'), achBox=byId('v676847Achievements'), homeGoals=byId('v676847HomeGoals'), homeAchievements=byId('v676847HomeAchievements'); if(!goalsBox&&!achBox&&!homeGoals&&!homeAchievements)return;
   const now=new Date(), key=v676844MonthKey(now);
   const month=records.filter(w=>{const d=new Date(w.date);return !Number.isNaN(d.getTime())&&v676844MonthKey(d)===key});
   const cardio=month.reduce((a,w)=>a+Number(w.cardioDistanceKm||0)+(Number(w.swimDistanceMeters||0)/1000),0);
@@ -3786,12 +3978,16 @@ function v676847RenderGoalsAchievements(records){
     {icon:'🏋️',title:'Treinos no mês',value:month.length,target:g.monthlyWorkouts,unit:'treinos',type:'workouts'},
     {icon:'🏃',title:'Cardio no mês',value:cardio,target:g.monthlyCardio,unit:'km',type:'cardio'}
   ];
-  if(goalsBox)goalsBox.innerHTML=`<div class="v676847-head"><div><span>METAS PESSOAIS</span><h3>🎯 Seus objetivos do mês</h3></div><small>Não altera o Ranking</small></div><div class="v676847-goal-grid">${cards.map(c=>{const pct=Math.min(100,Math.round(c.value/c.target*100));const val=c.unit==='km'?c.value.toLocaleString('pt-BR',{maximumFractionDigits:1}):Math.round(c.value);return `<div class="v676847-goal"><div class="v676847-goal-top"><span>${c.icon}</span><div><b>${c.title}</b><small>${val} / ${String(c.target).replace('.',',')} ${c.unit}</small></div><button onclick="v676847EditGoal('${c.type}')">EDITAR</button></div><div class="v676847-track"><i style="width:${pct}%"></i></div><div class="v676847-foot"><span>${pct}% concluído</span><b>${pct>=100?'META ALCANÇADA ✓':`Faltam ${c.unit==='km'?Math.max(0,c.target-c.value).toLocaleString('pt-BR',{maximumFractionDigits:1}):Math.max(0,c.target-c.value)} ${c.unit}`}</b></div></div>`}).join('')}</div>`;
-  if(achBox){
+  const goalsHtml=`<div class="v676847-head"><div><span>METAS PESSOAIS</span><h3>🎯 Seus objetivos do mês</h3></div><small>Não altera o Ranking</small></div><div class="v676847-goal-grid">${cards.map(c=>{const pct=Math.min(100,Math.round(c.value/c.target*100));const val=c.unit==='km'?c.value.toLocaleString('pt-BR',{maximumFractionDigits:1}):Math.round(c.value);return `<div class="v676847-goal"><div class="v676847-goal-top"><span>${c.icon}</span><div><b>${c.title}</b><small>${val} / ${String(c.target).replace('.',',')} ${c.unit}</small></div><button onclick="v676847EditGoal('${c.type}')">EDITAR</button></div><div class="v676847-track"><i style="width:${pct}%"></i></div><div class="v676847-foot"><span>${pct}% concluído</span><b>${pct>=100?'META ALCANÇADA ✓':`Faltam ${c.unit==='km'?Math.max(0,c.target-c.value).toLocaleString('pt-BR',{maximumFractionDigits:1}):Math.max(0,c.target-c.value)} ${c.unit}`}</b></div></div>`}).join('')}</div>`;
+  if(goalsBox)goalsBox.innerHTML=goalsHtml;
+  if(homeGoals)homeGoals.innerHTML=goalsHtml;
+  if(achBox||homeAchievements){
     const d=v6749PerformanceData(), unlocked=d.achievements.filter(a=>a.ok).length;
     const achCard=a=>`<div class="v676847-ach ${a.ok?'unlocked':'locked'}"><span>${a.ok?a.icon:'🔒'}</span><div><b>${a.name}</b><small>${a.desc}</small></div>${a.ok?'<em>CONQUISTADA</em>':''}</div>`;
     const ordered=[...d.achievements.filter(a=>a.ok),...d.achievements.filter(a=>!a.ok)];
-    achBox.innerHTML=`<div class="v676847-head"><div><span>CONQUISTAS</span><h3>🏅 Sua coleção</h3></div><strong>${unlocked}/${d.achievements.length}</strong></div><div class="v676847-ach-grid">${ordered.map(achCard).join('')}</div>`;
+    const achievementsHtml=`<div class="v676847-head"><div><span>CONQUISTAS</span><h3>🏅 Sua coleção</h3></div><strong>${unlocked}/${d.achievements.length}</strong></div><div class="v676847-ach-grid">${ordered.map(achCard).join('')}</div>`;
+    if(achBox)achBox.innerHTML=achievementsHtml;
+    if(homeAchievements)homeAchievements.innerHTML=achievementsHtml;
   }
 }
 
@@ -5101,6 +5297,1515 @@ function openCustomPlan(id){
  byId('listTitle').textContent=w.name;renderExerciseButtons(activePlanExercises);const startBox=byId('planStartBox');
  if(startBox)startBox.innerHTML=`<button type="button" class="big red plan-start" onclick="startPlanWorkout(); return false;">▶ INICIAR TREINO</button><small>${activePlanExercises.length} exercícios • treino personalizado</small>`;showView('list')
 }
+
+/* ===== V67.70.0 — ANAMNESE / GERADOR INTELIGENTE ===== */
+const V6770_SMART_PROFILE_KEY='t2_smart_training_profile_v6770';
+
+function v6770BmiClass(bmi){
+  if(bmi<18.5)return 'Abaixo da faixa de referência';
+  if(bmi<25)return 'Faixa de referência';
+  if(bmi<30)return 'Sobrepeso';
+  if(bmi<35)return 'Obesidade grau I';
+  if(bmi<40)return 'Obesidade grau II';
+  return 'Obesidade grau III';
+}
+
+function v6770BmiWeightRange(heightCm){
+  const h=Number(heightCm)/100;
+  if(!Number.isFinite(h)||h<=0)return null;
+  return {
+    min:18.5*h*h,
+    max:24.9*h*h
+  };
+}
+
+function v6770UpdateBmi(){
+  const current=Number(byId('v6770CurrentWeight')?.value||0);
+  const target=Number(byId('v6770TargetWeight')?.value||0);
+  const height=Number(byId('v6770Height')?.value||0);
+  const box=byId('v6770BmiBox');
+  if(!box)return;
+
+  if(!current||!target||!height||height<100){
+    box.hidden=true;
+    box.innerHTML='';
+    return;
+  }
+
+  const h=height/100;
+  const currentBmi=current/(h*h);
+  const targetBmi=target/(h*h);
+  const range=v6770BmiWeightRange(height);
+
+  box.hidden=false;
+  box.innerHTML=`
+    <div class="v6770-bmi-title">⚖️ SEUS INDICADORES</div>
+    <div class="v6770-bmi-grid">
+      <div>
+        <span>IMC atual</span>
+        <strong>${currentBmi.toFixed(1).replace('.',',')}</strong>
+        <small>${v6770BmiClass(currentBmi)}</small>
+      </div>
+      <div>
+        <span>IMC no peso-meta</span>
+        <strong>${targetBmi.toFixed(1).replace('.',',')}</strong>
+        <small>${v6770BmiClass(targetBmi)}</small>
+      </div>
+    </div>
+    <div class="v6770-bmi-range">
+      <span>Faixa de referência do IMC</span>
+      <b>18,5 – 24,9</b>
+      <small>Para sua altura: aproximadamente ${range.min.toFixed(1).replace('.',',')} a ${range.max.toFixed(1).replace('.',',')} kg</small>
+    </div>
+  `;
+}
+
+function v6770CollectSmartProfile(){
+  const muscleMode=document.querySelector('input[name="v6770MuscleMode"]:checked')?.value||'all';
+  const muscles=[...document.querySelectorAll('#v6770MuscleGroups input[type="checkbox"]:checked')].map(x=>x.value);
+  const equipment=[...document.querySelectorAll('#v6770EquipmentGrid input[type="checkbox"]:checked')].map(x=>x.value);
+
+  return {
+    goal:byId('v6770Goal')?.value||'',
+    currentWeight:Number(byId('v6770CurrentWeight')?.value||0),
+    targetWeight:Number(byId('v6770TargetWeight')?.value||0),
+    height:Number(byId('v6770Height')?.value||0),
+    level:byId('v6770Level')?.value||'',
+    trainingTime:byId('v6770TrainingTime')?.value||'',
+    days:Number(byId('v6770Days')?.value||0),
+    minutes:Number(byId('v6770Minutes')?.value||0),
+    gym:byId('v6770Gym')?.value||'',
+    equipment,
+    muscleMode,
+    muscles,
+    priority:byId('v6770Priority')?.value||'',
+    preference:byId('v6770Preference')?.value||'mixed',
+    limitations:String(byId('v6770Limitations')?.value||'').trim(),
+    savedAt:new Date().toISOString()
+  };
+}
+
+function v6770ValidateSmartProfile(profile){
+  const required=[
+    ['goal','objetivo'],
+    ['currentWeight','peso atual'],
+    ['targetWeight','peso-meta'],
+    ['height','altura'],
+    ['level','nível de experiência'],
+    ['days','dias por semana'],
+    ['minutes','tempo por sessão'],
+    ['gym','estrutura disponível']
+  ];
+
+  for(const [key,label] of required){
+    if(!profile[key] || Number(profile[key])===0){
+      alert(`Informe seu ${label}.`);
+      return false;
+    }
+  }
+
+  if(profile.muscleMode==='selected'&&!profile.muscles.length){
+    alert('Selecione pelo menos um grupo muscular.');
+    return false;
+  }
+
+  if(profile.currentWeight<20||profile.currentWeight>400){
+    alert('Confira o peso atual informado.');
+    return false;
+  }
+
+  if(profile.targetWeight<20||profile.targetWeight>400){
+    alert('Confira o peso-meta informado.');
+    return false;
+  }
+
+  if(profile.height<100||profile.height>230){
+    alert('Confira sua altura.');
+    return false;
+  }
+
+  return true;
+}
+
+function v6771ResetAnamnesis(){
+  const root=document.getElementById('smartCustomBuilder');
+  if(!root)return;
+
+  root.querySelectorAll('input,select,textarea').forEach(el=>{
+    if(el.type==='checkbox' || el.type==='radio'){
+      el.checked=false;
+    }else{
+      el.value='';
+    }
+  });
+
+  const allMuscles=root.querySelectorAll(
+    '#v6770MuscleGroups input[type="checkbox"]'
+  );
+
+  allMuscles.forEach(el=>el.checked=false);
+
+  const mode=root.querySelector(
+    'input[name="v6770MuscleMode"][value="selected"]'
+  );
+
+  if(mode)mode.checked=true;
+
+  root.querySelectorAll(
+    '#v6770EquipmentGrid input[type="checkbox"]'
+  ).forEach(el=>el.checked=false);
+
+  try{
+    localStorage.removeItem(V6770_SMART_PROFILE_KEY);
+  }catch(e){}
+
+  try{
+    localStorage.removeItem(ROUTE_KEY);
+  }catch(e){}
+
+  root._v6771ProgressState={current:0};
+
+  if(typeof window.v6771InitProgressiveAnamnesis==='function'){
+    window.v6771InitProgressiveAnamnesis(true);
+  }
+
+  if(typeof v6771UpdateBmi==='function'){
+    v6771UpdateBmi();
+  }
+}
+
+function openSmartCustomBuilder(preserveState=false){
+  showView('smartCustomBuilder');
+
+  setTimeout(()=>{
+    if(!preserveState && !window.__v6771PreserveBuilderState){
+      v6771ResetAnamnesis();
+    }
+    byId('v6770Goal')?.focus();
+  },120);
+}
+
+function v6770LoadSmartProfile(){
+  let p=null;
+  try{p=JSON.parse(localStorage.getItem(V6770_SMART_PROFILE_KEY)||'null')}catch(e){}
+  if(!p)return;
+
+  const set=(id,v)=>{
+    const el=byId(id);
+    if(el&&v!==undefined&&v!==null)el.value=v;
+  };
+
+  set('v6770Goal',p.goal);
+  set('v6770CurrentWeight',p.currentWeight||'');
+  set('v6770TargetWeight',p.targetWeight||'');
+  set('v6770Height',p.height||'');
+  set('v6770Level',p.level);
+  set('v6770TrainingTime',p.trainingTime);
+  set('v6770Days',p.days);
+  set('v6770Minutes',p.minutes);
+  set('v6770Gym',p.gym);
+  set('v6770Priority',p.priority);
+  set('v6770Preference',p.preference);
+  set('v6770Limitations',p.limitations||'');
+
+  document.querySelectorAll('#v6770EquipmentGrid input[type="checkbox"]').forEach(x=>{
+    x.checked=p.equipment?.includes(x.value);
+  });
+
+  document.querySelectorAll('#v6770MuscleGroups input[type="checkbox"]').forEach(x=>{
+    x.checked=p.muscles?.includes(x.value);
+  });
+
+  const radio=document.querySelector(
+    `input[name="v6770MuscleMode"][value="${p.muscleMode||'all'}"]`
+  );
+
+  if(radio)radio.checked=true;
+
+  v6770UpdateBmi();
+}
+
+function v6770InitSmartForm(){
+  ['v6770CurrentWeight','v6770TargetWeight','v6770Height'].forEach(id=>{
+    byId(id)?.addEventListener('input',v6770UpdateBmi);
+  });
+}
+
+/* ===== V67.71.0 — MOTOR INTELIGENTE DE TREINO PERSONALIZADO ===== */
+
+const V6771_SMART_GENERATED_KEY='t2_smart_generated_plans_v6771';
+
+const V6771_LEGS={
+  'Quadríceps':['Agachamento livre','Leg press 45°','Cadeira extensora','Afundo','Agachamento búlgaro','Hack squat'],
+  'Posterior de coxa':['Mesa flexora','Cadeira flexora','Stiff'],
+  'Glúteos':['Elevação pélvica','Afundo','Agachamento búlgaro','Agachamento sumô'],
+  'Adutores':['Cadeira adutora','Agachamento sumô'],
+  'Abdutores':['Cadeira abdutora'],
+  'Panturrilhas':['Panturrilha em pé','Panturrilha sentada'],
+  'Tibial anterior':[]
+};
+
+const V6771_GROUPS=['Peito','Costas','Ombros','Bíceps','Tríceps','Abdômen'];
+
+const V6771_GOALS={
+  weight_loss:{sets:2,reps:'10–15',rest:60},
+  mass_gain:{sets:3,reps:'8–12',rest:75},
+  hypertrophy:{sets:3,reps:'8–12',rest:75},
+  strength:{sets:4,reps:'5–8',rest:120},
+  conditioning:{sets:2,reps:'10–15',rest:45},
+  operational:{sets:3,reps:'6–12',rest:60},
+  recomposition:{sets:3,reps:'8–12',rest:60},
+  general:{sets:2,reps:'10–15',rest:60}
+};
+
+function v6771N(v){
+  return String(v||'')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'');
+}
+
+function v6771Goal(v){
+  return ({
+    weight_loss:'Perder gordura / peso',
+    mass_gain:'Ganhar massa muscular',
+    hypertrophy:'Hipertrofia',
+    strength:'Ganhar força',
+    conditioning:'Melhorar condicionamento',
+    operational:'Desempenho para o serviço',
+    recomposition:'Recomposição corporal',
+    general:'Condicionamento geral'
+  })[v]||'Objetivo personalizado';
+}
+
+function v6771ExerciseEquipmentScore(ex,p){
+  if(p.gym==='full')return 3;
+
+  const n=v6771N(ex.name);
+  const eq=new Set(p.equipment||[]);
+
+  if(/flexao|paralela|afundo|bulgaro|prancha|dead bug|bird dog|hollow body|crunch|bicicleta/.test(n)){
+    return 3;
+  }
+
+  if(/leg press/.test(n))return eq.has('legpress')?4:-100;
+
+  if(/cadeira |mesa |peck deck|chest press|hack squat/.test(n)){
+    return eq.has('machines')?4:-100;
+  }
+
+  if(/polia|crossover|face pull|pulldown|pallof|triceps corda|triceps barra/.test(n)){
+    return eq.has('cables')?4:-100;
+  }
+
+  if(/supino|remada|rosca|desenvolvimento|elevacao|crucifixo|stiff|terra|agachamento|panturrilha|elevacao pelvica/.test(n)){
+    return (
+      eq.has('dumbbells')||
+      eq.has('barbell')||
+      eq.has('plates')||
+      eq.has('bench')
+    )?3:-100;
+  }
+
+  return p.gym==='home'?1:2;
+}
+
+function v6771LimitationPenalty(ex,p){
+  const l=v6771N(p.limitations);
+  const n=v6771N(ex.name);
+
+  if(!l)return 0;
+
+  let score=0;
+
+  if(/joelho|joelhos/.test(l)&&/agachamento|leg press|afundo|bulgaro|extensora|hack/.test(n)){
+    score-=18;
+  }
+
+  if(/ombro|ombros/.test(l)&&/supino|desenvolvimento|elevacao|paralela|crucifixo/.test(n)){
+    score-=18;
+  }
+
+  if(/lombar|coluna/.test(l)&&/terra|stiff|remada curvada|agachamento/.test(n)){
+    score-=18;
+  }
+
+  if(/cotovelo/.test(l)&&/triceps|rosca|paralela/.test(n)){
+    score-=12;
+  }
+
+  return score;
+}
+
+function v6771Target(ex){
+  if(ex.group!=='Pernas')return ex.group;
+
+  for(const key of Object.keys(V6771_LEGS)){
+    if(V6771_LEGS[key].includes(ex.name))return key;
+  }
+
+  return 'Pernas';
+}
+
+function v6771Targets(profile){
+  if(profile.muscleMode==='all'){
+    return [
+      ...V6771_GROUPS,
+      'Quadríceps',
+      'Posterior de coxa',
+      'Glúteos',
+      'Adutores',
+      'Abdutores',
+      'Panturrilhas'
+    ];
+  }
+
+  const targets=[];
+
+  (profile.muscles||[]).forEach(x=>{
+    if(x==='Pernas completas'){
+      targets.push(
+        'Quadríceps',
+        'Posterior de coxa',
+        'Glúteos',
+        'Adutores',
+        'Abdutores',
+        'Panturrilhas'
+      );
+    }else if(V6771_GROUPS.includes(x)||V6771_LEGS[x]){
+      targets.push(x);
+    }
+  });
+
+  if(profile.legsComplete){
+    targets.push(
+      'Quadríceps',
+      'Posterior de coxa',
+      'Glúteos',
+      'Adutores',
+      'Abdutores',
+      'Panturrilhas'
+    );
+  }
+
+  return [...new Set(targets)];
+}
+
+function v6771Pool(target,profile){
+  let list=[];
+
+  if(V6771_LEGS[target]){
+    list=DATA.exercises.filter(ex=>V6771_LEGS[target].includes(ex.name));
+  }else{
+    list=DATA.exercises.filter(ex=>ex.group===target);
+  }
+
+  return list.filter(ex=>v6771ExerciseEquipmentScore(ex,profile)>-50);
+}
+
+function v6771Score(ex,target,profile){
+  let score=v6771ExerciseEquipmentScore(ex,profile)*4;
+
+  const n=v6771N(ex.name);
+  const name=String(ex.name||'').toLowerCase();
+  const muscle=String(ex.muscle||'').toLowerCase();
+  const group=String(ex.group||'').toLowerCase();
+
+  const priority=String(profile.priority||'').toLowerCase();
+  const goal=String(profile.goal||'').toLowerCase();
+  const level=String(profile.level||'').toLowerCase();
+  const preference=String(profile.preference||'').toLowerCase();
+
+  /* PREFERÊNCIA POR TIPO DE EXERCÍCIO */
+  if(preference==='free'){
+    score+=/halter|barra|livre|peso corporal|flexão|afundo|agachamento/.test(n)?6:0;
+    score-=/máquina|maquina|cadeira|mesa|polia|crossover/.test(n)?4:0;
+  }
+
+  if(preference==='machines'){
+    score+=/máquina|maquina|cadeira|mesa|polia|crossover/.test(n)?6:0;
+    score-=/livre|halter|peso corporal/.test(n)?2:0;
+  }
+
+  /* PRIORIDADE DO MILITAR */
+  if(
+    priority &&
+    (
+      target===profile.priority ||
+      (
+        profile.priority==='Braços' &&
+        ['Bíceps','Tríceps'].includes(target)
+      )
+    )
+  ){
+    score+=18;
+  }
+
+  /* PRIORIDADE POR MÚSCULO */
+  if(priority){
+    const p=priority.toLowerCase();
+
+    if(
+      muscle.includes(p) ||
+      group.includes(p) ||
+      n.includes(p)
+    ){
+      score+=6;
+    }
+
+    if(
+      p==='peito' &&
+      /peito|peitoral/.test(muscle+' '+group+' '+n)
+    ) score+=5;
+
+    if(
+      p==='costas' &&
+      /costas|dorsal|latíssimo/.test(muscle+' '+group+' '+n)
+    ) score+=5;
+
+    if(
+      p==='pernas' &&
+      /quadríceps|posterior|glúteo|adutor|abdutor|panturrilha/.test(
+        muscle+' '+group+' '+n
+      )
+    ) score+=5;
+  }
+
+  /* OBJETIVO: FORÇA */
+  if(
+    goal==='strength' &&
+    /supino reto|agachamento livre|levantamento terra|barra fixa|desenvolvimento|remada/.test(n)
+  ){
+    score+=10;
+  }
+
+  /* OBJETIVO: HIPERTROFIA */
+  if(
+    goal==='hypertrophy' &&
+    /supino|remada|puxada|rosca|tríceps|elevação|extensora|flexora|leg press|hack|stiff|agachamento|panturrilha/.test(n)
+  ){
+    score+=8;
+  }
+
+  /* OBJETIVO: PERDA DE GORDURA / CONDICIONAMENTO */
+  if(
+    (goal==='conditioning' || goal==='fatloss' || goal==='weightloss') &&
+    /agachamento|afundo|remada|puxada|terra|burpee|flexão|paralela|passada/.test(n)
+  ){
+    score+=6;
+  }
+
+  /* OBJETIVO OPERACIONAL */
+  if(
+    goal==='operational' &&
+    /agachamento|terra|barra fixa|remada|afundo|paralela|flexão|corrida/.test(n)
+  ){
+    score+=8;
+  }
+
+  /* NÍVEL DO MILITAR */
+  if(level==='beginner'){
+    if(/terra|barra fixa|agachamento búlgaro|paralela/.test(n)){
+      score-=5;
+    }
+
+    if(/máquina|maquina|cadeira|polia/.test(n)){
+      score+=3;
+    }
+  }
+
+  if(level==='advanced'){
+    if(/barra fixa|agachamento livre|terra|stiff|búlgaro/.test(n)){
+      score+=4;
+    }
+  }
+
+  /* VARIAÇÃO INTELIGENTE:
+     evita repetir sempre o primeiro exercício do catálogo */
+  if(/máquina|maquina|cadeira|mesa|polia/.test(n)){
+    score+=2;
+  }
+
+  /* LIMITAÇÕES */
+  score+=v6771LimitationPenalty(ex,profile);
+
+  return score;
+}
+
+function v6771Pick(target,profile,used){
+  return v6771Pool(target,profile)
+    .map(ex=>({
+      ...ex,
+      __score:v6771Score(ex,target,profile)
+    }))
+    .filter(ex=>ex.__score>-100&&!used.has(ex.name))
+    .sort((a,b)=>b.__score-a.__score)[0]||null;
+}
+
+function v6771ExerciseCount(profile){
+  const minutes=Number(profile.minutes)||60;
+
+  if(minutes<=30)return 3;
+  if(minutes<=45)return 4;
+  if(minutes<=60)return 5;
+  if(minutes<=75)return 6;
+
+  return 7;
+}
+
+function v6771Sets(profile,target,index){
+  const goal=V6771_GOALS[profile.goal]||V6771_GOALS.general;
+
+  let sets=goal.sets;
+
+  if(Number(profile.minutes)<=30){
+    sets=Math.min(2,sets);
+  }
+
+  if(profile.level==='beginner'){
+    sets=Math.min(3,sets);
+  }
+
+  if(
+    profile.priority &&
+    (
+      target===profile.priority ||
+      (
+        profile.priority==='Braços' &&
+        ['Bíceps','Tríceps'].includes(target)
+      )
+    ) &&
+    index<2
+  ){
+    sets=Math.min(4,sets+1);
+  }
+
+  return Math.max(2,Math.min(4,sets));
+}
+
+function v6771MakeExercise(ex,profile,target,index){
+  const goal=V6771_GOALS[profile.goal]||V6771_GOALS.general;
+
+  return {
+    ...ex,
+    sets:v6771Sets(profile,target,index),
+    reps:goal.reps,
+    rest:goal.rest,
+    smartTarget:target,
+    smartGenerated:true
+  };
+}
+
+function v6771SplitTargets(targets,days){
+  const upper=targets.filter(x=>V6771_GROUPS.includes(x));
+  const legs=targets.filter(x=>V6771_LEGS[x]);
+  const core=targets.filter(x=>['Abdômen','Lombar'].includes(x));
+
+  if(days===1)return [targets];
+
+  if(days===2){
+    return [
+      upper.length?upper:targets.filter((_,i)=>i%2===0),
+      legs.length?legs:targets.filter((_,i)=>i%2===1)
+    ];
+  }
+
+  if(days===3){
+    return [
+      upper.filter(x=>['Peito','Ombros','Tríceps'].includes(x)),
+      legs,
+      [
+        ...upper.filter(x=>['Costas','Bíceps'].includes(x)),
+        ...core
+      ]
+    ];
+  }
+
+  if(days===4){
+    return [
+      upper.filter(x=>['Peito','Ombros','Tríceps'].includes(x)),
+      legs,
+      [
+        ...upper.filter(x=>['Costas','Bíceps'].includes(x)),
+        ...core
+      ],
+      legs
+    ];
+  }
+
+  if(days===5){
+    return [
+      upper.filter(x=>['Peito','Tríceps'].includes(x)),
+      legs.filter(x=>['Quadríceps','Adutores'].includes(x)),
+      upper.filter(x=>['Costas','Bíceps'].includes(x)),
+      legs.filter(x=>['Posterior de coxa','Glúteos','Abdutores','Panturrilhas'].includes(x)),
+      [
+        ...upper.filter(x=>x==='Ombros'),
+        ...core
+      ]
+    ];
+  }
+
+  return Array.from(
+    {length:days},
+    (_,i)=>targets.filter((_,j)=>j%days===i)
+  );
+}
+
+function v6771BuildDay(targets,profile){
+  const used=new Set();
+  const exercises=[];
+  const ordered=[...(targets||[])];
+
+  ordered.sort((a,b)=>{
+    const ap=
+      a===profile.priority ||
+      (
+        profile.priority==='Braços' &&
+        ['Bíceps','Tríceps'].includes(a)
+      );
+
+    const bp=
+      b===profile.priority ||
+      (
+        profile.priority==='Braços' &&
+        ['Bíceps','Tríceps'].includes(b)
+      );
+
+    return Number(bp)-Number(ap);
+  });
+
+  const count=v6771ExerciseCount(profile);
+
+  for(const target of ordered){
+    if(exercises.length>=count)break;
+
+    const ex=v6771Pick(target,profile,used);
+
+    if(ex){
+      exercises.push(
+        v6771MakeExercise(
+          ex,
+          profile,
+          target,
+          exercises.length
+        )
+      );
+
+      used.add(ex.name);
+    }
+  }
+
+  let guard=0;
+
+  while(exercises.length<count&&guard<60&&ordered.length){
+    const target=ordered[guard%ordered.length];
+    const ex=v6771Pick(target,profile,used);
+
+    if(ex){
+      exercises.push(
+        v6771MakeExercise(
+          ex,
+          profile,
+          target,
+          exercises.length
+        )
+      );
+
+      used.add(ex.name);
+    }
+
+    guard++;
+  }
+
+  return exercises.slice(0,count);
+}
+
+function v6771Build(profile){
+  const days=Math.max(
+    1,
+    Math.min(7,Number(profile.days)||1)
+  );
+
+  const targets=v6771Targets(profile);
+  const split=v6771SplitTargets(targets,days);
+  const result=[];
+
+  for(let i=0;i<days;i++){
+    const dayTargets=
+      split[i]&&split[i].length?
+      split[i]:
+      targets;
+
+    const exercises=v6771BuildDay(dayTargets,profile);
+
+    if(exercises.length>=3){
+      result.push({
+        day:i+1,
+        name:`Treino ${String.fromCharCode(65+i)} — Personalizado`,
+        targets:[...new Set(exercises.map(x=>x.smartTarget))],
+        exercises
+      });
+    }
+  }
+
+  return result;
+}
+
+function v6771CreatePlanId(){
+  return (
+    'smart_' +
+    Date.now().toString(36) +
+    '_' +
+    Math.random().toString(36).slice(2,7)
+  );
+}
+
+function v6771SaveProgram(days,profile,name){
+  const planId=v6771CreatePlanId();
+  const now=new Date().toISOString();
+
+  const cleanName=
+    String(name||'Treino Personalizado').trim() ||
+    'Treino Personalizado';
+
+  const existing=getCustomWorkouts();
+
+  const saved=days.map(day=>({
+    id:`${planId}_${day.day}`,
+    day:day.day,
+    name:`${cleanName} — ${String.fromCharCode(64+day.day)}`,
+    programName:cleanName,
+    targets:[...new Set(day.targets||[])],
+    exercises:day.exercises.map(x=>customEntry(x)),
+    createdAt:now,
+    smartGenerated:true,
+    smartPlanId:planId,
+    smartDay:day.day,
+    smartProfile:{
+      goal:profile.goal,
+      level:profile.level,
+      days:profile.days,
+      minutes:profile.minutes,
+      priority:profile.priority||'',
+      legsComplete:!!profile.legsComplete
+    }
+  }));
+
+  saveCustomWorkouts([
+    ...saved,
+    ...existing
+  ]);
+
+  try{
+    localStorage.setItem(
+      V6771_SMART_GENERATED_KEY,
+      JSON.stringify({
+        planId,
+        name:cleanName,
+        createdAt:now
+      })
+    );
+  }catch(e){}
+
+  return saved;
+}
+
+function v6771DiscardPreview(){
+  window.v6771Preview=null;
+  showView('smartCustomBuilder');
+
+  setTimeout(()=>{
+    if(window.v6771Go){
+      window.v6771Go(0);
+    }
+  },50);
+}
+
+function v6771SavePreview(){
+  const preview=window.v6771Preview;
+
+  if(!preview||!preview.days||!preview.days.length){
+    alert('Nenhum treino está aguardando para ser salvo.');
+    return;
+  }
+
+  const input=byId('v6771PlanName');
+  const name=
+    String(input?.value||'').trim() ||
+    'Treino Personalizado';
+
+  const saved=v6771SaveProgram(
+    preview.days,
+    preview.profile,
+    name
+  );
+
+  if(!saved.length){
+    alert('Não foi possível salvar o treino.');
+    return;
+  }
+
+  window.v6771Preview={
+    ...preview,
+    saved:true,
+    savedDays:saved,
+    name
+  };
+
+  v6771RenderResult(
+    preview.days,
+    preview.profile,
+    {
+      saved:true,
+      savedDays:saved,
+      name
+    }
+  );
+
+  const executeNow=confirm(
+    'Treino salvo com sucesso em Meus Treinos.\n\n' +
+    'Deseja executar o treino agora?\n\n' +
+    'OK = executar agora\n' +
+    'Cancelar = deixar salvo para executar depois'
+  );
+
+  if(executeNow){
+    v6771StartPreviewDay(0);
+  }
+}
+
+function v6771StartPreviewDay(index){
+  const preview=window.v6771Preview;
+
+  if(!preview||!preview.days?.[index]){
+    alert('Treino não encontrado. Gere novamente.');
+    return;
+  }
+
+  if(!preview.saved){
+    const input=byId('v6771PlanName');
+
+    const name=
+      String(input?.value||'').trim() ||
+      'Treino Personalizado';
+
+    const saved=v6771SaveProgram(
+      preview.days,
+      preview.profile,
+      name
+    );
+
+    preview.saved=true;
+    preview.savedDays=saved;
+    preview.name=name;
+  }
+
+  const savedDay=
+    preview.savedDays?.[index];
+
+  if(!savedDay){
+    alert('Não foi possível localizar este treino.');
+    return;
+  }
+
+  openCustomPlan(savedDay.id);
+}
+
+function v6771DeleteProgram(){
+  const preview=window.v6771Preview;
+
+  if(!preview){
+    showView('smartCustomBuilder');
+    return;
+  }
+
+  if(!preview.saved){
+    if(!confirm(
+      'Descartar o treino que foi gerado?'
+    )){
+      return;
+    }
+
+    v6771DiscardPreview();
+    return;
+  }
+
+  if(!confirm(
+    'Apagar toda esta programação personalizada?'
+  )){
+    return;
+  }
+
+  const planId=
+    preview.savedDays?.[0]?.smartPlanId ||
+    preview.smartPlanId;
+
+  if(planId){
+    const remaining=getCustomWorkouts()
+      .filter(x=>x.smartPlanId!==planId);
+
+    saveCustomWorkouts(remaining);
+  }
+
+  window.v6771Preview=null;
+
+  alert('Programação personalizada apagada.');
+
+  showView('smartCustomBuilder');
+
+  setTimeout(()=>{
+    if(window.v6771Go){
+      window.v6771Go(0);
+    }
+  },50);
+}
+
+
+
+function v6771LevelLabel(level){
+  const labels={
+    beginner:'Iniciante',
+    intermediate:'Intermediário',
+    advanced:'Avançado'
+  };
+
+  return labels[level]||'Personalizado';
+}
+
+function v6771RenderResult(days,profile,state={}){
+  let view=byId('smartGeneratedResult');
+
+  if(!view){
+    view=document.createElement('section');
+    view.id='smartGeneratedResult';
+    view.className='view';
+
+    view.innerHTML=`
+      <div class="bar">
+        <button
+          type="button"
+          onclick="v6771DiscardPreview()">
+          ←
+        </button>
+
+        <h2>Seu treino</h2>
+      </div>
+
+      <div id="v6771GeneratedHost"></div>
+    `;
+
+    document.body.appendChild(view);
+  }
+
+  const host=byId('v6771GeneratedHost');
+
+  const saved=!!state.saved;
+  const name=
+    state.name||
+    'Treino Personalizado';
+
+  host.innerHTML=`
+    <div class="v6771-result-shell">
+
+      <div class="v6771-result-hero">
+
+        <div class="v6771-result-icon">🧠</div>
+
+        <span class="v6771-result-eyebrow">
+          SEU TREINO ESTÁ PRONTO
+        </span>
+
+        <h3>Montado para o seu perfil.</h3>
+
+        <p>
+          O personal inteligente cruzou suas respostas
+          para construir uma programação específica
+          para você.
+        </p>
+
+        <div class="v6771-profile-chips">
+          <span>🎯 ${escapeCustomHtml(v6771Goal(profile.goal))}</span>
+          <span>📅 ${profile.days} dias</span>
+          <span>⏱️ ${profile.minutes} min</span>
+          <span>🏋️ ${escapeCustomHtml(v6771LevelLabel(profile.level))}</span>
+        </div>
+
+      </div>
+
+      <div class="v6771-name-box">
+
+        <label for="v6771PlanName">
+          NOME DA SUA PROGRAMAÇÃO
+        </label>
+
+        <input
+          id="v6771PlanName"
+          type="text"
+          value="${escapeCustomHtml(name)}"
+          maxlength="60"
+          placeholder="Ex.: Treino Hipertrofia">
+
+        <small>
+          Dê um nome para encontrar este treino
+          facilmente depois em Meus Treinos.
+        </small>
+
+      </div>
+
+      <div class="v6771-ranking-note">
+        <span>🏆</span>
+
+        <div>
+          <b>Pode pontuar no Ranking de Frequência</b>
+
+          <small>
+            Salvar ou gerar o treino não gera ponto.
+            A pontuação somente acontece após a execução
+            e o cumprimento dos critérios oficiais.
+          </small>
+        </div>
+      </div>
+
+      <div class="v6771-action-main">
+
+        <button
+          class="v6771-primary-action"
+          type="button"
+          onclick="v6771SavePreview()">
+
+          <span>💾</span>
+
+          <div>
+            <b>${saved?'SALVO EM MEUS TREINOS':'SALVAR TREINO'}</b>
+            <small>
+              ${saved?
+                'Sua programação já está guardada':
+                'Fazer depois, quando quiser'}
+            </small>
+          </div>
+
+        </button>
+
+      </div>
+
+      <div class="v6771-section-title">
+        <span>SEU PLANO</span>
+        <b>${days.length} ${days.length===1?'TREINO':'TREINOS'}</b>
+      </div>
+
+      <div class="v6771-days">
+
+        ${days.map((day,index)=>`
+
+          <article class="v6771-day-card">
+
+            <div class="v6771-day-heading">
+
+              <div class="v6771-day-letter">
+                ${String.fromCharCode(65+index)}
+              </div>
+
+              <div>
+                <small>
+                  TREINO ${String.fromCharCode(65+index)}
+                </small>
+
+                <h3>
+                  ${escapeCustomHtml(
+                    day.targets?.join(' + ')||
+                    'Personalizado'
+                  )}
+                </h3>
+              </div>
+
+            </div>
+
+            <div class="v6771-exercise-list">
+
+              ${day.exercises.map((ex,i)=>`
+
+                <div class="v6771-exercise-row">
+
+                  <span>${i+1}</span>
+
+                  <div>
+                    <b>${escapeCustomHtml(ex.name)}</b>
+
+                    <small>
+                      ${ex.sets} séries
+                      • ${escapeCustomHtml(ex.reps)}
+                      • ${ex.rest}s descanso
+                    </small>
+                  </div>
+
+                </div>
+
+              `).join('')}
+
+            </div>
+
+            <button
+              class="v6771-start-action"
+              type="button"
+              onclick="v6771StartPreviewDay(${index})">
+
+              ▶ INICIAR ESTE TREINO
+
+            </button>
+
+          </article>
+
+        `).join('')}
+
+      </div>
+
+      <div class="v6771-bottom-actions">
+
+        <button
+          type="button"
+          class="v6771-secondary-action"
+          onclick="v6771DiscardPreview()">
+
+          ↻ REFAZER ANAMNESE
+
+        </button>
+
+        <button
+          type="button"
+          class="v6771-danger-action"
+          onclick="v6771DeleteProgram()">
+
+          🗑️ ${saved?'APAGAR PROGRAMAÇÃO':'DESCARTAR TREINO'}
+
+        </button>
+
+      </div>
+
+    </div>
+  `;
+
+  return view;
+}
+
+
+function v6771OpenGeneratedDay(index){
+  v6771StartPreviewDay(Number(index));
+}
+
+
+function v6771RegenerateSmartWorkout(){
+  const profile=v6770CollectSmartProfile();
+
+  if(!v6770ValidateSmartProfile(profile)){
+    return;
+  }
+
+  profile.legsComplete=
+    !!byId('v6771LegComplete')?.checked;
+
+  const days=v6771Build(profile);
+
+  if(!days.length){
+    alert(
+      'Não foi possível montar um treino com essas opções. '+
+      'Revise os equipamentos e os grupos selecionados.'
+    );
+    return;
+  }
+
+  window.v6771Preview={
+    days,
+    profile,
+    saved:false,
+    name:'Treino Personalizado'
+  };
+
+  v6771RenderResult(
+    days,
+    profile,
+    {
+      saved:false,
+      name:'Treino Personalizado'
+    }
+  );
+
+  showView('smartGeneratedResult');
+}
+
+
+function v6771InstallCompleteLegOption(){
+  const box=byId('v6770MuscleGroups');
+
+  if(!box)return;
+
+  if(byId('v6771LegComplete')){
+    return;
+  }
+
+  const title=box.querySelector('.v6770-leg-title');
+
+  if(!title){
+    return;
+  }
+
+  const label=document.createElement('label');
+
+  label.className='v6771-leg-complete';
+
+  label.innerHTML=`
+    <input
+      id="v6771LegComplete"
+      type="checkbox"
+      value="Pernas completas">
+
+    <span>
+      🦵 <b>PERNAS COMPLETAS</b>
+      <small>
+        Quadríceps + posterior + glúteos +
+        adutores + abdutores + panturrilhas
+      </small>
+    </span>
+  `;
+
+  title.insertAdjacentElement('afterend',label);
+
+  const input=label.querySelector('input');
+
+  input.addEventListener('change',()=>{
+    const checked=input.checked;
+
+    [
+      'Quadríceps',
+      'Posterior de coxa',
+      'Glúteos',
+      'Adutores',
+      'Abdutores',
+      'Panturrilhas'
+    ].forEach(value=>{
+      const checkbox=[
+        ...box.querySelectorAll('input[type="checkbox"]')
+      ].find(x=>x.value===value);
+
+      if(checkbox){
+        checkbox.checked=checked;
+      }
+    });
+  });
+}
+
+
+function v6771SyncLegComplete(){
+  const complete=byId('v6771LegComplete');
+  const group=byId('v6770MuscleGroups');
+
+  if(!complete||!group)return;
+
+  const boxes=[...group.querySelectorAll(
+    'input[type="checkbox"]'
+  )].filter(input=>{
+    return [
+      'Quadríceps',
+      'Posterior de coxa',
+      'Glúteos',
+      'Adutores',
+      'Abdutores',
+      'Panturrilhas',
+      'Tibial anterior'
+    ].includes(input.value);
+  });
+
+  boxes.forEach(input=>{
+    input.disabled=complete.checked;
+
+    if(complete.checked){
+      input.checked=true;
+    }
+
+    const label=input.closest('label');
+
+    if(label){
+      label.classList.toggle(
+        'v6771-leg-locked',
+        complete.checked
+      );
+    }
+  });
+
+  complete.closest('label')?.classList.toggle(
+    'is-active',
+    complete.checked
+  );
+}
+
+function v6771InstallCompleteLegOption(){
+  const group=byId('v6770MuscleGroups');
+
+  if(!group)return;
+
+  if(byId('v6771LegComplete')){
+    v6771SyncLegComplete();
+    return;
+  }
+
+  const title=[...group.querySelectorAll('.v6770-leg-title')]
+    .find(x=>/PERNAS/i.test(x.textContent||''));
+
+  if(!title)return;
+
+  const label=document.createElement('label');
+
+  label.className='v6771-leg-complete';
+
+  label.innerHTML=`
+    <input
+      id="v6771LegComplete"
+      type="checkbox"
+      value="PERNAS_COMPLETAS">
+
+    <span>
+      <b>🦵 PERNAS COMPLETAS</b>
+      <small>
+        Quadríceps • posterior • glúteos • adutores
+        • abdutores • panturrilhas
+      </small>
+    </span>
+  `;
+
+  title.insertAdjacentElement('afterend',label);
+
+  byId('v6771LegComplete')
+    ?.addEventListener('change',v6771SyncLegComplete);
+
+  v6771SyncLegComplete();
+}
+
+function v6771EnsureLegOption(){
+  v6771InstallCompleteLegOption();
+
+  if(!byId('v6771LegComplete')){
+    setTimeout(v6771InstallCompleteLegOption,100);
+    setTimeout(v6771InstallCompleteLegOption,350);
+    setTimeout(v6771InstallCompleteLegOption,800);
+  }
+}
+
+function generateSmartCustomWorkout(){
+  try{
+    const profile=v6770CollectSmartProfile();
+
+    if(!v6770ValidateSmartProfile(profile)){
+      return;
+    }
+
+    profile.legsComplete=
+      !!byId('v6771LegComplete')?.checked;
+
+    if(
+      profile.muscleMode==='selected' &&
+      !profile.muscles.length &&
+      !profile.legsComplete
+    ){
+      alert(
+        'Escolha pelo menos um grupo muscular ou marque PERNAS COMPLETAS.'
+      );
+      return;
+    }
+
+    try{
+      localStorage.setItem(
+        V6770_SMART_PROFILE_KEY,
+        JSON.stringify(profile)
+      );
+    }catch(e){}
+
+    const days=v6771Build(profile);
+
+    if(!Array.isArray(days)||!days.length){
+      alert(
+        'Não foi possível montar seu treino. '+
+        'Revise os grupos musculares e equipamentos.'
+      );
+      return;
+    }
+
+    window.v6771Preview={
+      days,
+      profile,
+      saved:false,
+      name:'Treino Personalizado'
+    };
+
+    v6771RenderResult(
+      days,
+      profile,
+      {
+        saved:false,
+        name:'Treino Personalizado'
+      }
+    );
+
+    showView('smartGeneratedResult');
+
+  }catch(error){
+
+    console.error(
+      'V67.71.0 — erro ao gerar treino:',
+      error
+    );
+
+    alert(
+      'Ocorreu um erro ao montar seu treino.\n\n'+
+      String(error?.message||error)
+    );
+  }
+}
+
+
+window.generateSmartCustomWorkout=
+  generateSmartCustomWorkout;
+
+window.v6771EnsureLegOption=
+  v6771EnsureLegOption;
+
+
+
+
+
+
+
+window.v6771OpenGeneratedDay=
+  v6771OpenGeneratedDay;
+
+window.v6771RegenerateSmartWorkout=
+  v6771RegenerateSmartWorkout;
+window.v6771SavePreview=v6771SavePreview;
+window.v6771StartPreviewDay=v6771StartPreviewDay;
+window.v6771DeleteProgram=v6771DeleteProgram;
+window.v6771DiscardPreview=v6771DiscardPreview;
+
+
+if(document.readyState==='loading'){
+  document.addEventListener(
+    'DOMContentLoaded',
+    v6771EnsureLegOption,
+    {once:true}
+  );
+}else{
+  v6771EnsureLegOption();
+}
+
+
+window.openSmartCustomBuilder=openSmartCustomBuilder;
+window.generateSmartCustomWorkout=generateSmartCustomWorkout;
+window.v6770UpdateBmi=v6770UpdateBmi;
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',v6770InitSmartForm,{once:true});
+}else{
+  v6770InitSmartForm();
+}
+
 function openCustomBuilder(id=null){
  customBuilderEditingId=id;const saved=id?customWorkoutById(id):null;customBuilderSelected=saved?saved.exercises.map(customEntry):[];customConfigIndex=null;
  const name=byId('customWorkoutName');if(name)name.value=saved?saved.name:'';const title=byId('customBuilderTitle');if(title)title.textContent=saved?'Editar treino':'Montar meu treino';renderCustomBuilder();showView('customBuilder')
@@ -5255,7 +6960,8 @@ function restoreNavigationState(force=false){
   try{
     currentGroup=state.currentGroup||'';
     currentListMode=state.currentListMode||'group';
-    currentSet=Math.max(1,Number(state.currentSet)||1);
+            currentLegSubgroup=state.currentLegSubgroup||null;
+currentSet=Math.max(1,Number(state.currentSet)||1);
     navHistoryIndex=Number.isInteger(state.historyIndex)?state.historyIndex:null;
     restorePlanContext(state);
 
@@ -5264,12 +6970,16 @@ function restoreNavigationState(force=false){
         openPlans();
         break;
       case 'groups':
-        openGroups();
-        break;
+          if(state.currentListMode==='leg-subgroups'){
+            openLegSubgroups();
+          }else{
+            openGroups();
+          }
+          break;
       case 'list':
         if(state.currentListMode==='plan' && state.activePlanName){
-          if(state.activePlanName.startsWith('Personalizado — ')){
-            const customName=state.activePlanName.replace(/^Personalizado — /,'');
+          if(state.activePlanName.startsWith('Personalizado - ')){
+            const customName=state.activePlanName.replace(/^Personalizado - /,'');
             const w=getCustomWorkouts().find(x=>x.name===customName);
             if(w) openCustomPlan(w.id); else openPlans();
           }else if(DATA.plans[state.activePlanName]){
@@ -5277,12 +6987,15 @@ function restoreNavigationState(force=false){
           }else{
             openPlans();
           }
+        }else if(state.currentListMode==='leg-subgroup' && state.currentLegSubgroup){
+          openLegSubgroup(state.currentLegSubgroup);
         }else if(state.currentGroup){
           openGroup(state.currentGroup);
         }else{
           openGroups();
         }
         break;
+
       case 'exercise':
         if(state.currentExerciseId!=null){
           const inPlan=!!state.activePlanName && state.activePlanIndex>=0;
@@ -5372,6 +7085,19 @@ function restoreNavigationState(force=false){
       case 'customBuilder':
         openCustomBuilder(state.customBuilderEditingId||null);
         break;
+      case 'smartCustomBuilder':
+        // O gerador inteligente possui um estado próprio (anamnese + respostas + etapa).
+        // No reload, a restauração da rota geral deve respeitar essa tela em vez de
+        // cair no default/Home. O módulo v67.71.1 restaura respostas e scroll.
+        if(typeof window.restoreSmartRoute==='function') window.restoreSmartRoute();
+        else if(typeof openSmartCustomBuilder==='function') openSmartCustomBuilder(true);
+        break;
+      case 'smartGeneratedResult':
+        // Mesma regra para o resultado gerado: não deixar uma segunda restauração
+        // assíncrona sobrescrever a tela correta com a Home.
+        if(typeof window.restoreSmartRoute==='function') window.restoreSmartRoute();
+        else showView('smartGeneratedResult');
+        break;
       case 'workoutDone':
         renderHistory();
         showView('history');
@@ -5408,7 +7134,9 @@ function restoreNavigationState(force=false){
 window.addEventListener('pagehide',()=>{
   if(v676830IsCustomName())v676830WriteCheckpoint({status:'paused'});
   v67603SaveActivePlanState();
-  saveNavigationState(document.querySelector('.view.active')?.id||'home');
+  const active=document.querySelector('.view.active')?.id||'home';
+  saveNavigationState(active);
+  try{sessionStorage.setItem(NAV_RELOAD_MARKER_KEY,JSON.stringify({ts:Date.now(),snapshot:navStateSnapshot(active)}))}catch(e){}
 });
 
 window.addEventListener('beforeunload',()=>{
@@ -5419,6 +7147,7 @@ window.addEventListener('beforeunload',()=>{
     const s=navStateSnapshot(active);
     s.scrollY=window.scrollY||0;
     sessionStorage.setItem(NAV_STATE_KEY,JSON.stringify(s));
+    sessionStorage.setItem(NAV_RELOAD_MARKER_KEY,JSON.stringify({ts:Date.now(),snapshot:s}));
   }catch(e){}
 });
 
@@ -6703,6 +8432,35 @@ async function cloudLogout(){
 }
 async function cloudInit(){
   cloudLoadSession(); try{v6718RenderHomeProfilePhoto();}catch(e){}
+
+  /* V67.71.1 — abertura imediata sem tela vazia.
+     Em uma abertura nova do app, a sessão local já identifica o militar.
+     Não precisamos aguardar validar/sincronizar no Supabase para mostrar a Home.
+     O conteúdo remoto continua sendo sincronizado em seguida.
+     Em um reload, a restauração específica da página continua tendo prioridade. */
+  if(cloudSession?.token && !NAV_RESTORE_ON_BOOT){
+    try{
+      const active=document.querySelector('.view.active');
+      if(!active || active.id!=='home'){
+        document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+        byId('home')?.classList.add('active');
+        window.scrollTo({top:0,behavior:'auto'});
+      }
+    }catch(e){ console.warn('Falha ao exibir Home imediatamente:',e); }
+  }
+
+  /* V67.71.1 — restauração visual imediata no refresh.
+     Quando já existe uma sessão local e o documento foi recarregado, não
+     esperamos a validação/sincronização do Supabase para descobrir a tela.
+     O snapshot local é suficiente para exibir imediatamente a mesma página;
+     a validação remota continua em paralelo e não altera a navegação quando
+     a sessão permanece válida. Isso elimina a tela preta de 2–3s nas telas
+     normais, sem tocar no fluxo de login. */
+  if(cloudSession?.token && NAV_RESTORE_ON_BOOT){
+    try{ restoreNavigationState(false); }
+    catch(e){ console.warn('Falha na restauração visual imediata:',e); }
+  }
+
   if(!cloudConfigured()){cloudShowGate();cloudMsg('Configuração da nuvem ausente.','error');return;}
 
   if(cloudSession?.token){
@@ -9222,3 +10980,421 @@ admin52RankingRows=function(rows,limit){
  const data=(rows||[]).slice(0,limit||999);if(!data.length)return '<div class="admin-empty">Nenhum ponto registrado neste mês.</div>';
  return data.map((r,i)=>{const mat=String(r.matricula||r.matricula_militar||'');return `<div class="admin52-rank-row admin60-rank-row" ${mat?`onclick="admin60OpenRankAudit('${adminEscape(mat)}')"`:''}><span class="admin52-rank-pos">${i+1}º</span><div><b>${adminEscape(r.graduacao||'BM')} ${adminEscape(r.nome||'Militar')}</b><small>${mat?'Toque para auditar as jornadas oficiais':'Registro consolidado pelo Ranking de Frequência'}</small></div><strong>${Number(r.treinos_validos||0)} pt${Number(r.treinos_validos||0)===1?'':'s'}</strong></div>`}).join('');
 };
+
+function v6771InitProgressiveAnamnesis(reset=false){
+  const root=byId('smartCustomBuilder');
+  if(!root)return;
+
+  const cards=[...root.querySelectorAll('.v6770-anam-card')];
+  if(cards.length!==8)return;
+
+  cards.forEach((card,index)=>{
+    card.style.setProperty('display','block','important');
+    card.style.removeProperty('visibility');
+    card.classList.remove('v6771-step-active','v6771-current-step','v6771-step-active');
+    card.setAttribute('aria-hidden','false');
+
+    let visual=card.querySelector('.v6771-step-visual');
+    if(!visual){
+      const art=['🎯','⚖️','💪','📅','🏋️','🧠','⭐','🛡️'][index];
+      const title=['OBJETIVO','SEU PONTO DE PARTIDA','EXPERIÊNCIA','SUA ROTINA','LOCAL E EQUIPAMENTOS','MÚSCULOS','PRIORIDADE','LIMITAÇÕES'][index];
+      visual=document.createElement('div');
+      visual.className='v6771-step-visual';
+      visual.innerHTML=`<div class="v6771-step-art">${art}</div><div><span>ETAPA ${String(index+1).padStart(2,'0')}</span><b>${title}</b></div>`;
+      card.querySelector('.v6770-step-head')?.insertAdjacentElement('afterend',visual);
+    }
+  });
+
+  const progress=root.querySelector('#v6771AnamProgress');
+  const nav=root.querySelector('#v6771AnamNav');
+  if(progress)progress.style.display='none';
+  if(nav)nav.style.display='none';
+
+  const actions=root.querySelector('.v6770-anam-actions');
+  if(actions)actions.style.display='grid';
+
+  v6771InstallCompleteLegOption();
+  v6771SyncLegComplete();
+}
+
+window.v6771InitProgressiveAnamnesis=
+  v6771InitProgressiveAnamnesis;
+
+
+(function(){
+  function boot(){
+    v6771InstallCompleteLegOption();
+    v6771InitProgressiveAnamnesis(false);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener(
+      'DOMContentLoaded',
+      boot,
+      {once:true}
+    );
+  }else{
+    setTimeout(boot,0);
+  }
+
+  if(
+    typeof window.openSmartCustomBuilder==='function' &&
+    !window.openSmartCustomBuilder.__v6771Wrapped
+  ){
+    const original=
+      window.openSmartCustomBuilder;
+
+    const wrapped=function(){
+      const result=
+        original.apply(this,arguments);
+
+      function v6771WaitForAnamnesis(attempt){
+        const root=document.getElementById('smartCustomBuilder');
+        const cards=root
+          ? root.querySelectorAll('.v6770-anam-card')
+          : [];
+
+        if(cards.length>=8){
+          v6771InitProgressiveAnamnesis(true);
+          return;
+        }
+
+        if(attempt<40){
+          setTimeout(()=>{
+            v6771WaitForAnamnesis(attempt+1);
+          },50);
+        }
+      }
+
+      v6771WaitForAnamnesis(0);
+
+      return result;
+    };
+
+    wrapped.__v6771Wrapped=true;
+
+    window.openSmartCustomBuilder=wrapped;
+  }
+})();
+
+
+
+/* V67.71.0 - CAPTURA GLOBAL DOS BOTÕES DA ANAMNESE */
+(function(){
+
+  function getState(){
+    const root=document.getElementById('smartCustomBuilder');
+    if(!root) return null;
+
+    return {
+      root:root,
+      state:root._v6771ProgressState || root.__v6771ProgressState
+    };
+  }
+
+  function renderCurrent(){
+    const data=getState();
+    if(!data || !data.state) return;
+
+    const root=data.root;
+    const state=data.state;
+
+    const cards=[...root.querySelectorAll('.v6770-anam-card')];
+
+    cards.forEach((card,index)=>{
+      card.style.setProperty(
+        'display',
+        index===state.current ? 'block' : 'none',
+        'important'
+      );
+    });
+
+    const label=document.getElementById('v6771ProgressLabel');
+    const title=document.getElementById('v6771ProgressTitle');
+    const fill=document.getElementById('v6771ProgressFill');
+
+    const titles=[
+      'OBJETIVO',
+      'SEU PONTO DE PARTIDA',
+      'EXPERIÊNCIA',
+      'SUA ROTINA',
+      'LOCAL E EQUIPAMENTOS',
+      'MÚSCULOS',
+      'PRIORIDADE',
+      'LIMITAÇÕES'
+    ];
+
+    if(label){
+      label.textContent=
+        'ETAPA '+String(state.current+1).padStart(2,'0')+' DE 08';
+    }
+
+    if(title){
+      title.textContent=titles[state.current] || '';
+    }
+
+    if(fill){
+      fill.style.width=((state.current+1)/8*100)+'%';
+    }
+
+    const prev=document.getElementById('v6771PrevStep');
+    const next=document.getElementById('v6771NextStep');
+
+    if(prev){
+      prev.disabled=state.current===0;
+      prev.textContent=
+        state.current===0 ? '← INÍCIO' : '← VOLTAR';
+    }
+
+    if(next){
+      next.textContent=
+        state.current===7
+          ? '🧠 GERAR MEU TREINO'
+          : 'CONTINUAR →';
+    }
+
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function goNext(){
+    const data=getState();
+    if(!data || !data.state) return;
+
+    const state=data.state;
+
+    if(state.current>=7){
+      const generate=data.root.querySelector(
+        'button[onclick*="generateSmartCustomWorkout"]'
+      );
+
+      if(generate){
+        generate.click();
+      }
+
+      return;
+    }
+
+    state.current++;
+    renderCurrent();
+  }
+
+  function goPrevious(){
+    const data=getState();
+    if(!data || !data.state) return;
+
+    const state=data.state;
+
+    if(state.current<=0) return;
+
+    state.current--;
+    renderCurrent();
+  }
+
+  window.v6771ForceNext=goNext;
+  window.v6771ForcePrevious=goPrevious;
+
+  document.addEventListener('click',function(e){
+
+    const next=e.target.closest &&
+      e.target.closest('#v6771NextStep');
+
+    const prev=e.target.closest &&
+      e.target.closest('#v6771PrevStep');
+
+    if(!next && !prev) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+
+    if(next){
+      goNext();
+    }else{
+      goPrevious();
+    }
+
+  },true);
+
+  document.addEventListener('touchend',function(e){
+
+    const next=e.target.closest &&
+      e.target.closest('#v6771NextStep');
+
+    const prev=e.target.closest &&
+      e.target.closest('#v6771PrevStep');
+
+    if(!next && !prev) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+
+    if(next){
+      goNext();
+    }else{
+      goPrevious();
+    }
+
+  },true);
+
+})();
+
+
+/* V67.71.0 - MARCAÇÃO SEGURA DO CONTROLADOR PROGRESSIVO */
+(function(){
+  function v6771MarkProgressiveReady(){
+    const root=document.getElementById('smartCustomBuilder');
+    if(!root) return;
+
+    const cards=root.querySelectorAll('.v6770-anam-card');
+
+    if(cards.length<8){
+      setTimeout(v6771MarkProgressiveReady,80);
+      return;
+    }
+
+    root.classList.add('v6771-progressive-ready');
+
+    const state=root.__v6771ProgressState ||
+      root._v6771ProgressState ||
+      window.__v6771ProgressState;
+
+    if(state && typeof state.current==='number'){
+      cards.forEach((card,index)=>{
+        card.classList.toggle(
+          'v6771-current-step',
+          index===state.current
+        );
+      });
+    }else{
+      cards.forEach((card,index)=>{
+        card.classList.toggle(
+          'v6771-current-step',
+          index===0
+        );
+      });
+    }
+  }
+
+  function v6771BootInitialVisibility(){
+    setTimeout(v6771MarkProgressiveReady,120);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener(
+      'DOMContentLoaded',
+      v6771BootInitialVisibility,
+      {once:true}
+    );
+  }else{
+    v6771BootInitialVisibility();
+  }
+})();
+
+/* =========================================================
+   v67.71.1 — RESTAURAÇÃO LIMPA DO GERADOR
+   Uma única fonte para refresh/segundo plano, sem interferir
+   na navegação normal do aplicativo.
+   ========================================================= */
+(function(){
+  const ROUTE_KEY='t2_v6771_smart_route_v2';
+  const PREVIEW_KEY='t2_v6771_smart_preview_v2';
+  const RETURN_KEY='t2_v6771_generator_return';
+  let restoring=false;
+
+  function builder(){return document.getElementById('smartCustomBuilder');}
+  function result(){return document.getElementById('smartGeneratedResult');}
+  function visible(el){return !!el && el.offsetParent!==null && getComputedStyle(el).display!=='none' && !el.hidden;}
+  function builderVisible(){return visible(builder());}
+  function resultVisible(){return visible(result());}
+  function cards(){const r=builder();return r?[...r.querySelectorAll('.v6770-anam-card')]:[];}
+  function step(){
+    const r=builder(); const cs=cards();
+    if(!r||!cs.length)return 0;
+    const n=Number(r.dataset.v6771Step||0);
+    return Math.max(0,Math.min(cs.length-1,Number.isFinite(n)?n:0));
+  }
+  function answers(){
+    const r=builder(); const out={}; if(!r)return out;
+    r.querySelectorAll('input[id],select[id],textarea[id]').forEach(el=>{
+      out[el.id]=(el.type==='checkbox'||el.type==='radio')?!!el.checked:el.value;
+    });
+    return out;
+  }
+  function restoreAnswers(data){
+    Object.entries(data||{}).forEach(([id,v])=>{
+      const el=document.getElementById(id); if(!el)return;
+      if(el.type==='checkbox'||el.type==='radio')el.checked=!!v; else el.value=v??'';
+    });
+    if(typeof v6770UpdateBmi==='function')v6770UpdateBmi();
+    if(typeof v6771SyncLegComplete==='function')v6771SyncLegComplete();
+  }
+  function save(){
+    try{
+      if(builderVisible()){
+        const data={type:'builder',answers:answers(),scrollY:window.scrollY,savedAt:Date.now()};
+        localStorage.setItem(ROUTE_KEY,JSON.stringify(data));
+        localStorage.setItem(RETURN_KEY,JSON.stringify(data));
+        return;
+      }
+      if(resultVisible()){
+        const preview=window.v6771Preview;
+        if(preview) localStorage.setItem(PREVIEW_KEY,JSON.stringify(preview));
+        const data={type:'result',savedAt:Date.now()};
+        localStorage.setItem(ROUTE_KEY,JSON.stringify(data));
+        localStorage.setItem(RETURN_KEY,JSON.stringify(data));
+        return;
+      }
+    }catch(e){}
+  }
+  function clear(){
+    try{localStorage.removeItem(ROUTE_KEY);localStorage.removeItem(RETURN_KEY);}catch(e){}
+  }
+  function applyFullForm(){
+    const r=builder(); if(!r)return;
+    cards().forEach(c=>{c.style.setProperty('display','block','important');c.setAttribute('aria-hidden','false');});
+    const p=r.querySelector('#v6771AnamProgress'), n=r.querySelector('#v6771AnamNav');
+    if(p)p.style.display='none'; if(n)n.style.display='none';
+    r.dataset.v6771Step=String(0);
+    if(typeof v6771InitProgressiveAnamnesis==='function')v6771InitProgressiveAnamnesis(false);
+    cards().forEach(c=>{c.style.setProperty('display','block','important');c.setAttribute('aria-hidden','false');});
+    if(p)p.style.display='none'; if(n)n.style.display='none';
+  }
+  function restore(){
+    let data=null, preview=null;
+    try{data=JSON.parse(localStorage.getItem(ROUTE_KEY)||'null');preview=JSON.parse(localStorage.getItem(PREVIEW_KEY)||'null');}catch(e){}
+    if(!data)return;
+    if(Date.now()-Number(data.savedAt||0)>24*60*60*1000){clear();return;}
+    restoring=true;
+    if(data.type==='result' && preview && preview.days){
+      window.v6771Preview=preview;
+      v6771RenderResult(preview.days,preview.profile,{saved:!!preview.saved,savedDays:preview.savedDays,name:preview.name});
+      setTimeout(()=>{restoring=false;},400);
+      return;
+    }
+    if(data.type==='builder'){
+      if(!builderVisible())openSmartCustomBuilder(true);
+      setTimeout(()=>{
+        restoreAnswers(data.answers||{});
+        applyFullForm();
+        window.scrollTo({top:Number(data.scrollY)||0,behavior:'auto'});
+        restoring=false;
+      },180);
+    }
+  }
+  window.restoreSmartRoute=restore;
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden')save();
+    else if(document.visibilityState==='visible')setTimeout(restore,120);
+  });
+  window.addEventListener('pagehide',save);
+  window.addEventListener('beforeunload',save);
+  window.addEventListener('pageshow',()=>setTimeout(restore,180));
+
+  setInterval(()=>{
+    if(builderVisible()||resultVisible())save();
+  },1000);
+
+  window.__v6771ClearRoute=clear;
+})();
