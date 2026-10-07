@@ -5691,6 +5691,25 @@ function v6771Targets(profile){
   return [...new Set(targets)];
 }
 
+function v6771IsStrictPrimaryTarget(ex,target){
+  const t=v6771N(target);
+  const m=v6771N(ex.muscle);
+
+  if(t==='triceps') return m==='triceps';
+  if(t==='biceps') return m==='biceps';
+  if(t==='peito') return m.includes('peitoral');
+  if(t==='ombros') return /deltoide|ombro/.test(m);
+  if(t==='abdomen') return /abdomen|abdominais|reto abdominal|obliquo/.test(m);
+  if(t==='quadriceps') return m==='quadriceps';
+  if(t==='posterior de coxa') return /posterior de coxa|isquiotibiais|femoral/.test(m);
+  if(t==='gluteos') return m==='gluteos';
+  if(t==='adutores') return m==='adutores';
+  if(t==='abdutores') return m==='abdutores';
+  if(t==='panturrilhas') return /panturrilha|soleo|gastrocnemio/.test(m);
+  if(t==='costas') return /dorsal|costas|romboides/.test(m) && !/biceps|triceps|deltoide/.test(m);
+  return false;
+}
+
 function v6771Pool(target,profile){
   let list=[];
 
@@ -5700,7 +5719,13 @@ function v6771Pool(target,profile){
     list=DATA.exercises.filter(ex=>ex.group===target);
   }
 
-  return list.filter(ex=>v6771ExerciseEquipmentScore(ex,profile)>-50);
+  list=list.filter(ex=>v6771ExerciseEquipmentScore(ex,profile)>-50);
+
+  // Preferência obrigatória por alvo principal quando o catálogo possui opções.
+  // Ex.: Tríceps não usa Paralelas/Supino fechado enquanto houver exercícios
+  // cadastrados com músculo principal exatamente igual a Tríceps.
+  const strict=list.filter(ex=>v6771IsStrictPrimaryTarget(ex,target));
+  return strict.length ? strict : list;
 }
 
 function v6771Score(ex,target,profile){
