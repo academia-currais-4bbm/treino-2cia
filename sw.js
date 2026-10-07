@@ -28,8 +28,9 @@ function isAbdomenPoster(url){
   return /assets\/exercises\/posters\/(crunch-tradicional|crunch-na-polia|prancha-frontal|prancha-lateral|elevacao-de-pernas|abdominal-bicicleta|abdominal-obliquo|dead-bug|crunch-invertido|abdominal-na-maquina|ab-wheel|hollow-body|russian-twist|pallof-press|bird-dog)\.webp$/.test(p);
 }
 
-function (isPanturrilhaPoster(url) || isAbdomenPoster(url)){
-  return url.pathname.endsWith('/assets/exercises/posters/panturrilha-em-pe.webp')||url.pathname.endsWith('/assets/exercises/posters/panturrilha-sentada.webp');
+function isPanturrilhaPoster(url){
+  const p = new URL(url).pathname;
+  return /assets\/exercises\/posters\/(panturrilha-em-pe|panturrilha-sentada)\.webp$/.test(p);
 }
 self.addEventListener('fetch',event=>{
   const req=event.request;
