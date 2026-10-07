@@ -5789,7 +5789,7 @@ function v6771Score(ex,target,profile){
 
   /* OBJETIVO: PERDA DE GORDURA / CONDICIONAMENTO */
   if(
-    (goal==='conditioning' || goal==='fatloss' || goal==='weightloss') &&
+    (goal==='conditioning' || goal==='weight_loss' || goal==='fatloss' || goal==='weightloss') &&
     /agachamento|afundo|remada|puxada|terra|burpee|flexão|paralela|passada/.test(n)
   ){
     score+=6;
