@@ -5892,7 +5892,9 @@ function v6771Score(ex,target,profile){
 }
 
 function v6771Pick(target,profile,used){
-  return v6771Pool(target,profile)
+  const pool=v6771Pool(target,profile);
+
+  return pool
     .map(ex=>({
       ...ex,
       __score:v6771Score(ex,target,profile)
@@ -6011,11 +6013,39 @@ function v6771SplitTargets(targets,days){
   );
 }
 
+function v6771TargetQuotas(targets,count){
+  const ordered=[...new Set(targets||[])];
+  const quotas=new Map();
+
+  if(!ordered.length||count<=0)return quotas;
+
+  /* Cada grupo da divisão recebe pelo menos 1 vaga quando possível. */
+  const guaranteed=Math.min(count,ordered.length);
+  ordered.forEach((target,i)=>quotas.set(target,i<guaranteed?1:0));
+
+  /* As vagas restantes são distribuídas em rodízio. */
+  let remaining=count-guaranteed;
+  let cursor=0;
+
+  while(remaining>0){
+    const target=ordered[cursor%ordered.length];
+    quotas.set(target,(quotas.get(target)||0)+1);
+    remaining--;
+    cursor++;
+  }
+
+  return quotas;
+}
+
 function v6771BuildDay(targets,profile){
   const used=new Set();
   const exercises=[];
-  const ordered=[...(targets||[])];
+  const ordered=[...new Set(targets||[])];
+  const count=v6771ExerciseCount(profile);
 
+  if(!ordered.length)return [];
+
+  /* Prioridade só ordena os grupos; não elimina nenhum grupo da divisão. */
   ordered.sort((a,b)=>{
     const ap=
       a===profile.priority ||
@@ -6034,14 +6064,16 @@ function v6771BuildDay(targets,profile){
     return Number(bp)-Number(ap);
   });
 
-  const count=v6771ExerciseCount(profile);
+  const quotas=v6771TargetQuotas(ordered,count);
 
+  /* Primeira passagem: cumpre exatamente as vagas de cada grupo. */
   for(const target of ordered){
-    if(exercises.length>=count)break;
+    const quota=quotas.get(target)||0;
 
-    const ex=v6771Pick(target,profile,used);
+    for(let i=0;i<quota;i++){
+      const ex=v6771Pick(target,profile,used);
+      if(!ex)break;
 
-    if(ex){
       exercises.push(
         v6771MakeExercise(
           ex,
@@ -6055,26 +6087,32 @@ function v6771BuildDay(targets,profile){
     }
   }
 
-  let guard=0;
+  /*
+    Se um grupo tiver poucos exercícios elegíveis, usa apenas as vagas
+    que realmente não puderam ser preenchidas como fallback.
+  */
+  if(exercises.length<count){
+    let guard=0;
 
-  while(exercises.length<count&&guard<60&&ordered.length){
-    const target=ordered[guard%ordered.length];
-    const ex=v6771Pick(target,profile,used);
+    while(exercises.length<count&&guard<120){
+      const target=ordered[guard%ordered.length];
+      const ex=v6771Pick(target,profile,used);
 
-    if(ex){
-      exercises.push(
-        v6771MakeExercise(
-          ex,
-          profile,
-          target,
-          exercises.length
-        )
-      );
+      if(ex){
+        exercises.push(
+          v6771MakeExercise(
+            ex,
+            profile,
+            target,
+            exercises.length
+          )
+        );
 
-      used.add(ex.name);
+        used.add(ex.name);
+      }
+
+      guard++;
     }
-
-    guard++;
   }
 
   return exercises.slice(0,count);
