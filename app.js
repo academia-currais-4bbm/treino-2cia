@@ -5779,20 +5779,52 @@ function v6771Score(ex,target,profile){
     score+=10;
   }
 
-  /* OBJETIVO: HIPERTROFIA */
+  /* OBJETIVO: GANHO DE MASSA / HIPERTROFIA */
   if(
-    goal==='hypertrophy' &&
-    /supino|remada|puxada|rosca|tríceps|elevação|extensora|flexora|leg press|hack|stiff|agachamento|panturrilha/.test(n)
+    (goal==='mass_gain' || goal==='hypertrophy') &&
+    /supino|remada|puxada|barra fixa|rosca|tríceps|desenvolvimento|elevação|extensora|flexora|leg press|hack|stiff|agachamento|panturrilha|chest press|crossover|crucifixo|cadeira/.test(n)
   ){
-    score+=8;
+    score += goal==='mass_gain' ? 9 : 8;
+  }
+
+  /* GANHO DE MASSA: prioriza sobrecarga progressiva e permite
+     compostos + isoladores de forma equilibrada. */
+  if(goal==='mass_gain'){
+    if(/supino|chest press|remada|puxada|barra fixa|desenvolvimento|agachamento|leg press|hack|stiff|terra|afundo|bulgaro/.test(n)){
+      score+=4;
+    }
+    if(/extensora|flexora|rosca|triceps|elevacao lateral|crucifixo|crossover|cadeira/.test(n)){
+      score+=2;
+    }
   }
 
   /* OBJETIVO: PERDA DE GORDURA / CONDICIONAMENTO */
   if(
-    (goal==='conditioning' || goal==='weight_loss' || goal==='fatloss' || goal==='weightloss') &&
-    /agachamento|afundo|remada|puxada|terra|burpee|flexão|paralela|passada/.test(n)
+    (goal==='conditioning' || goal==='fatloss' || goal==='weightloss' || goal==='weight_loss') &&
+    /agachamento|afundo|remada|puxada|terra|burpee|flexão|paralela|passada|barra fixa|leg press|stiff|hack/.test(n)
   ){
-    score+=6;
+    score+=8;
+  }
+
+  /* PERDA DE GORDURA: prioriza movimentos multiarticulares e
+     exercícios com maior participação muscular, sem excluir máquinas. */
+  if(goal==='weight_loss'){
+    if(/agachamento|afundo|bulgaro|leg press|hack|remada|puxada|barra fixa|terra|stiff|paralela|flexão/.test(n)){
+      score+=6;
+    }
+    if(/rosca|triceps|extensora|flexora|elevacao lateral|crucifixo|crossover|cadeira|mesa/.test(n)){
+      score-=2;
+    }
+  }
+
+  /* RECOMPOSIÇÃO CORPORAL */
+  if(goal==='recomposition'){
+    if(/supino|chest press|remada|puxada|agachamento|leg press|hack|stiff|terra|desenvolvimento|barra fixa/.test(n)){
+      score+=6;
+    }
+    if(/extensora|flexora|rosca|triceps|elevacao lateral|crucifixo|crossover|cadeira/.test(n)){
+      score+=2;
+    }
   }
 
   /* OBJETIVO OPERACIONAL */
@@ -5817,6 +5849,33 @@ function v6771Score(ex,target,profile){
   if(level==='advanced'){
     if(/barra fixa|agachamento livre|terra|stiff|búlgaro/.test(n)){
       score+=4;
+    }
+  }
+
+  /* TEMPO DE EXPERIÊNCIA: complementa o nível informado na anamnese. */
+  const trainingTime=String(profile.trainingTime||'').toLowerCase();
+  if(trainingTime==='new' || trainingTime==='lt3'){
+    if(/terra|stiff|barra fixa|agachamento livre|búlgaro|paralela/.test(n)){
+      score-=4;
+    }
+    if(/máquina|maquina|cadeira|polia|chest press/.test(n)){
+      score+=2;
+    }
+  }
+
+  if(trainingTime==='3to6' || trainingTime==='6to12'){
+    if(/máquina|maquina|cadeira|polia/.test(n)) score+=1;
+  }
+
+  if(trainingTime==='1to2'){
+    if(/agachamento|leg press|remada|puxada|supino|stiff|terra|desenvolvimento/.test(n)){
+      score+=2;
+    }
+  }
+
+  if(trainingTime==='2plus'){
+    if(/agachamento|leg press|hack|remada|puxada|barra fixa|supino|desenvolvimento|stiff|terra|afundo|búlgaro|paralela/.test(n)){
+      score+=3;
     }
   }
 
