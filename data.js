@@ -46,7 +46,10 @@ window.APP_DATA = {
       "avoid": "Evite descer a barra em direção ao pescoço.",
       "mediaKey": "supino-declinado",
       "mediaStatus": "static",
-      "visualAssetKey": "supino-declinado"
+      "visualAssetKey": "supino-declinado",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/supino-declinado.mp4?v=67739",
+      "videoPoster": "assets/exercises/posters/supino-declinado.webp"
     },
     {
       "id": 4,
@@ -60,7 +63,10 @@ window.APP_DATA = {
       "avoid": "Não transforme o movimento em supino.",
       "mediaKey": "crucifixo-com-halteres",
       "mediaStatus": "static",
-      "visualAssetKey": "crucifixo-halteres"
+      "visualAssetKey": "crucifixo-halteres",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/crucifixo-com-halteres.mp4?v=67739",
+      "videoPoster": "assets/exercises/posters/crucifixo-com-halteres.webp"
     },
     {
       "id": 5,
@@ -74,7 +80,10 @@ window.APP_DATA = {
       "avoid": "Não use impulso do tronco.",
       "mediaKey": "crossover-alto",
       "mediaStatus": "static",
-      "visualAssetKey": "crossover-alto"
+      "visualAssetKey": "crossover-alto",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/crossover-alto.mp4?v=67739",
+      "videoPoster": "assets/exercises/posters/crossover-alto.webp"
     },
     {
       "id": 6,

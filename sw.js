@@ -1,5 +1,5 @@
-const CACHE='t2cia-v67.69.2-poster-original-v67737';
-const RUNTIME='t2cia-runtime-v67.67.9-v67736';
+const CACHE='t2cia-v67.69.2-poster-original-v67739';
+const RUNTIME='t2cia-runtime-v67.67.9-v67739';
 const SHELL=[
   './','index.html','styles.css','app.js','data.js','cloud-config.js','manifest.json',
   'icon-192.png','icon-512.png','notification-badge-v676837.png','notification-icon-v676837.png',
@@ -32,6 +32,11 @@ function isPanturrilhaPoster(url){
   const p = new URL(url).pathname;
   return /assets\/exercises\/posters\/(panturrilha-em-pe|panturrilha-sentada)\.webp$/.test(p);
 }
+
+function isExerciseVideo(url){
+  const p = new URL(url).pathname;
+  return /assets\/exercises\/videos\/(supino-reto|supino-inclinado|supino-declinado|crucifixo-com-halteres|crossover-alto)\.mp4$/.test(p);
+}
 self.addEventListener('fetch',event=>{
   const req=event.request;
   if(req.method!=='GET')return;
@@ -41,7 +46,7 @@ self.addEventListener('fetch',event=>{
     event.respondWith((async()=>{try{const fresh=await fetch(req,{cache:'no-store'});if(fresh&&fresh.ok){const cache=await caches.open(CACHE);cache.put(req,fresh.clone()).catch(()=>{})}return fresh}catch(e){return (await caches.match(req))||(await caches.match('index.html'))||Response.error()}})());
     return;
   }
-  if((isPanturrilhaPoster(url) || isAbdomenPoster(url))){
+  if((isPanturrilhaPoster(url) || isAbdomenPoster(url) || isExerciseVideo(url))){
     event.respondWith((async()=>{try{const fresh=await fetch(req,{cache:'no-store'});if(fresh&&fresh.ok){const cache=await caches.open(RUNTIME);cache.put(req,fresh.clone()).catch(()=>{})}return fresh}catch(e){return (await caches.match(req))||Response.error()}})());
     return;
   }
