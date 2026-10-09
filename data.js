@@ -48,7 +48,7 @@ window.APP_DATA = {
       "mediaStatus": "static",
       "visualAssetKey": "supino-declinado",
       "videoStatus": "ready",
-      "videoSrc": "assets/exercises/videos/supino-declinado.mp4?v=67739",
+      "videoSrc": "assets/exercises/videos/supino-declinado.mp4?v=67740",
       "videoPoster": "assets/exercises/posters/supino-declinado.webp"
     },
     {
@@ -65,7 +65,7 @@ window.APP_DATA = {
       "mediaStatus": "static",
       "visualAssetKey": "crucifixo-halteres",
       "videoStatus": "ready",
-      "videoSrc": "assets/exercises/videos/crucifixo-com-halteres.mp4?v=67739",
+      "videoSrc": "assets/exercises/videos/crucifixo-com-halteres.mp4?v=67740",
       "videoPoster": "assets/exercises/posters/crucifixo-com-halteres.webp"
     },
     {
@@ -82,7 +82,7 @@ window.APP_DATA = {
       "mediaStatus": "static",
       "visualAssetKey": "crossover-alto",
       "videoStatus": "ready",
-      "videoSrc": "assets/exercises/videos/crossover-alto.mp4?v=67739",
+      "videoSrc": "assets/exercises/videos/crossover-alto.mp4?v=67740",
       "videoPoster": "assets/exercises/posters/crossover-alto.webp"
     },
     {

@@ -3789,8 +3789,38 @@ function v676891SupinoFrames(){
     'assets/exercises/3d/supino-reto-frames-pro/frame-10.webp?v=676891'
   ];
 }
+function v676900NormalizeExerciseName(value){
+  return String(value||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+}
+function v676900VideoData(ex){
+  if(!ex)return null;
+  const norm=v676900NormalizeExerciseName(ex.name);
+  const catalog=Array.isArray(DATA?.exercises)?DATA.exercises:[];
+  const match=catalog.find(item=>v676900NormalizeExerciseName(item.name)===norm);
+  const directReady=String(ex.videoStatus||'')==='ready' && !!String(ex.videoSrc||'').trim();
+  const catalogReady=match && String(match.videoStatus||'')==='ready' && !!String(match.videoSrc||'').trim();
+  const chosen=directReady?ex:(catalogReady?match:null);
+  if(chosen)return {
+    videoStatus:'ready',
+    videoSrc:String(chosen.videoSrc),
+    videoPoster:String(chosen.videoPoster||match?.videoPoster||ex.videoPoster||'')
+  };
+  const known={
+    'supino declinado':'supino-declinado',
+    'crucifixo com halteres':'crucifixo-com-halteres',
+    'crossover alto':'crossover-alto'
+  };
+  const key=known[norm];
+  if(key)return {
+    videoStatus:'ready',
+    videoSrc:`assets/exercises/videos/${key}.mp4?v=67740`,
+    videoPoster:`assets/exercises/posters/${key}.webp`
+  };
+  return ex;
+}
 function v676900VideoReady(ex){
-  return String(ex?.videoStatus||'pending')==='ready' && !!String(ex?.videoSrc||'').trim();
+  const data=v676900VideoData(ex);
+  return String(data?.videoStatus||'pending')==='ready' && !!String(data?.videoSrc||'').trim();
 }
 function openExerciseMotion(){
   if(!currentExercise)return;
@@ -3820,16 +3850,17 @@ function openExerciseMotion(){
   title.textContent=String(currentExercise.name||'EXECUÇÃO DO MOVIMENTO').toUpperCase();
   help.textContent=`${currentExercise.muscle||currentExercise.group||'Execução técnica'} • movimento controlado`;
   ov.classList.add('show');
-  if(v676900VideoReady(currentExercise)){
+  const videoData=v676900VideoData(currentExercise);
+  if(v676900VideoReady(videoData)){
     pending.style.display='none';
     video.style.display='block';
-    video.poster=currentExercise.videoPoster||'';
+    video.poster=videoData.videoPoster||'';
     video.muted=true;
     video.defaultMuted=true;
     video.loop=true;
     video.playsInline=true;
     video.preload='metadata';
-    video.src=currentExercise.videoSrc;
+    video.src=videoData.videoSrc;
     video.load();
     const play=video.play();
     if(play&&typeof play.catch==='function')play.catch(()=>{});
