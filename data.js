@@ -29,7 +29,10 @@ window.APP_DATA = {
       "avoid": "Evite inclinação excessiva e perder contato das escápulas com o banco.",
       "mediaKey": "supino-inclinado",
       "mediaStatus": "static",
-      "visualAssetKey": "supino-inclinado"
+      "visualAssetKey": "supino-inclinado",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/supino-inclinado.mp4",
+      "videoPoster": "assets/exercises/posters/supino-inclinado.webp"
     },
     {
       "id": 3,
