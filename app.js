@@ -3824,6 +3824,11 @@ function openExerciseMotion(){
     pending.style.display='none';
     video.style.display='block';
     video.poster=currentExercise.videoPoster||'';
+    video.muted=true;
+    video.defaultMuted=true;
+    video.loop=true;
+    video.playsInline=true;
+    video.preload='metadata';
     video.src=currentExercise.videoSrc;
     video.load();
     const play=video.play();

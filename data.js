@@ -12,7 +12,10 @@ window.APP_DATA = {
       "avoid": "Não quique a barra no peito nem abra demais os cotovelos.",
       "mediaKey": "supino-reto",
       "mediaStatus": "frames",
-      "visualAssetKey": "1"
+      "visualAssetKey": "1",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/supino-reto.mp4",
+      "videoPoster": "assets/exercises/posters/supino-reto.webp"
     },
     {
       "id": 2,
