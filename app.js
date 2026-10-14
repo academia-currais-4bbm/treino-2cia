@@ -1751,7 +1751,10 @@ function startPlanWorkout(){
         if(ok)return true;
         // Não apagar o checkpoint em caso de falha: pode ser a única cópia
         // da posição correta do treino pausado.
-        alert('Não foi possível retomar a sessão salva. O progresso foi preservado; tente novamente.');
+        // A restauração automática pode concluir a recuperação logo após esta
+        // tentativa síncrona. Não exibir alerta bloqueante que contradiz a
+        // sessão preservada; registrar o diagnóstico apenas no console.
+        console.warn('Retomada não confirmada nesta chamada; sessão preservada para restauração.');
         return false;
       }else{ unlock(); return false; }
     }else if(existing){
