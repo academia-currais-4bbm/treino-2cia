@@ -1,5 +1,5 @@
-const TREINO_2CIA_BUILD='67.71.4';
-/* Treino 2ª CIA — v67.71.4 */
+const TREINO_2CIA_BUILD='67.71.5';
+/* Treino 2ª CIA — v67.71.5 */
 
 const DATA=window.APP_DATA;
 let currentGroup="", currentListMode="group", currentExercise=null, currentSet=1, timer=90, tick=null;
@@ -1726,7 +1726,17 @@ function startPlanWorkout(){
         try{localStorage.removeItem('t2_active_plan')}catch(e){}
       }else{ unlock(); return false; }
     }else if(existing){
-      try{localStorage.removeItem('t2_active_plan')}catch(e){}
+      // V67.71.5 — se o militar selecionou novamente o mesmo treino que já
+      // estava em andamento, retoma o checkpoint salvo. Nunca apaga a sessão
+      // nem reinicia o índice/série para 1 por uma seleção repetida.
+      let resumed=false;
+      try{resumed=v67604ResumeActivePlan()}catch(e){console.warn('Falha ao retomar o mesmo treino:',e)}
+      unlock();
+      if(resumed)return true;
+      // Se a restauração falhar, preserva a sessão salva e evita sobrescrevê-la
+      // silenciosamente com um treino iniciado do zero.
+      alert('Não foi possível restaurar o ponto salvo deste treino. A sessão foi preservada; tente novamente.');
+      return false;
     }
 
     try{v67670ResetActivityLocation()}catch(e){console.warn('Localização não impediu início:',e)}
