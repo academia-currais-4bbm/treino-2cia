@@ -2344,7 +2344,7 @@ function v676822ApplyExecutionCoreUI(resetSet=true){
   const repsLabel=byId('repsLabel'), reps=byId('reps');
   if(repsLabel)repsLabel.textContent=timed?'Tempo (segundos)':'Repetições';
   if(reps){reps.type='number';reps.placeholder=timed?'Ex.: 30':'';if(resetSet)reps.value='';}
-  // V67.72.12 — uma atualização/restauração visual não pode cancelar o descanso
+  // V67.72.13 — uma atualização/restauração visual não pode cancelar o descanso
   // já iniciado para a série atual de um treino personalizado.
   const v677212PreserveCustomRest = v676830IsCustomName() &&
     Number(v67713RestEndsAt)>Date.now() && Number(timer)>0;
@@ -2840,7 +2840,9 @@ function completeSet(){
     // V67.62.6 — a interface avança ANTES de qualquer persistência/sincronização.
     // Assim uma falha secundária nunca deixa o card visual preso na série anterior.
     currentSet++;
-    if(v676830IsCustomName())v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running'});
+    // V67.72.13 — não grave o checkpoint antes de iniciar o descanso:
+    // isso pode sobrescrever restEndsAt com null e disparar restauração sem prazo.
+    // O checkpoint completo é gravado abaixo, depois que o timer é iniciado.
     v67625SyncCurrentSetUI();
     v67612UpdateWorkoutVisuals();
     const repsInput=byId('reps'); if(repsInput)repsInput.value="";
