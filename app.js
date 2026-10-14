@@ -2400,6 +2400,14 @@ function v676824StartCustomRestAfterSet(seconds=null){
 }
 
 function openExercise(id,inPlan=false){
+  // V67.72.14 — chamadas tardias de restauração não devem reabrir o mesmo
+  // exercício personalizado já visível: a inicialização abaixo pausa o timer.
+  if(!navRestoring && v676830IsCustomName() && currentExercise &&
+     String(currentExercise.id)===String(id) &&
+     document.getElementById('exerciseView')?.classList.contains('active')){
+    v67725TimerDiag("OPEN_IGNORADO_MESMO_EXERCICIO");
+    return true;
+  }
   currentExercise=(activePlanIndex>=0&&activePlanExercises[activePlanIndex]&&String(activePlanExercises[activePlanIndex].id)===String(id))?activePlanExercises[activePlanIndex]:DATA.exercises.find(x=>String(x.id)===String(id));
   if(!currentExercise){ console.error('Exercício não encontrado:',id); return false; }
   // V67.68.22 — entra na tela de execução IMEDIATAMENTE. Assim nenhuma rotina
@@ -2848,17 +2856,16 @@ function completeSet(){
     const repsInput=byId('reps'); if(repsInput)repsInput.value="";
     v67678RenderLastSetReference();
     v67690RenderMethodGuide();
-    // V67.72.4 — todos os treinos usam exatamente o mesmo fluxo de descanso.
-    // Primeiro persistimos série e navegação; depois iniciamos o relógio
-    // validado nos treinos prontos, evitando que salvamentos posteriores
-    // interrompam o intervalo nas séries intermediárias dos personalizados.
-    try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
-    try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
+    // V67.72.14 — iniciar e definir o prazo do descanso antes de qualquer
+    // persistência/navegação. O guard de openExercise impede restauração tardia
+    // do mesmo exercício de zerar o intervalo que acaba de ser iniciado.
     v676827StartRestLikeReadyWorkout();
     if(v676830IsCustomName()){
       v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer});
       v67723EnsureCustomRestRunning(v67713RestEndsAt);
     }
+    try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
+    try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
   }else{
     // V67.68.22 — a última série também conta visualmente como concluída e
     // inicia o descanso automaticamente antes do próximo exercício.
