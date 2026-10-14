@@ -1,5 +1,5 @@
 const TREINO_2CIA_BUILD='67.71.5';
-/* Treino 2ª CIA — v67.71.5 */
+/* Treino 2ª CIA — v67.71.6 */
 
 const DATA=window.APP_DATA;
 let currentGroup="", currentListMode="group", currentExercise=null, currentSet=1, timer=90, tick=null;
@@ -558,6 +558,20 @@ function showView(id){
   }
   const target=byId(id);if(!target)return;
   const previous=document.querySelector('.view.active')?.id||null;
+  // V67.71.6 — gravar a sessão ANTES de trocar de aba/tela, enquanto o
+  // contexto ainda aponta para o exercício realmente executado.
+  if(previous==='exercise' && id!=='exercise' && !navRestoring && activePlanIndex>=0 && workoutStartedAt){
+    try{
+      if(currentExercise && activePlanExercises[activePlanIndex] &&
+         String(currentExercise.id)===String(activePlanExercises[activePlanIndex].id)){
+        v67604SaveActivePlanState({
+          index:activePlanIndex,
+          currentExerciseId:currentExercise.id,
+          currentSet:Math.max(1,Number(currentSet)||1)
+        });
+      }
+    }catch(e){console.warn('Falha ao salvar posição antes da navegação:',e)}
+  }
   if(!navRestoring && !browserNavHandling && previous && previous!==id){
     v67610PushSnapshot(appHistorySnapshot(previous));
   }
@@ -2551,6 +2565,18 @@ function openExercise(id,inPlan=false){
   if(skipExerciseBtn) skipExerciseBtn.style.display=canSkipPlanExercise?'block':'none';
   const previousExerciseBtn=byId('previousExerciseBtn'); if(previousExerciseBtn) previousExerciseBtn.style.display=activePlanIndex>0?'block':'none';
   showView('exercise');
+  // V67.71.6 — persistir o ponto exato toda vez que um exercício do plano
+  // é aberto. Antes, a gravação dependia de outras ações; sair logo após
+  // trocar de exercício podia deixar o índice antigo (frequentemente 0).
+  if(inPlan && !navRestoring && workoutStartedAt && activePlanIndex>=0){
+    try{
+      v67604SaveActivePlanState({
+        index:activePlanIndex,
+        currentExerciseId:currentExercise.id,
+        currentSet:Math.max(1,Number(currentSet)||1)
+      });
+    }catch(e){console.warn('Falha ao salvar checkpoint ao abrir exercício:',e)}
+  }
   return true;
 }
 function history(){
@@ -9425,43 +9451,49 @@ window.addEventListener('online',async()=>{
   if(validity===true)await cloudInitialSync(false);
 });
 window.addEventListener('offline',cloudRenderUser);
+// V67.71.6 — segundo plano preserva o checkpoint canônico salvo.
+function v676716PauseSavedWorkoutForBackground(){
+  const active=v67604ActivePlanState();
+  if(!active)return;
+  const now=new Date().toISOString();
+  const next=active.status==='paused'
+    ? {...active,updatedAt:now}
+    : {...active,status:'paused',pausedAt:now,pauseReason:'background',updatedAt:now};
+  try{localStorage.setItem('t2_active_plan',JSON.stringify(next))}catch(e){}
+  // Atualiza o checkpoint personalizado a partir do estado persistido,
+  // nunca de variáveis globais que outra tela pode ter alterado.
+  if(v676830IsCustomName(next.name)){
+    const cp={...next,index:Math.max(0,Number(next.index)||0),
+      currentExerciseId:next.currentExerciseId??null,
+      currentSet:Math.max(1,Number(next.currentSet)||1),status:'paused',updatedAt:now};
+    try{localStorage.setItem(V676830_CUSTOM_CHECKPOINT,JSON.stringify(cp))}catch(e){}
+  }
+}
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='hidden'){
-    // V67.71.3 — ocultar o app não pausa o treino; o descanso continua por horário real.
-    const active=v67604ActivePlanState();
-    if(active){
-      v67604SaveActivePlanState({status:active.status||'running',restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
-      if(v676830IsCustomName())v676830WriteCheckpoint({status:active.status||'running',restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
-    }
-    saveNavigationState(document.querySelector('.view.active')?.id||'home');
-  }
-  if(document.visibilityState==='visible'){
+    try{pauseTimer()}catch(e){}
+    try{v676716PauseSavedWorkoutForBackground()}catch(e){console.warn('Falha ao pausar checkpoint em segundo plano:',e)}
+    try{saveNavigationState(document.querySelector('.view.active')?.id||'home')}catch(e){}
+  }else if(document.visibilityState==='visible'){
+    // A sessão principal é a fonte da verdade; não restaura por um checkpoint secundário antigo.
     const saved=v67604ActivePlanState();
-    if(saved&&saved.restEndsAt){
-      v67713RestEndsAt=new Date(saved.restEndsAt).getTime();
-      timer=Math.max(0,Math.ceil((v67713RestEndsAt-Date.now())/1000));
-      updateClock();
-      if(timer>0&&!tick)startTimer();
-      else if(timer===0){pauseTimer();v67713RestEndsAt=null;}
-    }
-    const cp=v676830ReadCheckpoint();
-    if(cp&&v676830IsCustomName(cp.name)){
-      const wrongView=(document.querySelector('.view.active')?.id||'home')!=='exercise';
-      const wrongExercise=String(currentExercise?.id??'')!==String(cp.currentExerciseId??'');
-      const wrongSet=Number(currentSet||1)!==Number(cp.currentSet||1);
-      if(wrongView||wrongExercise||wrongSet){try{v676830RestoreCheckpoint(cp,(v67604ActivePlanState()?.status||cp.status)==='running')}catch(e){console.warn('Falha ao voltar ao ponto do personalizado:',e)}}
+    if(saved && v676830IsCustomName(saved.name)){
+      try{
+        const cp=v676830ReadCheckpoint();
+        const cpTime=cp?.updatedAt?new Date(cp.updatedAt).getTime():0;
+        const savedTime=saved.updatedAt?new Date(saved.updatedAt).getTime():0;
+        if(!cp || cp.name!==saved.name || cpTime<savedTime){
+          localStorage.setItem(V676830_CUSTOM_CHECKPOINT,JSON.stringify(saved));
+        }
+      }catch(e){}
     }
     if(cloudSession?.token && navigator.onLine)cloudInitialSync(false);
   }
 });
-// Persistência de checkpoint no descarregamento, sem pausar nem alterar o estado do treino.
 window.addEventListener('pagehide',()=>{
-  const active=v67604ActivePlanState();
-  if(active){
-    v67604SaveActivePlanState({status:active.status||'running',restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
-    if(v676830IsCustomName())v676830WriteCheckpoint({status:active.status||'running',restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
-  }
-  saveNavigationState(document.querySelector('.view.active')?.id||'home');
+  try{pauseTimer()}catch(e){}
+  try{v676716PauseSavedWorkoutForBackground()}catch(e){console.warn('Falha ao preservar checkpoint no pagehide:',e)}
+  try{saveNavigationState(document.querySelector('.view.active')?.id||'home')}catch(e){}
 });
 async function v6719ImproveStorageDurability(){
   try{
