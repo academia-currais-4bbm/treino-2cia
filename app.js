@@ -2796,10 +2796,18 @@ function completeSet(){
     const repsInput=byId('reps'); if(repsInput)repsInput.value="";
     v67678RenderLastSetReference();
     v67690RenderMethodGuide();
-    if(v676830IsCustomName())v676824StartCustomRestAfterSet();
-    else v676827StartRestLikeReadyWorkout();
-    try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
-    try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
+    if(v676830IsCustomName()){
+      // Nas séries intermediárias do personalizado, iniciar o descanso só
+      // depois das gravações: algumas rotinas de persistência atualizam a UI
+      // e podem interferir no timer recém-iniciado.
+      try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
+      try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
+      v676824StartCustomRestAfterSet();
+    }else{
+      v676827StartRestLikeReadyWorkout();
+      try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
+      try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
+    }
   }else{
     // V67.68.22 — a última série também conta visualmente como concluída e
     // inicia o descanso automaticamente antes do próximo exercício.
