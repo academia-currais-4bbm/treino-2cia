@@ -1526,6 +1526,17 @@ function v676832EnforceCustomRestore(){
 }
 function v676830RestoreCheckpoint(saved=v676830ReadCheckpoint(),markRunning=false){
   if(!saved||!v676830IsCustomName(saved.name))return false;
+  // V67.72.9 — não reabrir a mesma sessão/exercício/série se já está na tela.
+  // Callbacks tardios de login/feed tentavam restaurar o checkpoint repetidamente;
+  // openExercise() pausa o relógio e zera a deadline. No boot real currentExercise
+  // ainda está vazio/diferente, portanto a restauração legítima continua funcionando.
+  if(!navRestoring && v676830IsCustomName() && currentExercise &&
+     String(activePlanName||'')===String(saved.name) &&
+     String(currentExercise.id)===String(saved.currentExerciseId) &&
+     Number(currentSet)===Number(saved.currentSet) &&
+     document.getElementById('exerciseView')?.classList.contains('active')){
+    return true;
+  }
   // A cópia principal pode conter a substituição mais recente gravada pela v70.
   const main=v67604ActivePlanState();
   if(!saved.runtimeExercise && main && main.name===saved.name && Number(main.index)===Number(saved.index) && main.runtimeExercise){
