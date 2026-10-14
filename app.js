@@ -1,4 +1,4 @@
-const TREINO_2CIA_BUILD='67.71.5';
+const TREINO_2CIA_BUILD='67.71.7';
 /* Treino 2ª CIA — v67.71.6 */
 
 const DATA=window.APP_DATA;
@@ -204,8 +204,10 @@ document.addEventListener('visibilitychange',()=>{
         try{
           if(v676830IsCustomName(state.name) && cp) v676830RestoreCheckpoint(state,true);
           else if(v67604LoadActivePlanContext(state)){
+            const restoreExercise=activePlanExercises[activePlanIndex];
+            if(!restoreExercise)throw new Error('Exercício salvo não encontrado no plano');
             navRestoring=true;
-            try{openExercise(state.currentExerciseId||activePlanExercises[activePlanIndex]?.id,true)}finally{navRestoring=false}
+            try{openExercise(restoreExercise.id,true)}finally{navRestoring=false}
             currentSet=Math.max(1,Math.min(Number(state.currentSet)||1,Number(currentExercise?.sets)||1));
             if(typeof v676821RestoreExerciseProgress==='function')v676821RestoreExerciseProgress();
             pauseTimer();
@@ -558,7 +560,7 @@ function showView(id){
   }
   const target=byId(id);if(!target)return;
   const previous=document.querySelector('.view.active')?.id||null;
-  // V67.71.6 — gravar a sessão ANTES de trocar de aba/tela, enquanto o
+  // V67.71.7 — gravar a sessão ANTES de trocar de aba/tela, enquanto o
   // contexto ainda aponta para o exercício realmente executado.
   if(previous==='exercise' && id!=='exercise' && !navRestoring && activePlanIndex>=0 && workoutStartedAt){
     try{
@@ -1528,8 +1530,14 @@ function v676830RestoreCheckpoint(saved=v676830ReadCheckpoint(),markRunning=fals
     saved={...saved,runtimeExercise:main.runtimeExercise,currentExerciseId:main.currentExerciseId||saved.currentExerciseId};
   }
   if(!v67604LoadActivePlanContext(saved))return false;
-  const idxById=activePlanExercises.findIndex(x=>String(x.id)===String(saved.currentExerciseId));
-  if(idxById>=0)activePlanIndex=idxById;
+  // O índice é autoritativo quando válido. O ID só recupera a posição
+  // se o checkpoint não trouxer um índice válido.
+  const checkpointIndex=Number(saved.index);
+  const checkpointIndexValid=Number.isInteger(checkpointIndex)&&checkpointIndex>=0&&checkpointIndex<activePlanExercises.length;
+  if(!checkpointIndexValid){
+    const idxById=activePlanExercises.findIndex(x=>String(x.id)===String(saved.currentExerciseId));
+    if(idxById>=0)activePlanIndex=idxById;
+  }
   const ex=activePlanExercises[activePlanIndex]; if(!ex)return false;
   navRestoring=true;
   try{
@@ -1603,9 +1611,13 @@ function v67604LoadActivePlanContext(saved){
   activePlanName=String(saved.name||'');
   activePlanExercises=v67604PlanExercises(activePlanName);
   if(!activePlanExercises.length)return false;
-  activePlanIndex=Math.max(0,Math.min(Number(saved.index)||0,activePlanExercises.length-1));
-  // V67.68.71 — se o militar trocou o exercício durante esta execução,
-  // reconstrói a substituição antes de restaurar a tela após reload.
+  // V67.71.7 — o índice salvo é a posição canônica da sessão.
+  // currentExerciseId pode ficar desatualizado quando uma rotina de navegação
+  // salva o ID de outro contexto; não pode sobrescrever um índice válido.
+  const rawIndex=Number(saved.index);
+  const hasValidIndex=Number.isInteger(rawIndex)&&rawIndex>=0&&rawIndex<activePlanExercises.length;
+  activePlanIndex=hasValidIndex?rawIndex:0;
+  // Reconstrói uma substituição do exercício na mesma posição, sem deslocar o índice.
   if(saved.runtimeExercise && saved.runtimeExercise.sessionReplacement){
     activePlanExercises[activePlanIndex]={...saved.runtimeExercise};
   }
@@ -1614,9 +1626,11 @@ function v67604LoadActivePlanContext(saved){
     v66WorkoutServiceDay=saved.serviceDay;
     try{sessionStorage.setItem(V66_SERVICE_KEY,saved.serviceDay?'1':'0')}catch(e){}
   }
-  const targetId=saved.currentExerciseId ?? activePlanExercises[activePlanIndex]?.id;
-  const targetIndex=activePlanExercises.findIndex(x=>String(x.id)===String(targetId));
-  if(targetIndex>=0)activePlanIndex=targetIndex;
+  // Só usa o ID como recuperação quando o índice não existe/é inválido.
+  if(!hasValidIndex && saved.currentExerciseId!=null){
+    const targetIndex=activePlanExercises.findIndex(x=>String(x.id)===String(saved.currentExerciseId));
+    if(targetIndex>=0)activePlanIndex=targetIndex;
+  }
   return true;
 }
 function v67604EffectiveElapsedMs(saved=v67604ActivePlanState(), now=Date.now()){
@@ -1664,7 +1678,16 @@ function v67604PauseWorkout(goHome=false){
 }
 function v67604ResumeActivePlan(){
   v676835AllowAutoRestore();
-  const saved=(v676830ReadCheckpoint()&&v676830IsCustomName(v676830ReadCheckpoint()?.name))?v676830ReadCheckpoint():v67604ActivePlanState();
+  const mainState=v67604ActivePlanState();
+  const customCheckpoint=v676830ReadCheckpoint();
+  let saved=mainState;
+  if(customCheckpoint&&v676830IsCustomName(customCheckpoint.name)&&mainState?.name===customCheckpoint.name){
+    const cpTime=customCheckpoint.updatedAt?new Date(customCheckpoint.updatedAt).getTime():0;
+    const mainTime=mainState.updatedAt?new Date(mainState.updatedAt).getTime():0;
+    saved=cpTime>mainTime?{...mainState,...customCheckpoint}:mainState;
+  }else if(!mainState&&customCheckpoint&&v676830IsCustomName(customCheckpoint.name)){
+    saved=customCheckpoint;
+  }
   if(!saved)return false;
   if(!v67604LoadActivePlanContext(saved))return false;
   let pausedTotal=Math.max(0,Number(saved.pausedTotalMs)||0);
@@ -1673,6 +1696,7 @@ function v67604ResumeActivePlan(){
     if(Number.isFinite(p))pausedTotal+=Math.max(0,Date.now()-p);
   }
   const ex=activePlanExercises[activePlanIndex];
+  if(!ex)return false;
   navRestoring=true;
   try{openExercise(ex.id,true)}finally{navRestoring=false}
   currentSet=Math.max(1,Math.min(Number(saved.currentSet)||1,currentExercise?.sets||1));
@@ -2565,7 +2589,7 @@ function openExercise(id,inPlan=false){
   if(skipExerciseBtn) skipExerciseBtn.style.display=canSkipPlanExercise?'block':'none';
   const previousExerciseBtn=byId('previousExerciseBtn'); if(previousExerciseBtn) previousExerciseBtn.style.display=activePlanIndex>0?'block':'none';
   showView('exercise');
-  // V67.71.6 — persistir o ponto exato toda vez que um exercício do plano
+  // V67.71.7 — persistir o ponto exato toda vez que um exercício do plano
   // é aberto. Antes, a gravação dependia de outras ações; sair logo após
   // trocar de exercício podia deixar o índice antigo (frequentemente 0).
   if(inPlan && !navRestoring && workoutStartedAt && activePlanIndex>=0){
@@ -7232,8 +7256,20 @@ currentSet=Math.max(1,Number(state.currentSet)||1);
       case 'exercise':
         if(state.currentExerciseId!=null){
           const inPlan=!!state.activePlanName && state.activePlanIndex>=0;
-          openExercise(state.currentExerciseId,inPlan);
-          currentSet=Math.max(1,Number(state.currentSet)||1);
+          const activeSaved=v67604ActivePlanState();
+          let openedFromActiveCheckpoint=false;
+          if(inPlan && activeSaved && activeSaved.name===state.activePlanName && v67604LoadActivePlanContext(activeSaved)){
+            const exactExercise=activePlanExercises[activePlanIndex];
+            if(exactExercise){
+              openExercise(exactExercise.id,true);
+              currentSet=Math.max(1,Math.min(Number(activeSaved.currentSet)||1,Number(currentExercise?.sets)||1));
+              openedFromActiveCheckpoint=true;
+            }
+          }
+          if(!openedFromActiveCheckpoint){
+            openExercise(state.currentExerciseId,inPlan);
+            currentSet=Math.max(1,Number(state.currentSet)||1);
+          }
           if(currentExercise){
             const finished=currentSet>currentExercise.sets;
             byId('setLabel').textContent=finished
@@ -9451,7 +9487,7 @@ window.addEventListener('online',async()=>{
   if(validity===true)await cloudInitialSync(false);
 });
 window.addEventListener('offline',cloudRenderUser);
-// V67.71.6 — segundo plano preserva o checkpoint canônico salvo.
+// V67.71.7 — segundo plano preserva o checkpoint canônico salvo.
 function v676716PauseSavedWorkoutForBackground(){
   const active=v67604ActivePlanState();
   if(!active)return;

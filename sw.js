@@ -1,5 +1,5 @@
-const CACHE='t2cia-v67.71.6-resume-position';
-const RUNTIME='t2cia-runtime-v67.71.6-resume-position';
+const CACHE='t2cia-v67.71.7-resume-position';
+const RUNTIME='t2cia-runtime-v67.71.7-resume-position';
 const SHELL=[
   './','index.html','styles.css','app.js','data.js','cloud-config.js','manifest.json',
   'icon-192.png','icon-512.png','notification-badge-v676837.png','notification-icon-v676837.png',
