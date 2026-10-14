@@ -2646,6 +2646,24 @@ function v676827StartRestLikeReadyWorkout(){
   if(Number(timer)>0)startTimer();
   try{if(activePlanIndex>=0)v67604SaveActivePlanState({restEndsAt:v67713RestEndsAt,restRemaining:timer})}catch(e){}
 }
+// V67.72.3 — algumas atualizações assíncronas da UI personalizada podem limpar
+// o intervalo após Concluir série. Reativa o mesmo descanso pela deadline original,
+// sem reiniciar os segundos nem alterar o comportamento dos treinos prontos.
+function v67723EnsureCustomRestRunning(expectedEnd){
+  if(!v676830IsCustomName()||!expectedEnd)return;
+  const ensure=()=>{
+    if(v67713RestEndsAt!==expectedEnd)return;
+    const remaining=Math.max(0,Math.ceil((expectedEnd-Date.now())/1000));
+    timer=remaining;
+    updateClock();
+    if(remaining>0&&!tick)startTimer();
+    if(remaining===0&&tick)pauseTimer();
+  };
+  try{requestAnimationFrame(ensure)}catch(e){}
+  setTimeout(ensure,0);
+  setTimeout(ensure,60);
+  setTimeout(ensure,180);
+}
 
 
 // V67.68.69 — ajustes do exercício durante treino personalizado.
@@ -2796,13 +2814,14 @@ function completeSet(){
     const repsInput=byId('reps'); if(repsInput)repsInput.value="";
     v67678RenderLastSetReference();
     v67690RenderMethodGuide();
-    // V67.72.2 — todos os treinos usam exatamente o mesmo fluxo de descanso.
+    // V67.72.3 — todos os treinos usam exatamente o mesmo fluxo de descanso.
     // Primeiro persistimos série e navegação; depois iniciamos o relógio
     // validado nos treinos prontos, evitando que salvamentos posteriores
     // interrompam o intervalo nas séries intermediárias dos personalizados.
     try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
     try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
     v676827StartRestLikeReadyWorkout();
+    if(v676830IsCustomName())v67723EnsureCustomRestRunning(v67713RestEndsAt);
   }else{
     // V67.68.22 — a última série também conta visualmente como concluída e
     // inicia o descanso automaticamente antes do próximo exercício.
