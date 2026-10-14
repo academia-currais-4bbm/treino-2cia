@@ -1533,8 +1533,12 @@ function v676830RestoreCheckpoint(saved=v676830ReadCheckpoint(),markRunning=fals
   if(!navRestoring && v676830IsCustomName() && currentExercise &&
      String(activePlanName||'')===String(saved.name) &&
      String(currentExercise.id)===String(saved.currentExerciseId) &&
-     Number(currentSet)===Number(saved.currentSet) &&
      document.getElementById('exerciseView')?.classList.contains('active')){
+    // A série em execução pode ter avançado depois da gravação do checkpoint.
+    // Não reabra o exercício só porque o checkpoint ficou uma série atrás:
+    // openExercise chama ApplyExecutionCoreUI, que pausa e redefine o descanso.
+    // Sincronize o checkpoint com o estado que já está visível e preserve o timer.
+    try{v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise.id,currentSet,status:'running'});}catch(e){}
     return true;
   }
   // A cópia principal pode conter a substituição mais recente gravada pela v70.
@@ -2837,7 +2841,10 @@ function completeSet(){
     try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
     try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
     v676827StartRestLikeReadyWorkout();
-    if(v676830IsCustomName())v67723EnsureCustomRestRunning(v67713RestEndsAt);
+    if(v676830IsCustomName()){
+      v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer});
+      v67723EnsureCustomRestRunning(v67713RestEndsAt);
+    }
   }else{
     // V67.68.22 — a última série também conta visualmente como concluída e
     // inicia o descanso automaticamente antes do próximo exercício.
