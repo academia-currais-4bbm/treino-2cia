@@ -1,5 +1,5 @@
-const CACHE='t2cia-v67.71.2-videos-v67740';
-const RUNTIME='t2cia-runtime-videos-v67740';
+const CACHE='t2cia-v67.71.3-rest-clock';
+const RUNTIME='t2cia-runtime-v67.71.3-rest-clock';
 const SHELL=[
   './','index.html','styles.css','app.js','data.js','cloud-config.js','manifest.json',
   'icon-192.png','icon-512.png','notification-badge-v676837.png','notification-icon-v676837.png',

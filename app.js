@@ -3,6 +3,8 @@ const TREINO_2CIA_BUILD='67.71.0';
 
 const DATA=window.APP_DATA;
 let currentGroup="", currentListMode="group", currentExercise=null, currentSet=1, timer=90, tick=null;
+// V67.71.3 — o descanso é ancorado no relógio real, não na quantidade de ticks executados.
+let v67713RestEndsAt=null;
 let activePlanName="", activePlanExercises=[], activePlanIndex=-1, workoutStartedAt=null;
 
 
@@ -1467,7 +1469,7 @@ function v676830WriteCheckpoint(extra={}){
   const x={...old,name:activePlanName,index:activePlanIndex,startedAt:workoutStartedAt,
     currentExerciseId:currentExercise?.id??activePlanExercises[activePlanIndex]?.id??old.currentExerciseId??null,
     runtimeExercise:(currentExercise&&currentExercise.sessionReplacement)?{...currentExercise}:null,
-    currentSet:Math.max(1,Number(currentSet)||1),status:'paused',updatedAt:new Date().toISOString(),...extra};
+    currentSet:Math.max(1,Number(currentSet)||1),status:'paused',restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0),updatedAt:new Date().toISOString(),...extra};
   try{localStorage.setItem(V676830_CUSTOM_CHECKPOINT,JSON.stringify(x))}catch(e){}
 }
 function v676830ClearCheckpoint(){try{localStorage.removeItem(V676830_CUSTOM_CHECKPOINT)}catch(e){}}
@@ -1503,8 +1505,12 @@ function v676830RestoreCheckpoint(saved=v676830ReadCheckpoint(),markRunning=fals
     if(typeof v676822ApplyExecutionCoreUI==='function')v676822ApplyExecutionCoreUI(false);
     if(typeof v67612UpdateWorkoutVisuals==='function')v67612UpdateWorkoutVisuals();
     if(typeof v67625SyncCurrentSetUI==='function')v67625SyncCurrentSetUI();
-    pauseTimer(); timer=Math.max(0,Number(currentExercise?.rest)||0); updateClock();
-    const merged={...saved,index:activePlanIndex,currentExerciseId:ex.id,currentSet,status:markRunning?'running':'paused'};
+    pauseTimer();
+    v67713RestEndsAt=saved.restEndsAt&&Number.isFinite(new Date(saved.restEndsAt).getTime())?new Date(saved.restEndsAt).getTime():null;
+    timer=v67713RestEndsAt!==null?Math.max(0,Math.ceil((v67713RestEndsAt-Date.now())/1000)):Math.max(0,Number(saved.restRemaining)||0);
+    updateClock();
+    if(timer>0&&v67713RestEndsAt!==null)startTimer();
+    const merged={...saved,index:activePlanIndex,currentExerciseId:ex.id,currentSet,status:markRunning?'running':'paused',restEndsAt:v67713RestEndsAt,restRemaining:timer};
     try{localStorage.setItem('t2_active_plan',JSON.stringify(merged))}catch(e){}
     v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:ex.id,currentSet,status:markRunning?'running':'paused'});
     saveNavigationState('exercise');
@@ -1533,6 +1539,8 @@ function v67604SaveActivePlanState(extra={}){
     currentExerciseId:exerciseId,
     runtimeExercise:(currentExercise&&currentExercise.sessionReplacement)?{...currentExercise}:old.runtimeExercise||null,
     currentSet:Math.max(1,Number(currentSet)||1),
+    restEndsAt:v67713RestEndsAt,
+    restRemaining:Math.max(0,Number(timer)||0),
     status:old.status||'running',
     pausedAt:old.pausedAt||null,
     pausedTotalMs:Math.max(0,Number(old.pausedTotalMs)||0),
@@ -1630,8 +1638,14 @@ function v67604ResumeActivePlan(){
     if(Number.isFinite(p))pausedTotal+=Math.max(0,Date.now()-p);
   }
   const ex=activePlanExercises[activePlanIndex];
-  openExercise(ex.id,true);
+  navRestoring=true;
+  try{openExercise(ex.id,true)}finally{navRestoring=false}
   currentSet=Math.max(1,Math.min(Number(saved.currentSet)||1,currentExercise?.sets||1));
+  pauseTimer();
+  v67713RestEndsAt=saved.restEndsAt&&Number.isFinite(new Date(saved.restEndsAt).getTime())?new Date(saved.restEndsAt).getTime():null;
+  timer=v67713RestEndsAt!==null?Math.max(0,Math.ceil((v67713RestEndsAt-Date.now())/1000)):Math.max(0,Number(saved.restRemaining)||0);
+  updateClock();
+  if(timer>0&&v67713RestEndsAt!==null)startTimer();
   if(typeof v676822ApplyExecutionCoreUI==='function' && v676830IsCustomName())v676822ApplyExecutionCoreUI(false);
   if(typeof v67625SyncCurrentSetUI==='function')v67625SyncCurrentSetUI();
   if(byId('setLabel')&&currentExercise)byId('setLabel').textContent=`Série ${currentSet} de ${currentExercise.sets}`;
@@ -2286,12 +2300,9 @@ function v676822StartRest(seconds=null){return v676823StartRest(seconds)}
 // Isso evita que persistência/renderização posterior cancele o intervalo nas séries intermediárias.
 function v676824StartCustomRestAfterSet(seconds=null){
   const sec=Math.max(0,Number(seconds===null?currentExercise?.rest:seconds)||0);
-  // V67.68.28 — mesmo ciclo dos treinos prontos: cada conclusão/pulo
-  // encerra qualquer descanso anterior, volta ao tempo cheio e inicia UMA vez.
-  pauseTimer();
-  timer=sec;
-  updateClock();
-  if(sec>0) startTimer();
+  pauseTimer(); timer=sec; v67713RestEndsAt=sec>0?Date.now()+sec*1000:null; updateClock();
+  if(sec>0)startTimer();
+  try{v67604SaveActivePlanState({restEndsAt:v67713RestEndsAt,restRemaining:timer})}catch(e){}
 }
 
 function openExercise(id,inPlan=false){
@@ -2303,7 +2314,7 @@ function openExercise(id,inPlan=false){
   // V67.68.35 — durante restauração, NUNCA zera a série para 1.
   // O checkpoint é a fonte de verdade e deve sobreviver ao reload completo.
   const v676832RestoringSet = navRestoring ? Math.max(1,Number(currentSet)||1) : 1;
-  currentGroup=currentExercise.group;currentSet=v676832RestoringSet;timer=currentExercise.rest;pauseTimer();
+  currentGroup=currentExercise.group;currentSet=v676832RestoringSet;timer=currentExercise.rest;pauseTimer();if(!navRestoring)v67713RestEndsAt=null;
   // Em abertura normal inicia em 1; em restauração preserva a série do checkpoint.
   if(String(activePlanName||'').startsWith('Personalizado — ')) v676822ApplyExecutionCoreUI(!navRestoring);
   byId('exTitle').textContent=currentExercise.name;
@@ -2558,6 +2569,7 @@ function v676827StartRestLikeReadyWorkout(){
   if(!currentExercise)return;
   resetTimer();
   if(Number(timer)>0)startTimer();
+  try{if(activePlanIndex>=0)v67604SaveActivePlanState({restEndsAt:v67713RestEndsAt,restRemaining:timer})}catch(e){}
 }
 
 
@@ -2734,11 +2746,17 @@ function completeSet(){
   }
 }
 function updateClock(){byId('clock').textContent=`${String(Math.floor(timer/60)).padStart(2,'0')}:${String(timer%60).padStart(2,'0')}`}
-function startTimer(){if(tick)return;tick=setInterval(()=>{timer=Math.max(0,timer-1);updateClock();if(timer===0){pauseTimer();if(navigator.vibrate)navigator.vibrate([250,100,250]);
-
-}},1000)}
+function startTimer(){
+  if(tick)return;
+  if(v67713RestEndsAt===null&&Number(timer)>0)v67713RestEndsAt=Date.now()+Math.max(0,Number(timer)||0)*1000;
+  tick=setInterval(()=>{
+    timer=v67713RestEndsAt===null?Math.max(0,timer-1):Math.max(0,Math.ceil((v67713RestEndsAt-Date.now())/1000));
+    updateClock();
+    if(timer===0){pauseTimer();v67713RestEndsAt=null;try{if(activePlanIndex>=0)v67604SaveActivePlanState({restEndsAt:null,restRemaining:0})}catch(e){}if(navigator.vibrate&&document.visibilityState==='visible')navigator.vibrate([250,100,250]);}
+  },250);
+}
 function pauseTimer(){clearInterval(tick);tick=null}
-function resetTimer(){pauseTimer();timer=currentExercise?currentExercise.rest:90;updateClock()}
+function resetTimer(){pauseTimer();timer=currentExercise?currentExercise.rest:90;v67713RestEndsAt=timer>0?Date.now()+timer*1000:null;updateClock()}
 /* ===== V67.48 — DASHBOARD ESPORTIVO / META SEMANAL ===== */
 const V6748_WEEKLY_GOAL_KEY='t2_weekly_goal_v6748';
 function v6748WeeklyGoal(){
@@ -9378,33 +9396,40 @@ window.addEventListener('online',async()=>{
 window.addEventListener('offline',cloudRenderUser);
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='hidden'){
-    if(v676830IsCustomName())v676830WriteCheckpoint({status:'paused'});
-    // V67.68.13 — ao sair/minimizar o app, treino em andamento fica PAUSADO
-    // e preservado no ponto exato. Ao voltar, o militar decide quando retomar.
+    // V67.71.3 — ocultar o app não pausa o treino; o descanso continua por horário real.
     const active=v67604ActivePlanState();
-    if(active && active.status!=='paused'){ pauseTimer(); v67604SaveActivePlanState({status:'paused',pausedAt:new Date().toISOString(),pauseReason:'background'}); }
-    else v67604SaveActivePlanState();
+    if(active){
+      v67604SaveActivePlanState({status:active.status||'running',restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
+      if(v676830IsCustomName())v676830WriteCheckpoint({status:active.status||'running',restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
+    }
     saveNavigationState(document.querySelector('.view.active')?.id||'home');
   }
   if(document.visibilityState==='visible'){
+    const saved=v67604ActivePlanState();
+    if(saved&&saved.restEndsAt){
+      v67713RestEndsAt=new Date(saved.restEndsAt).getTime();
+      timer=Math.max(0,Math.ceil((v67713RestEndsAt-Date.now())/1000));
+      updateClock();
+      if(timer>0&&!tick)startTimer();
+      else if(timer===0){pauseTimer();v67713RestEndsAt=null;}
+    }
     const cp=v676830ReadCheckpoint();
     if(cp&&v676830IsCustomName(cp.name)){
       const wrongView=(document.querySelector('.view.active')?.id||'home')!=='exercise';
       const wrongExercise=String(currentExercise?.id??'')!==String(cp.currentExerciseId??'');
       const wrongSet=Number(currentSet||1)!==Number(cp.currentSet||1);
-      if(wrongView||wrongExercise||wrongSet){try{v676830RestoreCheckpoint(cp,false)}catch(e){console.warn('Falha ao voltar ao ponto do personalizado:',e)}}
+      if(wrongView||wrongExercise||wrongSet){try{v676830RestoreCheckpoint(cp,(v67604ActivePlanState()?.status||cp.status)==='running')}catch(e){console.warn('Falha ao voltar ao ponto do personalizado:',e)}}
     }
-    // Se o mesmo documento continuou vivo, permanecemos exatamente na tela atual.
-    // A sincronização em nuvem pode ocorrer sem alterar a navegação.
     if(cloudSession?.token && navigator.onLine)cloudInitialSync(false);
   }
 });
-// V67.68.12 — redundância para Android/PWA: se o documento for descarregado
-// sem um visibilitychange confiável, preserva a sessão como pausada.
+// Persistência de checkpoint no descarregamento, sem pausar nem alterar o estado do treino.
 window.addEventListener('pagehide',()=>{
-  if(v676830IsCustomName())v676830WriteCheckpoint({status:'paused'});
   const active=v67604ActivePlanState();
-  if(active && active.status!=='paused'){ pauseTimer(); v67604SaveActivePlanState({status:'paused',pausedAt:new Date().toISOString(),pauseReason:'background'}); }
+  if(active){
+    v67604SaveActivePlanState({status:active.status||'running',restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
+    if(v676830IsCustomName())v676830WriteCheckpoint({status:active.status||'running',restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
+  }
   saveNavigationState(document.querySelector('.view.active')?.id||'home');
 });
 async function v6719ImproveStorageDurability(){
