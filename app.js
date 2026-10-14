@@ -2344,7 +2344,19 @@ function v676822ApplyExecutionCoreUI(resetSet=true){
   const repsLabel=byId('repsLabel'), reps=byId('reps');
   if(repsLabel)repsLabel.textContent=timed?'Tempo (segundos)':'Repetições';
   if(reps){reps.type='number';reps.placeholder=timed?'Ex.: 30':'';if(resetSet)reps.value='';}
-  pauseTimer(); timer=Math.max(0,Number(currentExercise.rest)||0); updateClock();
+  // V67.72.12 — uma atualização/restauração visual não pode cancelar o descanso
+  // já iniciado para a série atual de um treino personalizado.
+  const v677212PreserveCustomRest = v676830IsCustomName() &&
+    Number(v67713RestEndsAt)>Date.now() && Number(timer)>0;
+  if(v677212PreserveCustomRest){
+    timer=Math.max(0,Math.ceil((Number(v67713RestEndsAt)-Date.now())/1000));
+    if(!tick)startTimer();
+  }else{
+    pauseTimer();
+    timer=Math.max(0,Number(currentExercise.rest)||0);
+    v67713RestEndsAt=timer>0?Date.now()+timer*1000:null;
+  }
+  updateClock();
   const next=byId('nextExerciseBtn');if(next)next.style.display='none';
   // V67.68.68 — controles essenciais do treino personalizado.
   // Eles são exibidos já no núcleo resiliente, antes das rotinas visuais
