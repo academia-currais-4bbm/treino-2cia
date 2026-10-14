@@ -2646,23 +2646,24 @@ function v676827StartRestLikeReadyWorkout(){
   if(Number(timer)>0)startTimer();
   try{if(activePlanIndex>=0)v67604SaveActivePlanState({restEndsAt:v67713RestEndsAt,restRemaining:timer})}catch(e){}
 }
-// V67.72.3 — algumas atualizações assíncronas da UI personalizada podem limpar
-// o intervalo após Concluir série. Reativa o mesmo descanso pela deadline original,
-// sem reiniciar os segundos nem alterar o comportamento dos treinos prontos.
+// V67.72.4 — rearmamento final do descanso em séries intermediárias personalizadas.
+// Após a cadeia de UI terminar, recria o relógio a partir da deadline já definida.
 function v67723EnsureCustomRestRunning(expectedEnd){
   if(!v676830IsCustomName()||!expectedEnd)return;
   const ensure=()=>{
-    if(v67713RestEndsAt!==expectedEnd)return;
+    if(!v676830IsCustomName()||!currentExercise||!expectedEnd)return;
     const remaining=Math.max(0,Math.ceil((expectedEnd-Date.now())/1000));
-    timer=remaining;
-    updateClock();
-    if(remaining>0&&!tick)startTimer();
-    if(remaining===0&&tick)pauseTimer();
+    if(remaining<=0){
+      pauseTimer(); timer=0; v67713RestEndsAt=null; updateClock();
+      try{if(activePlanIndex>=0)v67604SaveActivePlanState({restEndsAt:null,restRemaining:0})}catch(e){}
+      return;
+    }
+    // Recria o intervalo mesmo se tick estiver obsoleto após uma atualização da UI.
+    pauseTimer(); v67713RestEndsAt=expectedEnd; timer=remaining; updateClock(); startTimer();
+    try{if(activePlanIndex>=0)v67604SaveActivePlanState({restEndsAt:expectedEnd,restRemaining:remaining})}catch(e){}
   };
   try{requestAnimationFrame(ensure)}catch(e){}
-  setTimeout(ensure,0);
-  setTimeout(ensure,60);
-  setTimeout(ensure,180);
+  setTimeout(ensure,0); setTimeout(ensure,80); setTimeout(ensure,250); setTimeout(ensure,500);
 }
 
 
@@ -2814,7 +2815,7 @@ function completeSet(){
     const repsInput=byId('reps'); if(repsInput)repsInput.value="";
     v67678RenderLastSetReference();
     v67690RenderMethodGuide();
-    // V67.72.3 — todos os treinos usam exatamente o mesmo fluxo de descanso.
+    // V67.72.4 — todos os treinos usam exatamente o mesmo fluxo de descanso.
     // Primeiro persistimos série e navegação; depois iniciamos o relógio
     // validado nos treinos prontos, evitando que salvamentos posteriores
     // interrompam o intervalo nas séries intermediárias dos personalizados.
