@@ -1,70 +1,70 @@
-const CACHE='t2cia-v67.71.7-resume-position';
-const RUNTIME='t2cia-runtime-v67.71.7-resume-position';
-const SHELL=[
-  './','index.html','styles.css','app.js','data.js','cloud-config.js','manifest.json',
-  'icon-192.png','icon-512.png','notification-badge-v676837.png','notification-icon-v676837.png',
-  'notification-cbmrn.png','trilha-treino-2cia.mp3','share-card-premium-v67631.png'
-];
+const CACHE='t2cia-v67.71.8-resume-source-fix';
+const SHELL=['./','index.html','styles.css','data.js','app.js','app-v16.js','app-v17.js','app-v18.js','app-v19.js','app-v20.js','app-v21.js','app-v22.js','app-v23.js','app-v24.js','app-v25.js','app-v26.js','app-v27.js','app-v28.js','app-v29.js','app-v30.js','app-v31.js','manifest.json','icon-192.png','icon-512.png','qrcodes.html','assets/exercises/1-inicio.webp','assets/exercises/1-fim.webp','assets/exercises/supino-inclinado-inicio.webp','assets/exercises/supino-inclinado-fim.webp','assets/exercises/crucifixo-halteres-inicio.webp','assets/exercises/crucifixo-halteres-fim.webp','assets/exercises/crossover-medio-inicio.webp','assets/exercises/crossover-medio-fim.webp','assets/exercises/triceps-corda-inicio.webp','assets/exercises/triceps-corda-fim.webp','assets/exercises/triceps-testa-inicio.webp','assets/exercises/triceps-testa-fim.webp','assets/exercises/puxada-frontal-inicio.webp','assets/exercises/puxada-frontal-fim.webp','assets/exercises/remada-baixa-inicio.webp','assets/exercises/remada-baixa-fim.webp','assets/exercises/remada-curvada-inicio.webp','assets/exercises/remada-curvada-fim.webp','assets/exercises/levantamento-terra-inicio.webp','assets/exercises/levantamento-terra-fim.webp','assets/exercises/barra-fixa-inicio.webp','assets/exercises/barra-fixa-fim.webp','assets/exercises/remada-unilateral-inicio.webp','assets/exercises/remada-unilateral-fim.webp','assets/exercises/rosca-direta-inicio.webp','assets/exercises/rosca-direta-fim.webp','assets/exercises/rosca-alternada-inicio.webp','assets/exercises/rosca-alternada-fim.webp','assets/exercises/rosca-martelo-inicio.webp','assets/exercises/rosca-martelo-fim.webp','assets/exercises/rosca-concentrada-inicio.webp','assets/exercises/rosca-concentrada-fim.webp','assets/exercises/agachamento-livre-inicio.webp','assets/exercises/agachamento-livre-fim.webp','assets/exercises/leg-press-inicio.webp','assets/exercises/leg-press-fim.webp','assets/exercises/cadeira-extensora-inicio.webp','assets/exercises/cadeira-extensora-fim.webp','assets/exercises/cadeira-flexora-inicio.webp','assets/exercises/cadeira-flexora-fim.webp','assets/exercises/avanco-inicio.webp','assets/exercises/avanco-fim.webp','assets/exercises/stiff-inicio.webp','assets/exercises/stiff-fim.webp','assets/exercises/cadeira-adutora-inicio.webp','assets/exercises/cadeira-adutora-fim.webp','assets/exercises/cadeira-abdutora-inicio.webp','assets/exercises/cadeira-abdutora-fim.webp','assets/exercises/panturrilha-em-pe-inicio.webp','assets/exercises/panturrilha-em-pe-fim.webp','assets/exercises/panturrilha-sentado-inicio.webp','assets/exercises/panturrilha-sentado-fim.webp','assets/exercises/desenvolvimento-barra-inicio.webp','assets/exercises/desenvolvimento-barra-fim.webp','assets/exercises/desenvolvimento-halteres-inicio.webp','assets/exercises/desenvolvimento-halteres-fim.webp','assets/exercises/elevacao-lateral-inicio.webp','assets/exercises/elevacao-lateral-fim.webp','assets/exercises/elevacao-frontal-inicio.webp','assets/exercises/elevacao-frontal-fim.webp','assets/exercises/crucifixo-invertido-inicio.webp','assets/exercises/crucifixo-invertido-fim.webp','assets/exercises/encolhimento-inicio.webp','assets/exercises/encolhimento-fim.webp','assets/exercises/face-pull-inicio.webp','assets/exercises/face-pull-fim.webp','assets/exercises/elevacao-lateral-cabo-inicio.webp','assets/exercises/elevacao-lateral-cabo-fim.webp','assets/exercises/prancha-frontal-inicio.webp','assets/exercises/prancha-frontal-fim.webp','assets/exercises/elevacao-pernas-inicio.webp','assets/exercises/elevacao-pernas-fim.webp','assets/exercises/abdominal-maquina-inicio.webp','assets/exercises/abdominal-maquina-fim.webp','assets/exercises/prancha-lateral-inicio.webp','assets/exercises/prancha-lateral-fim.webp','assets/exercises/triceps-frances-inicio.webp','assets/exercises/triceps-frances-fim.webp'];
+
 self.addEventListener('install',event=>{
-  event.waitUntil((async()=>{
-    const cache=await caches.open(CACHE);
-    await Promise.all(SHELL.map(async url=>{try{await cache.add(url)}catch(e){console.warn('Falha ao pré-cachear',url,e)}}));
-    await self.skipWaiting();
-  })());
+  event.waitUntil(
+    caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting())
+  );
 });
+
 self.addEventListener('activate',event=>{
-  event.waitUntil((async()=>{
-    const keys=await caches.keys();
-    await Promise.all(keys.filter(k=>k!==CACHE&&k!==RUNTIME).map(k=>caches.delete(k)));
-    await self.clients.claim();
-  })());
+  event.waitUntil(
+    caches.keys()
+      .then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+      .then(()=>self.clients.claim())
+  );
 });
-function isExerciseVideo(url){
-  return /assets\/exercises\/videos\/(supino-reto|supino-inclinado|supino-declinado|crucifixo-com-halteres|crossover-alto)\.mp4$/.test(url.pathname);
-}
-function isAppShell(url){
-  return url.pathname.endsWith('/')||url.pathname.endsWith('/index.html')||url.pathname.endsWith('/app.js')||url.pathname.endsWith('/styles.css')||url.pathname.endsWith('/data.js')||url.pathname.endsWith('/cloud-config.js')||url.pathname.endsWith('/manifest.json');
-}
 
-function isAbdomenPoster(url){
-  const p = new URL(url).pathname;
-  return /assets\/exercises\/posters\/(crunch-tradicional|crunch-na-polia|prancha-frontal|prancha-lateral|elevacao-de-pernas|abdominal-bicicleta|abdominal-obliquo|dead-bug|crunch-invertido|abdominal-na-maquina|ab-wheel|hollow-body|russian-twist|pallof-press|bird-dog)\.webp$/.test(p);
-}
-
-function isPanturrilhaPoster(url){
-  const p = new URL(url).pathname;
-  return /assets\/exercises\/posters\/(panturrilha-em-pe|panturrilha-sentada)\.webp$/.test(p);
-}
 self.addEventListener('fetch',event=>{
   const req=event.request;
-  if(req.method!=='GET')return;
+  if(req.method!=='GET') return;
+
   const url=new URL(req.url);
-  if(url.origin!==self.location.origin)return;
-  if(isAppShell(url)){
-    event.respondWith((async()=>{try{const fresh=await fetch(req,{cache:'no-store'});if(fresh&&fresh.ok){const cache=await caches.open(CACHE);cache.put(req,fresh.clone()).catch(()=>{})}return fresh}catch(e){return (await caches.match(req))||(await caches.match('index.html'))||Response.error()}})());
+  const isAppFile =
+    url.pathname.endsWith('/app.js') ||
+    url.pathname.endsWith('/app-v16.js') ||
+    url.pathname.endsWith('/app-v17.js') ||
+    url.pathname.endsWith('/app-v18.js') ||
+    url.pathname.endsWith('/app-v19.js') ||
+    url.pathname.endsWith('/app-v20.js') ||
+    url.pathname.endsWith('/app-v21.js') ||
+    url.pathname.endsWith('/app-v22.js') ||
+    url.pathname.endsWith('/app-v23.js') ||
+    url.pathname.endsWith('/app-v24.js') ||
+    url.pathname.endsWith('/app-v25.js') ||
+    url.pathname.endsWith('/app-v26.js') ||
+    url.pathname.endsWith('/app-v27.js') ||
+    url.pathname.endsWith('/app-v28.js') ||
+    url.pathname.endsWith('/app-v29.js') ||
+    url.pathname.endsWith('/app-v30.js') ||
+    url.pathname.endsWith('/app-v31.js') ||
+    url.pathname.endsWith('/data.js') ||
+    url.pathname.endsWith('/index.html') ||
+    url.pathname.endsWith('/styles.css') ||
+    url.pathname.endsWith('/manifest.json') ||
+    url.pathname.endsWith('/');
+
+  if(isAppFile){
+    event.respondWith(
+      fetch(req)
+        .then(res=>{
+          const copy=res.clone();
+          caches.open(CACHE).then(cache=>cache.put(req,copy));
+          return res;
+        })
+        .catch(()=>caches.match(req).then(r=>r||caches.match('index.html')))
+    );
     return;
   }
-  if(isExerciseVideo(url)){
-    event.respondWith((async()=>{
-      try{
-        const fresh=await fetch(req,{cache:'no-store'});
-        if(fresh&&fresh.ok){
-          const cache=await caches.open(RUNTIME);
-          cache.put(req,fresh.clone()).catch(()=>{});
-        }
-        return fresh;
-      }catch(e){
-        return (await caches.match(req))||Response.error();
-      }
-    })());
-    return;
-  }
-  if((isPanturrilhaPoster(url) || isAbdomenPoster(url))){
-    event.respondWith((async()=>{try{const fresh=await fetch(req,{cache:'no-store'});if(fresh&&fresh.ok){const cache=await caches.open(RUNTIME);cache.put(req,fresh.clone()).catch(()=>{})}return fresh}catch(e){return (await caches.match(req))||Response.error()}})());
-    return;
-  }
-  event.respondWith((async()=>{const cached=await caches.match(req);if(cached)return cached;try{const fresh=await fetch(req);if(fresh&&fresh.ok){const cache=await caches.open(RUNTIME);cache.put(req,fresh.clone()).catch(()=>{})}return fresh}catch(e){return Response.error()}})());
+
+  event.respondWith(
+    caches.match(req).then(cached=>{
+      if(cached) return cached;
+      return fetch(req).then(res=>{
+        const copy=res.clone();
+        caches.open(CACHE).then(cache=>cache.put(req,copy));
+        return res;
+      });
+    })
+  );
 });
-/* ===== V67.60.0 — WEB PUSH + ICONE PEQUENO + DEEP LINK ROBUSTO ===== */
-self.addEventListener('push',event=>{event.waitUntil((async()=>{let data={};try{data=event.data?event.data.json():{}}catch(e){try{data={body:event.data?.text()||''}}catch(_){} }const title=String(data.title||'Treino 2ª CIA');const feedId=Number(data.feedId??data.feed_id??0)||null;const options={body:String(data.body||'Você recebeu uma nova notificação.'),tag:String(data.tag||'treino-2cia-feed'),data:{tipo:data.tipo||'',feedId},badge:new URL('notification-badge-v676837.png',self.registration.scope).href,icon:new URL('notification-cbmrn.png',self.registration.scope).href,color:'#C8102E',vibrate:[180,80,180],renotify:true};await self.registration.showNotification(title,options)})() )});
-self.addEventListener('notificationclick',event=>{event.notification.close();event.waitUntil((async()=>{const feedId=Number(event.notification?.data?.feedId||0)||null;const target=new URL(self.registration.scope);if(feedId)target.searchParams.set('feed',String(feedId));const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});for(const client of windows){try{if(new URL(client.url).origin===target.origin){await client.focus();if(feedId){client.postMessage({type:'OPEN_FEED_ACTIVITY',feedId});return}if('navigate' in client)await client.navigate(target.href);return}}catch(e){}}if(self.clients.openWindow)await self.clients.openWindow(target.href)})() )});
