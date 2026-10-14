@@ -1,5 +1,5 @@
-const TREINO_2CIA_BUILD='67.71.0';
-/* Treino 2ª CIA — v67.68.36 */
+const TREINO_2CIA_BUILD='67.71.4';
+/* Treino 2ª CIA — v67.71.4 */
 
 const DATA=window.APP_DATA;
 let currentGroup="", currentListMode="group", currentExercise=null, currentSet=1, timer=90, tick=null;
@@ -181,9 +181,12 @@ document.addEventListener('visibilitychange',()=>{
     // V67.68.35 — grava o ponto EXATO antes de o Android/PWA suspender a página.
     try{
       const activeView=document.querySelector('.view.active')?.id||'';
-      if(activeView==='exercise' && !v676835AutoRestoreSuppressed() && String(activePlanName||'').startsWith('Personalizado — ') && activePlanIndex>=0 && workoutStartedAt){
-        v67604SaveActivePlanState({status:'paused',pausedAt:new Date().toISOString(),pauseReason:'background'});
-        v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id??activePlanExercises[activePlanIndex]?.id??null,currentSet:Math.max(1,Number(currentSet)||1),status:'paused'});
+      if(activeView==='exercise' && activePlanIndex>=0 && workoutStartedAt){
+        // Ocultar o app não equivale a uma pausa solicitada pelo militar.
+        const saved=v67604ActivePlanState();
+        const status=saved?.status==='paused'?'paused':'running';
+        v67604SaveActivePlanState({status,restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
+        if(v676830IsCustomName())v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id??activePlanExercises[activePlanIndex]?.id??null,currentSet:Math.max(1,Number(currentSet)||1),status,restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
         saveNavigationState('exercise');
       }
     }catch(e){console.warn('Falha ao salvar checkpoint ao ocultar app:',e)}
@@ -192,12 +195,28 @@ document.addEventListener('visibilitychange',()=>{
   }else{
     // Se a tela foi recriada/alterada durante a suspensão, o checkpoint local vence a Home.
     try{
+      const saved=v67604ActivePlanState();
       const cp=v676830ReadCheckpoint();
-      if(cp&&v676830IsCustomName(cp.name)&&!v676835AutoRestoreSuppressed()){
-        const activeView=document.querySelector('.view.active')?.id||'';
-        if(activeView==='home'||!currentExercise||String(currentExercise.id)!==String(cp.currentExerciseId)||Number(currentSet)!==Number(cp.currentSet)){
-          v676830RestoreCheckpoint(cp,false);
-        }
+      const state=(cp&&v676830IsCustomName(cp.name)&&saved?.name===cp.name)?{...saved,...cp}:saved;
+      const activeView=document.querySelector('.view.active')?.id||'';
+      if(state && state.status!=='paused' && !v676835AutoRestoreSuppressed() &&
+         (activeView!=='exercise'||!currentExercise||String(currentExercise.id)!==String(state.currentExerciseId)||Number(currentSet)!==Number(state.currentSet||1))){
+        try{
+          if(v676830IsCustomName(state.name) && cp) v676830RestoreCheckpoint(state,true);
+          else if(v67604LoadActivePlanContext(state)){
+            navRestoring=true;
+            try{openExercise(state.currentExerciseId||activePlanExercises[activePlanIndex]?.id,true)}finally{navRestoring=false}
+            currentSet=Math.max(1,Math.min(Number(state.currentSet)||1,Number(currentExercise?.sets)||1));
+            if(typeof v676821RestoreExerciseProgress==='function')v676821RestoreExerciseProgress();
+            pauseTimer();
+            v67713RestEndsAt=state.restEndsAt&&Number.isFinite(new Date(state.restEndsAt).getTime())?new Date(state.restEndsAt).getTime():null;
+            timer=v67713RestEndsAt!==null?Math.max(0,Math.ceil((v67713RestEndsAt-Date.now())/1000)):Math.max(0,Number(state.restRemaining)||0);
+            updateClock();
+            if(timer>0&&v67713RestEndsAt!==null)startTimer();
+            v67604SaveActivePlanState({status:'running',currentExerciseId:currentExercise?.id,currentSet,restEndsAt:v67713RestEndsAt,restRemaining:timer});
+            saveNavigationState('exercise');
+          }
+        }catch(e){console.warn('Falha ao restaurar treino ativo ao retornar:',e)}
       }
     }catch(e){console.warn('Falha ao restaurar personalizado ao retornar:',e)}
     // V67.68.38 — ao voltar do segundo plano, retoma o relógio EFETIVO do treino.
@@ -220,10 +239,12 @@ document.addEventListener('visibilitychange',()=>{
 });
 window.addEventListener('pagehide',()=>{
   try{
-    if(String(activePlanName||'').startsWith('Personalizado — ') && activePlanIndex>=0 && workoutStartedAt){
-      v67604SaveActivePlanState({status:'paused',pausedAt:new Date().toISOString(),pauseReason:'background'});
-      v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id??activePlanExercises[activePlanIndex]?.id??null,currentSet:Math.max(1,Number(currentSet)||1),status:'paused'});
-      saveNavigationState('exercise');
+    if(activePlanIndex>=0 && workoutStartedAt){
+      const saved=v67604ActivePlanState();
+      const status=saved?.status==='paused'?'paused':'running';
+      v67604SaveActivePlanState({status,restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
+      if(v676830IsCustomName())v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id??activePlanExercises[activePlanIndex]?.id??null,currentSet:Math.max(1,Number(currentSet)||1),status,restEndsAt:v67713RestEndsAt,restRemaining:Math.max(0,Number(timer)||0)});
+      saveNavigationState(document.querySelector('.view.active')?.id||'exercise');
     }
   }catch(e){}
 });
