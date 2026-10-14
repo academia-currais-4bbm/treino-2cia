@@ -2796,26 +2796,21 @@ function completeSet(){
     const repsInput=byId('reps'); if(repsInput)repsInput.value="";
     v67678RenderLastSetReference();
     v67690RenderMethodGuide();
-    if(v676830IsCustomName()){
-      // Nas séries intermediárias do personalizado, iniciar o descanso só
-      // depois das gravações: algumas rotinas de persistência atualizam a UI
-      // e podem interferir no timer recém-iniciado.
-      try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
-      try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
-      v676824StartCustomRestAfterSet();
-    }else{
-      v676827StartRestLikeReadyWorkout();
-      try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
-      try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
-    }
+    // V67.72.2 — todos os treinos usam exatamente o mesmo fluxo de descanso.
+    // Primeiro persistimos série e navegação; depois iniciamos o relógio
+    // validado nos treinos prontos, evitando que salvamentos posteriores
+    // interrompam o intervalo nas séries intermediárias dos personalizados.
+    try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
+    try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
+    v676827StartRestLikeReadyWorkout();
   }else{
     // V67.68.22 — a última série também conta visualmente como concluída e
     // inicia o descanso automaticamente antes do próximo exercício.
     const totalSets=Math.max(1,parseInt(currentExercise.sets,10)||1);
     const dots=byId('setProgressDots');
     if(dots)dots.innerHTML=Array.from({length:totalSets},()=>`<i class="done"></i>`).join('');
-    if(v676830IsCustomName())v676824StartCustomRestAfterSet();
-    else v676827StartRestLikeReadyWorkout();
+    // Mesmo relógio e mesma sequência dos treinos prontos também na última série.
+    v676827StartRestLikeReadyWorkout();
     try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação após última série:',e)};
     const btn=byId('nextExerciseBtn');
     byId('setLabel').innerHTML=`<span class="done-inline">✓ Exercício concluído</span><small>${currentExercise.sets}/${currentExercise.sets} séries realizadas</small>`;
