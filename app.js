@@ -1513,6 +1513,10 @@ function v676830ClearCheckpoint(){try{localStorage.removeItem(V676830_CUSTOM_CHE
 let v676832BootRestoreLock = navigationLoadType()==='reload' && !!v676830ReadCheckpoint() && !v676835AutoRestoreSuppressed();
 let v676832BootRestoreDone = false;
 function v676832EnforceCustomRestore(){
+  // V67.72.8 — a restauração é apenas para recuperar uma sessão no boot.
+  // Chamadas atrasadas de login/feed não podem reabrir o exercício repetidamente,
+  // pois openExercise pausa e redefine o descanso ativo.
+  if(v676832BootRestoreDone && !v676832BootRestoreLock)return false;
   const cp=v676830ReadCheckpoint();
   if(v676835AutoRestoreSuppressed()){v676832BootRestoreLock=false;return false;}
   if(!cp||!v676830IsCustomName(cp.name)){v676832BootRestoreLock=false;return false;}
@@ -2856,28 +2860,21 @@ function startTimer(){
   },250);
 }
 
-// V67.72.7-DIAG — histórico curto e pilha de chamadas do cronômetro.
+// V67.72.8-DIAG — diagnóstico temporário do cronômetro em treino personalizado.
 function v67725TimerDiag(msg){
   try{
     if(!v676830IsCustomName())return;
     const el=document.getElementById('v67725TimerDiag');
     const line=`${new Date().toLocaleTimeString()} ${msg} | timer=${timer} | tick=${!!tick} | deadline=${v67713RestEndsAt?Math.round((v67713RestEndsAt-Date.now())/1000):'null'} | série=${currentSet}`;
-    if(el){
-      const rows=(el.textContent||'').split('\n').filter(Boolean);
-      rows.push(line);
-      el.textContent=rows.slice(-8).join('\n');
-      el.title=(el.title+'\n'+line).slice(-6000);
-    }else{
+    if(el){el.textContent=line;el.title=(el.title+'\n'+line).slice(-2500);}
+    else{
       const box=document.createElement('div');box.id='v67725TimerDiag';
-      box.style.cssText='position:fixed;z-index:999999;left:5px;right:5px;bottom:5px;background:#111;color:#fff;padding:8px;font:10px monospace;border:1px solid #f90;border-radius:6px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:34vh;overflow:auto';
+      box.style.cssText='position:fixed;z-index:999999;left:5px;right:5px;bottom:5px;background:#111;color:#fff;padding:8px;font:11px monospace;border:1px solid #f90;border-radius:6px;white-space:normal;overflow-wrap:anywhere';
       box.textContent=line;box.title=line;document.body.appendChild(box);
     }
   }catch(e){}
 }
-function pauseTimer(){
-  try{const stack=(new Error().stack||'').split('\n').slice(2,5).map(x=>x.trim()).join(' <- ');v67725TimerDiag('PAUSE '+stack)}catch(e){v67725TimerDiag('PAUSE')}
-  clearInterval(tick);tick=null
-}
+function pauseTimer(){v67725TimerDiag("PAUSE");clearInterval(tick);tick=null}
 function resetTimer(){v67725TimerDiag("RESET");pauseTimer();timer=currentExercise?currentExercise.rest:90;v67713RestEndsAt=timer>0?Date.now()+timer*1000:null;updateClock()}
 /* ===== V67.48 — DASHBOARD ESPORTIVO / META SEMANAL ===== */
 const V6748_WEEKLY_GOAL_KEY='t2_weekly_goal_v6748';
