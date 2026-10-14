@@ -2796,7 +2796,8 @@ function completeSet(){
     const repsInput=byId('reps'); if(repsInput)repsInput.value="";
     v67678RenderLastSetReference();
     v67690RenderMethodGuide();
-    v676827StartRestLikeReadyWorkout();
+    if(v676830IsCustomName())v676824StartCustomRestAfterSet();
+    else v676827StartRestLikeReadyWorkout();
     try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
     try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
   }else{
@@ -2805,7 +2806,8 @@ function completeSet(){
     const totalSets=Math.max(1,parseInt(currentExercise.sets,10)||1);
     const dots=byId('setProgressDots');
     if(dots)dots.innerHTML=Array.from({length:totalSets},()=>`<i class="done"></i>`).join('');
-    v676827StartRestLikeReadyWorkout();
+    if(v676830IsCustomName())v676824StartCustomRestAfterSet();
+    else v676827StartRestLikeReadyWorkout();
     try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação após última série:',e)};
     const btn=byId('nextExerciseBtn');
     byId('setLabel').innerHTML=`<span class="done-inline">✓ Exercício concluído</span><small>${currentExercise.sets}/${currentExercise.sets} séries realizadas</small>`;
