@@ -1530,15 +1530,18 @@ function v676830RestoreCheckpoint(saved=v676830ReadCheckpoint(),markRunning=fals
   // Callbacks tardios de login/feed tentavam restaurar o checkpoint repetidamente;
   // openExercise() pausa o relógio e zera a deadline. No boot real currentExercise
   // ainda está vazio/diferente, portanto a restauração legítima continua funcionando.
-  if(!navRestoring && v676830IsCustomName() && currentExercise &&
+  if(v676830IsCustomName() && currentExercise &&
      String(activePlanName||'')===String(saved.name) &&
      String(currentExercise.id)===String(saved.currentExerciseId) &&
-     document.getElementById('exerciseView')?.classList.contains('active')){
-    // A série em execução pode ter avançado depois da gravação do checkpoint.
-    // Não reabra o exercício só porque o checkpoint ficou uma série atrás:
-    // openExercise chama ApplyExecutionCoreUI, que pausa e redefine o descanso.
-    // Sincronize o checkpoint com o estado que já está visível e preserve o timer.
-    try{v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise.id,currentSet,status:'running'});}catch(e){}
+     document.getElementById('exerciseView')?.classList.contains('active') &&
+     Number(currentSet||1)>Number(saved.currentSet||1)){
+    // V67.72.15 — a tela já avançou além do checkpoint. Isso também vale enquanto
+    // navRestoring=true: ignorar essa condição permitia que uma restauração atrasada
+    // reabrisse o mesmo exercício, voltasse a série para trás e executasse pauseTimer().
+    // A série visível é a mais recente; sincroniza o checkpoint sem reabrir a tela.
+    try{v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer});}catch(e){}
+    try{v67604SaveActivePlanState({currentSet,restEndsAt:v67713RestEndsAt,restRemaining:timer,status:'running'});}catch(e){}
+    v67725TimerDiag('RESTORE_IGNORADO_CHECKPOINT_ATRASADO');
     return true;
   }
   // A cópia principal pode conter a substituição mais recente gravada pela v70.
