@@ -1526,19 +1526,17 @@ function v676832EnforceCustomRestore(){
 }
 function v676830RestoreCheckpoint(saved=v676830ReadCheckpoint(),markRunning=false){
   if(!saved||!v676830IsCustomName(saved.name))return false;
-  // V67.72.9 — não reabrir a mesma sessão/exercício/série se já está na tela.
+  // V67.72.18 — não reabrir o exercício personalizado já ativo, mesmo se o checkpoint estiver igual ou atrasado.
   // Callbacks tardios de login/feed tentavam restaurar o checkpoint repetidamente;
   // openExercise() pausa o relógio e zera a deadline. No boot real currentExercise
   // ainda está vazio/diferente, portanto a restauração legítima continua funcionando.
   if(v676830IsCustomName() && currentExercise &&
      String(activePlanName||'')===String(saved.name) &&
      String(currentExercise.id)===String(saved.currentExerciseId) &&
-     document.getElementById('exerciseView')?.classList.contains('active') &&
-     Number(currentSet||1)>Number(saved.currentSet||1)){
-    // V67.72.16 — a tela já avançou além do checkpoint. Isso também vale enquanto
-    // navRestoring=true: ignorar essa condição permitia que uma restauração atrasada
-    // reabrisse o mesmo exercício, voltasse a série para trás e executasse pauseTimer().
-    // A série visível é a mais recente; sincroniza o checkpoint sem reabrir a tela.
+     document.getElementById('exerciseView')?.classList.contains('active')){
+    // V67.72.18 — qualquer restauração repetida do mesmo exercício ativo pode chamar
+    // openExercise(), pausar o descanso e zerar a deadline, mesmo quando a série salva
+    // coincide com a tela. Mantém a série em memória e sincroniza o checkpoint sem reabrir.
     try{v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer});}catch(e){}
     try{v67604SaveActivePlanState({currentSet,restEndsAt:v67713RestEndsAt,restRemaining:timer,status:'running'});}catch(e){}
     v67725TimerDiag('RESTORE_IGNORADO_CHECKPOINT_ATRASADO');
