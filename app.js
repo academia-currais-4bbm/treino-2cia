@@ -2818,6 +2818,7 @@ window.skipCurrentSet=skipCurrentSet;
 window.skipCurrentExercise=skipCurrentExercise;
 
 function completeSet(){
+  if(v676830IsCustomName())v67725TimerDiag("COMPLETE_SET_INICIO");
   if(!currentExercise)return;
   const timed=isTimedExercise(currentExercise), bodyweight=isBodyweightExercise(currentExercise);
   const repsRaw=String(byId('reps').value||'').trim();
@@ -2860,6 +2861,7 @@ function completeSet(){
     // descanso, antes de qualquer atualização visual que possa disparar callbacks
     // de restauração. Assim o estado persistido não fica uma série atrás da tela.
     currentSet++;
+    if(v676830IsCustomName())v67725TimerDiag("COMPLETE_SET_SERIE_AVANCADA");
     if(v676830IsCustomName()){
       v676827StartRestLikeReadyWorkout();
       v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer});
@@ -2921,7 +2923,13 @@ function v67725TimerDiag(msg){
     }
   }catch(e){}
 }
-function pauseTimer(){v67725TimerDiag("PAUSE");clearInterval(tick);tick=null}
+function pauseTimer(){
+  // V67.72.20-DIAG — registra a origem real de cada pausa.
+  let origin='origem indisponível';
+  try{origin=(new Error().stack||'').split('\n').slice(2,6).map(x=>x.trim()).join(' <- ')}catch(e){}
+  v67725TimerDiag("PAUSE at "+origin);
+  clearInterval(tick);tick=null;
+}
 function resetTimer(){v67725TimerDiag("RESET");pauseTimer();timer=currentExercise?currentExercise.rest:90;v67713RestEndsAt=timer>0?Date.now()+timer*1000:null;updateClock()}
 /* ===== V67.48 — DASHBOARD ESPORTIVO / META SEMANAL ===== */
 const V6748_WEEKLY_GOAL_KEY='t2_weekly_goal_v6748';
