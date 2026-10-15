@@ -8298,10 +8298,32 @@ function v6743SetPushUi(text,active=false,busy=false){
   if(btn){btn.disabled=busy;btn.classList.toggle('active',active);btn.textContent=busy?'AGUARDE…':(active?'DESATIVAR':'ATIVAR')}
 }
 async function v6743Registration(){
+  if(!('serviceWorker' in navigator))throw new Error('Service Worker não é suportado neste contexto');
   let reg=await navigator.serviceWorker.getRegistration();
-  if(!reg)reg=await navigator.serviceWorker.register('sw.js', {updateViaCache:'none'});
-  await Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tempo esgotado aguardando Service Worker')),7000))]);
-  return await navigator.serviceWorker.getRegistration()||reg;
+  if(!reg)reg=await navigator.serviceWorker.register('sw.js',{updateViaCache:'none'});
+  if(reg.active)return reg;
+  // A instalação pode estar em curso; aguarda o estado deste registro específico,
+  // em vez de depender da promessa global navigator.serviceWorker.ready.
+  const worker=reg.installing||reg.waiting;
+  if(worker){
+    await Promise.race([
+      new Promise((resolve,reject)=>{
+        const finish=()=>{
+          if(reg.active){cleanup();resolve(reg);return}
+          if(worker.state==='redundant'){cleanup();reject(new Error('Service Worker ficou em estado redundante; verifique a instalação/cache'))}
+          else if(worker.state==='activated'){cleanup();resolve(reg)}
+        };
+        const cleanup=()=>worker.removeEventListener('statechange',finish);
+        worker.addEventListener('statechange',finish);
+        finish();
+      }),
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tempo esgotado aguardando ativação do Service Worker')),10000))
+    ]);
+    if(reg.active)return reg;
+  }
+  reg=await navigator.serviceWorker.getRegistration()||reg;
+  if(reg.active)return reg;
+  throw new Error('Service Worker sem trabalhador ativo. Recarregue o app e tente novamente.');
 }
 async function v6743CurrentSubscription(){
   if(!v6743PushSupported())return null;
