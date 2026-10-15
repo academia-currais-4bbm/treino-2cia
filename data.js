@@ -415,7 +415,10 @@ window.APP_DATA = {
       "avoid": "Não arqueie excessivamente a lombar.",
       "mediaKey": "desenvolvimento-com-halteres",
       "mediaStatus": "static",
-      "visualAssetKey": "desenvolvimento-halteres"
+      "visualAssetKey": "desenvolvimento-halteres",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/desenvolvimento-com-halteres.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/desenvolvimento-com-halteres.webp"
     },
     {
       "id": 20,
@@ -429,7 +432,10 @@ window.APP_DATA = {
       "avoid": "Evite travar os cotovelos.",
       "mediaKey": "desenvolvimento-na-maquina",
       "mediaStatus": "static",
-      "visualAssetKey": "desenvolvimento-maquina"
+      "visualAssetKey": "desenvolvimento-maquina",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/desenvolvimento-na-maquina.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/desenvolvimento-na-maquina.webp"
     },
     {
       "id": 21,
@@ -443,7 +449,10 @@ window.APP_DATA = {
       "avoid": "Não encolha os ombros.",
       "mediaKey": "elevacao-lateral",
       "mediaStatus": "static",
-      "visualAssetKey": "elevacao-lateral"
+      "visualAssetKey": "elevacao-lateral",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/elevacao-lateral.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/elevacao-lateral.webp"
     },
     {
       "id": 22,
@@ -457,7 +466,10 @@ window.APP_DATA = {
       "avoid": "Evite balançar o tronco.",
       "mediaKey": "elevacao-frontal",
       "mediaStatus": "static",
-      "visualAssetKey": "elevacao-frontal"
+      "visualAssetKey": "elevacao-frontal",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/elevacao-frontal.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/elevacao-frontal.webp"
     },
     {
       "id": 23,
@@ -471,7 +483,10 @@ window.APP_DATA = {
       "avoid": "Não use carga que comprometa a postura.",
       "mediaKey": "crucifixo-inverso",
       "mediaStatus": "static",
-      "visualAssetKey": "crucifixo-inverso"
+      "visualAssetKey": "crucifixo-inverso",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/crucifixo-inverso.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/crucifixo-inverso.webp"
     },
     {
       "id": 24,
@@ -485,7 +500,10 @@ window.APP_DATA = {
       "avoid": "Não abaixe os cotovelos durante a puxada.",
       "mediaKey": "face-pull",
       "mediaStatus": "static",
-      "visualAssetKey": "face-pull"
+      "visualAssetKey": "face-pull",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/face-pull-ombros.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/face-pull.webp"
     },
     {
       "id": 25,
@@ -499,7 +517,10 @@ window.APP_DATA = {
       "avoid": "Evite elevar demais os cotovelos se houver desconforto.",
       "mediaKey": "remada-alta",
       "mediaStatus": "static",
-      "visualAssetKey": "remada-alta"
+      "visualAssetKey": "remada-alta",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/remada-alta.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/remada-alta.webp"
     },
     {
       "id": 26,
@@ -513,7 +534,10 @@ window.APP_DATA = {
       "avoid": "Não faça círculos com os ombros.",
       "mediaKey": "encolhimento",
       "mediaStatus": "static",
-      "visualAssetKey": "encolhimento"
+      "visualAssetKey": "encolhimento",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/encolhimento.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/encolhimento.webp"
     },
     {
       "id": 76,
@@ -527,7 +551,10 @@ window.APP_DATA = {
       "avoid": "Não hiperestenda a lombar nem force amplitude dolorosa.",
       "mediaKey": "desenvolvimento-com-barra",
       "mediaStatus": "static",
-      "visualAssetKey": "desenvolvimento-barra"
+      "visualAssetKey": "desenvolvimento-barra",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/desenvolvimento-com-barra.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/desenvolvimento-com-barra.webp"
     },
     {
       "id": 77,
@@ -541,7 +568,10 @@ window.APP_DATA = {
       "avoid": "Não incline o tronco para roubar o movimento.",
       "mediaKey": "elevacao-lateral-no-cabo",
       "mediaStatus": "static",
-      "visualAssetKey": "elevacao-lateral-cabo"
+      "visualAssetKey": "elevacao-lateral-cabo",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/elevacao-lateral-no-cabo.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/elevacao-lateral-no-cabo.webp"
     },
     {
       "id": 78,
@@ -554,7 +584,10 @@ window.APP_DATA = {
       "tip": "Gire os antebraços de forma contínua e mantenha o tronco firme.",
       "avoid": "Não acelere a rotação nem arqueie a lombar.",
       "mediaKey": "arnold-press",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/arnold-press.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/arnold-press.webp"
     },
     {
       "id": 79,
@@ -567,7 +600,10 @@ window.APP_DATA = {
       "tip": "Ajuste o banco para manter os braços alinhados e abra até contrair a parte posterior dos ombros.",
       "avoid": "Não use impulso nem deixe os ombros avançarem.",
       "mediaKey": "peck-deck-inverso",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/peck-deck-inverso.mp4?v=677229",
+      "videoPoster": "assets/exercises/posters/peck-deck-inverso.webp"
     },
     {
       "id": 27,
