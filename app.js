@@ -1535,7 +1535,7 @@ function v676830RestoreCheckpoint(saved=v676830ReadCheckpoint(),markRunning=fals
      String(currentExercise.id)===String(saved.currentExerciseId) &&
      document.getElementById('exerciseView')?.classList.contains('active') &&
      Number(currentSet||1)>Number(saved.currentSet||1)){
-    // V67.72.15 — a tela já avançou além do checkpoint. Isso também vale enquanto
+    // V67.72.16 — a tela já avançou além do checkpoint. Isso também vale enquanto
     // navRestoring=true: ignorar essa condição permitia que uma restauração atrasada
     // reabrisse o mesmo exercício, voltasse a série para trás e executasse pauseTimer().
     // A série visível é a mais recente; sincroniza o checkpoint sem reabrir a tela.
@@ -2405,7 +2405,13 @@ function v676824StartCustomRestAfterSet(seconds=null){
 function openExercise(id,inPlan=false){
   // V67.72.14 — chamadas tardias de restauração não devem reabrir o mesmo
   // exercício personalizado já visível: a inicialização abaixo pausa o timer.
-  if(!navRestoring && v676830IsCustomName() && currentExercise &&
+  // V67.72.16 — o guard também precisa valer durante navRestoring.
+  // O diagnóstico mostrou que callbacks tardios executam openExercise enquanto
+  // navRestoring=true; a condição antiga desativava justamente a proteção nesse
+  // caminho, chamando pauseTimer() e voltando o estado interno para série 1.
+  // Se o mesmo exercício personalizado já está ativo na tela, não reabrir apenas
+  // porque uma rotina de restauração tardia foi disparada.
+  if(v676830IsCustomName() && currentExercise &&
      String(currentExercise.id)===String(id) &&
      document.getElementById('exerciseView')?.classList.contains('active')){
     v67725TimerDiag("OPEN_IGNORADO_MESMO_EXERCICIO");
