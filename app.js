@@ -2355,9 +2355,13 @@ function v676822ApplyExecutionCoreUI(resetSet=true){
     timer=Math.max(0,Math.ceil((Number(v67713RestEndsAt)-Date.now())/1000));
     if(!tick)startTimer();
   }else{
+    // V67.72.17 — carregar/atualizar a interface NÃO inicia descanso.
+    // O prazo só é criado pelo fluxo explícito de conclusão de série
+    // (v676827StartRestLikeReadyWorkout). Caso contrário, um reload poderia
+    // interpretar o tempo padrão como descanso ativo e iniciar sozinho.
     pauseTimer();
     timer=Math.max(0,Number(currentExercise.rest)||0);
-    v67713RestEndsAt=timer>0?Date.now()+timer*1000:null;
+    v67713RestEndsAt=null;
   }
   updateClock();
   const next=byId('nextExerciseBtn');if(next)next.style.display='none';
