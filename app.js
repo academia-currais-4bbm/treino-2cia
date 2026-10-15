@@ -2856,26 +2856,23 @@ function completeSet(){
   }
 
   if(currentSet<currentExercise.sets){
-    // V67.62.6 — a interface avança ANTES de qualquer persistência/sincronização.
-    // Assim uma falha secundária nunca deixa o card visual preso na série anterior.
+    // V67.72.19 — publicar imediatamente o novo número da série e o prazo de
+    // descanso, antes de qualquer atualização visual que possa disparar callbacks
+    // de restauração. Assim o estado persistido não fica uma série atrás da tela.
     currentSet++;
-    // V67.72.13 — não grave o checkpoint antes de iniciar o descanso:
-    // isso pode sobrescrever restEndsAt com null e disparar restauração sem prazo.
-    // O checkpoint completo é gravado abaixo, depois que o timer é iniciado.
+    if(v676830IsCustomName()){
+      v676827StartRestLikeReadyWorkout();
+      v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer});
+      try{v67604SaveActivePlanState({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer})}catch(e){console.warn('Falha ao persistir série/descanso:',e)}
+      v67723EnsureCustomRestRunning(v67713RestEndsAt);
+    }
     v67625SyncCurrentSetUI();
     v67612UpdateWorkoutVisuals();
     const repsInput=byId('reps'); if(repsInput)repsInput.value="";
     v67678RenderLastSetReference();
     v67690RenderMethodGuide();
-    // V67.72.14 — iniciar e definir o prazo do descanso antes de qualquer
-    // persistência/navegação. O guard de openExercise impede restauração tardia
-    // do mesmo exercício de zerar o intervalo que acaba de ser iniciado.
-    v676827StartRestLikeReadyWorkout();
-    if(v676830IsCustomName()){
-      v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer});
-      v67723EnsureCustomRestRunning(v67713RestEndsAt);
-    }
-    try{v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
+    if(!v676830IsCustomName())v676827StartRestLikeReadyWorkout();
+    try{if(!v676830IsCustomName())v67603SaveActivePlanState()}catch(e){console.warn('Falha ao persistir série atual:',e)}
     try{saveNavigationState('exercise')}catch(e){console.warn('Falha ao salvar navegação da série:',e)}
   }else{
     // V67.68.22 — a última série também conta visualmente como concluída e
