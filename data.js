@@ -213,7 +213,10 @@ window.APP_DATA = {
       "avoid": "Evite chutar ou encurtar a amplitude.",
       "mediaKey": "barra-fixa",
       "mediaStatus": "static",
-      "visualAssetKey": "barra-fixa"
+      "visualAssetKey": "barra-fixa",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/barra-fixa.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/barra-fixa.webp"
     },
     {
       "id": 11,
@@ -227,7 +230,10 @@ window.APP_DATA = {
       "avoid": "Não leve a barra atrás da nuca.",
       "mediaKey": "puxada-alta-pronada",
       "mediaStatus": "static",
-      "visualAssetKey": "puxada-frontal"
+      "visualAssetKey": "puxada-frontal",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/puxada-alta-pronada.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/puxada-alta-pronada.webp"
     },
     {
       "id": 12,
@@ -241,7 +247,10 @@ window.APP_DATA = {
       "avoid": "Evite curvar excessivamente o tronco.",
       "mediaKey": "puxada-neutra",
       "mediaStatus": "static",
-      "visualAssetKey": "puxada-neutra"
+      "visualAssetKey": "puxada-neutra",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/puxada-neutra.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/puxada-neutra.webp"
     },
     {
       "id": 13,
@@ -255,7 +264,10 @@ window.APP_DATA = {
       "avoid": "Não balance o tronco.",
       "mediaKey": "remada-baixa",
       "mediaStatus": "static",
-      "visualAssetKey": "remada-baixa"
+      "visualAssetKey": "remada-baixa",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/remada-baixa.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/remada-baixa.webp"
     },
     {
       "id": 14,
@@ -269,7 +281,10 @@ window.APP_DATA = {
       "avoid": "Não arredonde a lombar.",
       "mediaKey": "remada-curvada",
       "mediaStatus": "static",
-      "visualAssetKey": "remada-curvada"
+      "visualAssetKey": "remada-curvada",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/remada-curvada.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/remada-curvada.webp"
     },
     {
       "id": 15,
@@ -283,7 +298,10 @@ window.APP_DATA = {
       "avoid": "Evite girar o tronco.",
       "mediaKey": "remada-unilateral",
       "mediaStatus": "static",
-      "visualAssetKey": "remada-unilateral"
+      "visualAssetKey": "remada-unilateral",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/remada-unilateral.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/remada-unilateral.webp"
     },
     {
       "id": 16,
@@ -297,7 +315,10 @@ window.APP_DATA = {
       "avoid": "Não hiperestenda a lombar.",
       "mediaKey": "remada-cavalinho",
       "mediaStatus": "static",
-      "visualAssetKey": "remada-cavalinho"
+      "visualAssetKey": "remada-cavalinho",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/remada-cavalinho.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/remada-cavalinho.webp"
     },
     {
       "id": 17,
@@ -311,7 +332,10 @@ window.APP_DATA = {
       "avoid": "Não transforme em tríceps.",
       "mediaKey": "pullover-na-polia",
       "mediaStatus": "static",
-      "visualAssetKey": "pullover-polia"
+      "visualAssetKey": "pullover-polia",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/pullover-na-polia.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/pullover-na-polia.webp"
     },
     {
       "id": 18,
@@ -325,7 +349,10 @@ window.APP_DATA = {
       "avoid": "Evite usar carga excessiva.",
       "mediaKey": "face-pull",
       "mediaStatus": "static",
-      "visualAssetKey": "face-pull"
+      "visualAssetKey": "face-pull",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/face-pull.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/face-pull.webp"
     },
     {
       "id": 73,
@@ -339,7 +366,10 @@ window.APP_DATA = {
       "avoid": "Não arredonde a lombar nem puxe a barra com os braços.",
       "mediaKey": "levantamento-terra",
       "mediaStatus": "static",
-      "visualAssetKey": "levantamento-terra"
+      "visualAssetKey": "levantamento-terra",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/levantamento-terra.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/levantamento-terra.webp"
     },
     {
       "id": 74,
@@ -352,7 +382,10 @@ window.APP_DATA = {
       "tip": "Mantenha o peito apoiado quando houver suporte e finalize aproximando as escápulas.",
       "avoid": "Não transforme a repetição em balanço do tronco.",
       "mediaKey": "remada-articulada",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/remada-articulada.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/remada-articulada.webp"
     },
     {
       "id": 75,
@@ -365,7 +398,10 @@ window.APP_DATA = {
       "tip": "Puxe o cotovelo em direção ao quadril mantendo o tronco estável.",
       "avoid": "Não gire o tronco para completar a repetição.",
       "mediaKey": "pulldown-unilateral",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/pulldown-unilateral.mp4?v=677228",
+      "videoPoster": "assets/exercises/posters/pulldown-unilateral.webp"
     },
     {
       "id": 19,
@@ -1479,7 +1515,7 @@ window.APP_DATA = {
   },
   "catalogVersion": "67.69.1",
   "catalogMediaSchema": 3
-};
+};;
 
 
 /* V67.69.0 — camada de vídeo desacoplada do card visual.
