@@ -1539,7 +1539,6 @@ function v676830RestoreCheckpoint(saved=v676830ReadCheckpoint(),markRunning=fals
     // coincide com a tela. Mantém a série em memória e sincroniza o checkpoint sem reabrir.
     try{v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer});}catch(e){}
     try{v67604SaveActivePlanState({currentSet,restEndsAt:v67713RestEndsAt,restRemaining:timer,status:'running'});}catch(e){}
-    v67725TimerDiag('RESTORE_IGNORADO_CHECKPOINT_ATRASADO');
     return true;
   }
   // A cópia principal pode conter a substituição mais recente gravada pela v70.
@@ -2416,7 +2415,6 @@ function openExercise(id,inPlan=false){
   if(v676830IsCustomName() && currentExercise &&
      String(currentExercise.id)===String(id) &&
      document.getElementById('exerciseView')?.classList.contains('active')){
-    v67725TimerDiag("OPEN_IGNORADO_MESMO_EXERCICIO");
     return true;
   }
   currentExercise=(activePlanIndex>=0&&activePlanExercises[activePlanIndex]&&String(activePlanExercises[activePlanIndex].id)===String(id))?activePlanExercises[activePlanIndex]:DATA.exercises.find(x=>String(x.id)===String(id));
@@ -2818,7 +2816,6 @@ window.skipCurrentSet=skipCurrentSet;
 window.skipCurrentExercise=skipCurrentExercise;
 
 function completeSet(){
-  if(v676830IsCustomName())v67725TimerDiag("COMPLETE_SET_INICIO");
   if(!currentExercise)return;
   const timed=isTimedExercise(currentExercise), bodyweight=isBodyweightExercise(currentExercise);
   const repsRaw=String(byId('reps').value||'').trim();
@@ -2861,7 +2858,6 @@ function completeSet(){
     // descanso, antes de qualquer atualização visual que possa disparar callbacks
     // de restauração. Assim o estado persistido não fica uma série atrás da tela.
     currentSet++;
-    if(v676830IsCustomName())v67725TimerDiag("COMPLETE_SET_SERIE_AVANCADA");
     if(v676830IsCustomName()){
       v676827StartRestLikeReadyWorkout();
       v676830WriteCheckpoint({index:activePlanIndex,currentExerciseId:currentExercise?.id,currentSet,status:'running',restEndsAt:v67713RestEndsAt,restRemaining:timer});
@@ -2909,28 +2905,8 @@ function startTimer(){
   },250);
 }
 
-// V67.72.8-DIAG — diagnóstico temporário do cronômetro em treino personalizado.
-function v67725TimerDiag(msg){
-  try{
-    if(!v676830IsCustomName())return;
-    const el=document.getElementById('v67725TimerDiag');
-    const line=`${new Date().toLocaleTimeString()} ${msg} | timer=${timer} | tick=${!!tick} | deadline=${v67713RestEndsAt?Math.round((v67713RestEndsAt-Date.now())/1000):'null'} | série=${currentSet}`;
-    if(el){el.textContent=line;el.title=(el.title+'\n'+line).slice(-2500);}
-    else{
-      const box=document.createElement('div');box.id='v67725TimerDiag';
-      box.style.cssText='position:fixed;z-index:999999;left:5px;right:5px;bottom:5px;background:#111;color:#fff;padding:8px;font:11px monospace;border:1px solid #f90;border-radius:6px;white-space:normal;overflow-wrap:anywhere';
-      box.textContent=line;box.title=line;document.body.appendChild(box);
-    }
-  }catch(e){}
-}
-function pauseTimer(){
-  // V67.72.20-DIAG — registra a origem real de cada pausa.
-  let origin='origem indisponível';
-  try{origin=(new Error().stack||'').split('\n').slice(2,6).map(x=>x.trim()).join(' <- ')}catch(e){}
-  v67725TimerDiag("PAUSE at "+origin);
-  clearInterval(tick);tick=null;
-}
-function resetTimer(){v67725TimerDiag("RESET");pauseTimer();timer=currentExercise?currentExercise.rest:90;v67713RestEndsAt=timer>0?Date.now()+timer*1000:null;updateClock()}
+function pauseTimer(){clearInterval(tick);tick=null;}
+function resetTimer(){pauseTimer();timer=currentExercise?currentExercise.rest:90;v67713RestEndsAt=timer>0?Date.now()+timer*1000:null;updateClock()}
 /* ===== V67.48 — DASHBOARD ESPORTIVO / META SEMANAL ===== */
 const V6748_WEEKLY_GOAL_KEY='t2_weekly_goal_v6748';
 function v6748WeeklyGoal(){
