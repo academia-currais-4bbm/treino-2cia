@@ -8300,7 +8300,8 @@ function v6743SetPushUi(text,active=false,busy=false){
 async function v6743Registration(){
   let reg=await navigator.serviceWorker.getRegistration();
   if(!reg)reg=await navigator.serviceWorker.register('sw.js', {updateViaCache:'none'});
-  await navigator.serviceWorker.ready;return reg;
+  await Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tempo esgotado aguardando Service Worker')),7000))]);
+  return await navigator.serviceWorker.getRegistration()||reg;
 }
 async function v6743CurrentSubscription(){
   if(!v6743PushSupported())return null;
@@ -8380,7 +8381,14 @@ async function v6743SendFeedPush(tipo,feedId){
     if(!r.ok){const x=await r.json().catch(()=>null);console.warn('Edge PUSH não confirmou:',x||r.status)}
   }catch(e){console.warn('Falha ao disparar PUSH do feed:',e)}
 }
-window.addEventListener('load',()=>setTimeout(v6743RefreshPushStatus,1500));
+function v6743InitPushCard(){
+  const btn=byId('pushNotificationButton'),st=byId('pushNotificationStatus');
+  if(btn&&btn.textContent.trim().toUpperCase()==='VERIFICAR')btn.textContent='ATIVAR';
+  if(st&&/Verificando este aparelho/i.test(st.textContent))st.textContent='Consultando o estado das notificações…';
+  v6743RefreshPushStatus();
+}
+window.addEventListener('DOMContentLoaded',v6743InitPushCard);
+window.addEventListener('load',()=>setTimeout(v6743InitPushCard,500));
 
 /* ===== V41 — ACESSO INDIVIDUAL POR MATRÍCULA / SUPABASE ===== */
 const CLOUD_SESSION_KEY='t2_matricula_session_v41';
@@ -8742,19 +8750,20 @@ async function cloudPushNow(){
   return cloudPushPromise;
 }
 async function cloudLogout(){
-  if(!confirm('Sair deste acesso neste aparelho?'))return;
-  v67621StopMusic(true);
-  try{if(cloudSession?.token&&navigator.onLine)await cloudPushNow();}catch(e){}
+  // v67.72.23 — logout local prioritário: não deixar falha de rede/Push bloquear a saída.
+  try{v67621StopMusic(true)}catch(e){}
+  const oldToken=cloudSession?.token||'';
+  try{adminSessionToken='';sessionStorage.removeItem(ADMIN_SESSION_KEY)}catch(e){}
+  try{adminSetEntryVisible(false)}catch(e){}
+  try{clearNavigationState()}catch(e){}
+  try{cloudClearTrackedLocal()}catch(e){}
+  try{cloudSetOwner('')}catch(e){}
+  try{cloudSaveSession(null)}catch(e){try{localStorage.removeItem('t2_cloud_session')}catch(_){}}
+  try{cloudMsg('')}catch(e){}
+  try{cloudShowGate()}catch(e){}
+  // Tarefas remotas são secundárias e não podem reabrir nem bloquear a sessão local.
+  try{if(oldToken&&navigator.onLine)await cloudRpc('encerrar_sessao_militar',{p_token:oldToken})}catch(e){}
   try{await v6743DisablePush(true)}catch(e){}
-  try{if(cloudSession?.token&&navigator.onLine)await cloudRpc('encerrar_sessao_militar',{p_token:cloudSession.token});}catch(e){}
-  try{adminSessionToken='';sessionStorage.removeItem(ADMIN_SESSION_KEY);}catch(e){}
-  adminSetEntryVisible(false);
-  clearNavigationState();
-  cloudClearTrackedLocal();
-  cloudSetOwner('');
-  cloudSaveSession(null);
-  cloudMsg('');
-  cloudShowGate();
 }
 async function cloudInit(){
   cloudLoadSession(); try{v6718RenderHomeProfilePhoto();}catch(e){}
