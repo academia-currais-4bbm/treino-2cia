@@ -8358,7 +8358,15 @@ async function v6743DisablePush(silent=false){
 async function v6743TogglePush(button){
   if(button)button.disabled=true;
   try{const sub=await v6743CurrentSubscription();if(sub)await v6743DisablePush();else await v6743EnablePush()}
-  catch(e){console.error('PUSH:',e);alert('Não foi possível configurar as notificações neste aparelho.');await v6743RefreshPushStatus()}
+  catch(e){
+    console.error('PUSH — diagnóstico v67.72.24:',e);
+    const name=String(e?.name||'Erro');
+    const detail=String(e?.message||e||'Sem detalhes').slice(0,220);
+    const msg='Falha ao configurar notificações. Etapa: '+name+'. Detalhe: '+detail;
+    v6743SetPushUi(msg,false,false);
+    alert(msg);
+    await v6743RefreshPushStatus();
+  }
   finally{if(button)button.disabled=false}
 }
 async function v6743SyncExistingPush(){
