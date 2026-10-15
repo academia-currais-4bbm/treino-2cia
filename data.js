@@ -97,7 +97,10 @@ window.APP_DATA = {
       "avoid": "Evite encurtar demais a amplitude.",
       "mediaKey": "crossover-medio",
       "mediaStatus": "static",
-      "visualAssetKey": "crossover-medio"
+      "visualAssetKey": "crossover-medio",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/crossover-medio.mp4?v=677227",
+      "videoPoster": "assets/exercises/posters/crossover-medio.webp"
     },
     {
       "id": 7,
@@ -111,7 +114,10 @@ window.APP_DATA = {
       "avoid": "Não arqueie a lombar.",
       "mediaKey": "crossover-baixo",
       "mediaStatus": "static",
-      "visualAssetKey": "crossover-baixo"
+      "visualAssetKey": "crossover-baixo",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/crossover-baixo.mp4?v=677227",
+      "videoPoster": "assets/exercises/posters/crossover-baixo.webp"
     },
     {
       "id": 8,
@@ -125,7 +131,10 @@ window.APP_DATA = {
       "avoid": "Evite bater as placas da máquina.",
       "mediaKey": "peck-deck",
       "mediaStatus": "static",
-      "visualAssetKey": "peck-deck"
+      "visualAssetKey": "peck-deck",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/peck-deck.mp4?v=677227",
+      "videoPoster": "assets/exercises/posters/peck-deck.webp"
     },
     {
       "id": 9,
@@ -139,7 +148,10 @@ window.APP_DATA = {
       "avoid": "Não deixe o quadril cair.",
       "mediaKey": "flexao-de-bracos",
       "mediaStatus": "static",
-      "visualAssetKey": "flexao-bracos"
+      "visualAssetKey": "flexao-bracos",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/flexao-de-bracos.mp4?v=677227",
+      "videoPoster": "assets/exercises/posters/flexao-de-bracos.webp"
     },
     {
       "id": 70,
@@ -152,7 +164,10 @@ window.APP_DATA = {
       "tip": "Mantenha as escápulas retraídas e desça os halteres de forma controlada.",
       "avoid": "Não deixe os cotovelos abrirem excessivamente nem bata os halteres no topo.",
       "mediaKey": "supino-reto-com-halteres",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/supino-reto-com-halteres.mp4?v=677227",
+      "videoPoster": "assets/exercises/posters/supino-reto-com-halteres.webp"
     },
     {
       "id": 71,
@@ -165,7 +180,10 @@ window.APP_DATA = {
       "tip": "Use inclinação moderada, peito aberto e controle a amplitude.",
       "avoid": "Não incline demais o banco nem eleve os ombros durante a subida.",
       "mediaKey": "supino-inclinado-com-halteres",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/supino-inclinado-com-halteres.mp4?v=677227",
+      "videoPoster": "assets/exercises/posters/supino-inclinado-com-halteres.webp"
     },
     {
       "id": 72,
@@ -178,7 +196,10 @@ window.APP_DATA = {
       "tip": "Ajuste o banco para as pegadas ficarem na linha do meio do peito.",
       "avoid": "Não retire as costas do encosto nem trave os cotovelos.",
       "mediaKey": "chest-press-na-maquina",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/chest-press-na-maquina.mp4?v=677227",
+      "videoPoster": "assets/exercises/posters/chest-press-na-maquina.webp"
     },
     {
       "id": 10,
