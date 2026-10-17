@@ -617,7 +617,10 @@ window.APP_DATA = {
       "avoid": "Não balance o tronco.",
       "mediaKey": "rosca-direta-barra",
       "mediaStatus": "static",
-      "visualAssetKey": "rosca-direta"
+      "visualAssetKey": "rosca-direta",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-direta-barra.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-direta-barra.webp"
     },
     {
       "id": 28,
@@ -631,7 +634,10 @@ window.APP_DATA = {
       "avoid": "Evite deslocar o cotovelo para frente.",
       "mediaKey": "rosca-alternada",
       "mediaStatus": "static",
-      "visualAssetKey": "rosca-alternada"
+      "visualAssetKey": "rosca-alternada",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-alternada.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-alternada.webp"
     },
     {
       "id": 29,
@@ -645,7 +651,10 @@ window.APP_DATA = {
       "avoid": "Não use impulso.",
       "mediaKey": "rosca-martelo",
       "mediaStatus": "static",
-      "visualAssetKey": "rosca-martelo"
+      "visualAssetKey": "rosca-martelo",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-martelo.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-martelo.webp"
     },
     {
       "id": 30,
@@ -659,7 +668,10 @@ window.APP_DATA = {
       "avoid": "Não hiperestenda o cotovelo no final.",
       "mediaKey": "rosca-scott",
       "mediaStatus": "static",
-      "visualAssetKey": "rosca-scott"
+      "visualAssetKey": "rosca-scott",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-scott.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-scott.webp"
     },
     {
       "id": 31,
@@ -673,7 +685,10 @@ window.APP_DATA = {
       "avoid": "Não mova o ombro.",
       "mediaKey": "rosca-concentrada",
       "mediaStatus": "static",
-      "visualAssetKey": "rosca-concentrada"
+      "visualAssetKey": "rosca-concentrada",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-concentrada.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-concentrada.webp"
     },
     {
       "id": 32,
@@ -687,7 +702,10 @@ window.APP_DATA = {
       "avoid": "Não deixe o peso puxar os ombros para frente.",
       "mediaKey": "rosca-na-polia",
       "mediaStatus": "static",
-      "visualAssetKey": "rosca-polia"
+      "visualAssetKey": "rosca-polia",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-na-polia.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-na-polia.webp"
     },
     {
       "id": 33,
@@ -701,7 +719,10 @@ window.APP_DATA = {
       "avoid": "Não suba os cotovelos.",
       "mediaKey": "rosca-inclinada",
       "mediaStatus": "static",
-      "visualAssetKey": "rosca-inclinada"
+      "visualAssetKey": "rosca-inclinada",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-inclinada.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-inclinada.webp"
     },
     {
       "id": 80,
@@ -714,7 +735,10 @@ window.APP_DATA = {
       "tip": "Execute 7 repetições na metade inferior, 7 na metade superior e 7 completas.",
       "avoid": "Não balance o tronco para terminar a sequência.",
       "mediaKey": "rosca-21",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-21.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-21.webp"
     },
     {
       "id": 81,
@@ -727,7 +751,10 @@ window.APP_DATA = {
       "tip": "Use pegada neutra e mantenha os cotovelos junto ao corpo.",
       "avoid": "Não projete os cotovelos para frente.",
       "mediaKey": "rosca-martelo-na-corda",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-martelo-na-corda.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-martelo-na-corda.webp"
     },
     {
       "id": 82,
@@ -740,7 +767,10 @@ window.APP_DATA = {
       "tip": "Apoie o peito no banco inclinado e mantenha os braços apontados para baixo.",
       "avoid": "Não retire o peito do apoio nem encurte a descida.",
       "mediaKey": "rosca-spider",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-spider.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-spider.webp"
     },
     {
       "id": 83,
@@ -753,7 +783,10 @@ window.APP_DATA = {
       "tip": "Use pegada pronada e mantenha os punhos alinhados.",
       "avoid": "Não dobre os punhos para compensar a carga.",
       "mediaKey": "rosca-inversa",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-inversa.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-inversa.webp"
     },
     {
       "id": 84,
@@ -766,7 +799,10 @@ window.APP_DATA = {
       "tip": "Mantenha tensão contínua e o cotovelo estável ao lado do corpo.",
       "avoid": "Não gire o tronco nem eleve o ombro.",
       "mediaKey": "rosca-unilateral-na-polia",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/rosca-unilateral-na-polia.mp4?v=677230",
+      "videoPoster": "assets/exercises/posters/rosca-unilateral-na-polia.webp"
     },
     {
       "id": 34,
