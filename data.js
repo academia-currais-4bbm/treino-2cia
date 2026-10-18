@@ -816,7 +816,10 @@ window.APP_DATA = {
       "avoid": "Não balance o tronco.",
       "mediaKey": "triceps-corda",
       "mediaStatus": "static",
-      "visualAssetKey": "triceps-corda"
+      "visualAssetKey": "triceps-corda",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/triceps-corda.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/triceps-corda.webp"
     },
     {
       "id": 35,
@@ -830,7 +833,10 @@ window.APP_DATA = {
       "avoid": "Não abra os cotovelos.",
       "mediaKey": "triceps-barra",
       "mediaStatus": "static",
-      "visualAssetKey": "triceps-barra"
+      "visualAssetKey": "triceps-barra",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/triceps-barra.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/triceps-barra.webp"
     },
     {
       "id": 36,
@@ -844,7 +850,10 @@ window.APP_DATA = {
       "avoid": "Não deixe os cotovelos abrirem.",
       "mediaKey": "triceps-testa",
       "mediaStatus": "static",
-      "visualAssetKey": "triceps-testa"
+      "visualAssetKey": "triceps-testa",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/triceps-testa.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/triceps-testa.webp"
     },
     {
       "id": 37,
@@ -858,7 +867,10 @@ window.APP_DATA = {
       "avoid": "Não arqueie a lombar.",
       "mediaKey": "triceps-frances",
       "mediaStatus": "static",
-      "visualAssetKey": "triceps-frances"
+      "visualAssetKey": "triceps-frances",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/triceps-frances.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/triceps-frances.webp"
     },
     {
       "id": 38,
@@ -872,7 +884,10 @@ window.APP_DATA = {
       "avoid": "Não mova o ombro.",
       "mediaKey": "triceps-unilateral-polia",
       "mediaStatus": "static",
-      "visualAssetKey": "triceps-unilateral-polia"
+      "visualAssetKey": "triceps-unilateral-polia",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/triceps-unilateral-polia.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/triceps-unilateral-polia.webp"
     },
     {
       "id": 39,
@@ -886,7 +901,10 @@ window.APP_DATA = {
       "avoid": "Evite descer excessivamente.",
       "mediaKey": "mergulho-em-banco",
       "mediaStatus": "static",
-      "visualAssetKey": "mergulho-banco"
+      "visualAssetKey": "mergulho-banco",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/mergulho-em-banco.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/mergulho-em-banco.webp"
     },
     {
       "id": 40,
@@ -900,7 +918,10 @@ window.APP_DATA = {
       "avoid": "Não mergulhe além da mobilidade do ombro.",
       "mediaKey": "paralelas",
       "mediaStatus": "static",
-      "visualAssetKey": "paralelas"
+      "visualAssetKey": "paralelas",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/paralelas.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/paralelas.webp"
     },
     {
       "id": 85,
@@ -913,7 +934,10 @@ window.APP_DATA = {
       "tip": "Use pegada confortável, cotovelos próximos ao tronco e escápulas firmes.",
       "avoid": "Não use pegada excessivamente estreita nem abra os cotovelos.",
       "mediaKey": "supino-fechado",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/supino-fechado.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/supino-fechado.webp"
     },
     {
       "id": 86,
@@ -926,7 +950,10 @@ window.APP_DATA = {
       "tip": "Mantenha o braço paralelo ao tronco e estenda apenas o cotovelo.",
       "avoid": "Não balance o ombro para mover o peso.",
       "mediaKey": "coice-de-triceps",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/coice-de-triceps.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/coice-de-triceps.webp"
     },
     {
       "id": 87,
@@ -939,7 +966,10 @@ window.APP_DATA = {
       "tip": "Mantenha o cotovelo apontado para cima e o abdômen firme.",
       "avoid": "Não abra o cotovelo nem arqueie a lombar.",
       "mediaKey": "triceps-frances-unilateral",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/triceps-frances-unilateral.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/triceps-frances-unilateral.webp"
     },
     {
       "id": 88,
@@ -952,7 +982,10 @@ window.APP_DATA = {
       "tip": "Mantenha os cotovelos estáveis e estenda completamente sem perder a postura.",
       "avoid": "Não use o tronco para empurrar a carga.",
       "mediaKey": "extensao-acima-da-cabeca-na-corda",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/extensao-acima-da-cabeca-na-corda.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/extensao-acima-da-cabeca-na-corda.webp"
     },
     {
       "id": 89,
@@ -965,7 +998,10 @@ window.APP_DATA = {
       "tip": "Ajuste o assento e mantenha os braços apoiados conforme o equipamento.",
       "avoid": "Não solte a carga de forma brusca na volta.",
       "mediaKey": "triceps-na-maquina",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/triceps-na-maquina.mp4?v=677231",
+      "videoPoster": "assets/exercises/posters/triceps-na-maquina.webp"
     },
     {
       "id": 41,
