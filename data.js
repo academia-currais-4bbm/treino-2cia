@@ -1015,7 +1015,10 @@ window.APP_DATA = {
       "avoid": "Não deixe os joelhos colapsarem para dentro.",
       "mediaKey": "agachamento-livre",
       "mediaStatus": "static",
-      "visualAssetKey": "agachamento-livre"
+      "visualAssetKey": "agachamento-livre",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/agachamento-livre.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/agachamento-livre.webp"
     },
     {
       "id": 42,
@@ -1029,7 +1032,10 @@ window.APP_DATA = {
       "avoid": "Não trave os joelhos.",
       "mediaKey": "leg-press-45",
       "mediaStatus": "static",
-      "visualAssetKey": "leg-press"
+      "visualAssetKey": "leg-press",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/leg-press-45.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/leg-press-45.webp"
     },
     {
       "id": 43,
@@ -1043,7 +1049,10 @@ window.APP_DATA = {
       "avoid": "Não use impulso.",
       "mediaKey": "cadeira-extensora",
       "mediaStatus": "static",
-      "visualAssetKey": "cadeira-extensora"
+      "visualAssetKey": "cadeira-extensora",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/cadeira-extensora.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/cadeira-extensora.webp"
     },
     {
       "id": 44,
@@ -1057,7 +1066,10 @@ window.APP_DATA = {
       "avoid": "Não levante o quadril.",
       "mediaKey": "mesa-flexora",
       "mediaStatus": "static",
-      "visualAssetKey": "mesa-flexora"
+      "visualAssetKey": "mesa-flexora",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/mesa-flexora.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/mesa-flexora.webp"
     },
     {
       "id": 45,
@@ -1071,7 +1083,10 @@ window.APP_DATA = {
       "avoid": "Não solte o peso na volta.",
       "mediaKey": "cadeira-flexora",
       "mediaStatus": "static",
-      "visualAssetKey": "cadeira-flexora"
+      "visualAssetKey": "cadeira-flexora",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/cadeira-flexora.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/cadeira-flexora.webp"
     },
     {
       "id": 46,
@@ -1085,7 +1100,10 @@ window.APP_DATA = {
       "avoid": "Não arredonde a lombar.",
       "mediaKey": "stiff",
       "mediaStatus": "static",
-      "visualAssetKey": "stiff"
+      "visualAssetKey": "stiff",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/stiff.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/stiff.webp"
     },
     {
       "id": 47,
@@ -1099,7 +1117,10 @@ window.APP_DATA = {
       "avoid": "Não deixe o joelho da frente colapsar para dentro.",
       "mediaKey": "afundo",
       "mediaStatus": "static",
-      "visualAssetKey": "afundo"
+      "visualAssetKey": "afundo",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/afundo.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/afundo.webp"
     },
     {
       "id": 48,
@@ -1113,7 +1134,10 @@ window.APP_DATA = {
       "avoid": "Não perca o equilíbrio pela pressa.",
       "mediaKey": "agachamento-bulgaro",
       "mediaStatus": "static",
-      "visualAssetKey": "agachamento-bulgaro"
+      "visualAssetKey": "agachamento-bulgaro",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/agachamento-bulgaro.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/agachamento-bulgaro.webp"
     },
     {
       "id": 49,
@@ -1127,7 +1151,10 @@ window.APP_DATA = {
       "avoid": "Não hiperestenda a lombar.",
       "mediaKey": "elevacao-pelvica",
       "mediaStatus": "static",
-      "visualAssetKey": "elevacao-pelvica"
+      "visualAssetKey": "elevacao-pelvica",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/elevacao-pelvica.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/elevacao-pelvica.webp"
     },
     {
       "id": 50,
@@ -1141,7 +1168,10 @@ window.APP_DATA = {
       "avoid": "Não faça repetições curtas e rápidas.",
       "mediaKey": "panturrilha-em-pe",
       "mediaStatus": "static",
-      "visualAssetKey": "panturrilha-em-pe"
+      "visualAssetKey": "panturrilha-em-pe",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/panturrilha-em-pe.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/panturrilha-em-pe.webp"
     },
     {
       "id": 51,
@@ -1155,7 +1185,10 @@ window.APP_DATA = {
       "avoid": "Não quique o peso.",
       "mediaKey": "panturrilha-sentada",
       "mediaStatus": "static",
-      "visualAssetKey": "panturrilha-sentado"
+      "visualAssetKey": "panturrilha-sentado",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/panturrilha-sentada.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/panturrilha-sentada.webp"
     },
     {
       "id": 90,
@@ -1169,7 +1202,10 @@ window.APP_DATA = {
       "avoid": "Não deixe a carga puxar as pernas bruscamente na volta.",
       "mediaKey": "cadeira-adutora",
       "mediaStatus": "static",
-      "visualAssetKey": "cadeira-adutora"
+      "visualAssetKey": "cadeira-adutora",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/cadeira-adutora.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/cadeira-adutora.webp"
     },
     {
       "id": 91,
@@ -1183,7 +1219,10 @@ window.APP_DATA = {
       "avoid": "Não use impulso do tronco.",
       "mediaKey": "cadeira-abdutora",
       "mediaStatus": "static",
-      "visualAssetKey": "cadeira-abdutora"
+      "visualAssetKey": "cadeira-abdutora",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/cadeira-abdutora.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/cadeira-abdutora.webp"
     },
     {
       "id": 92,
@@ -1196,7 +1235,10 @@ window.APP_DATA = {
       "tip": "Mantenha costas apoiadas, pés firmes e joelhos acompanhando a direção dos pés.",
       "avoid": "Não deixe os joelhos colapsarem para dentro nem trave-os no topo.",
       "mediaKey": "hack-squat",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/hack-squat.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/hack-squat.webp"
     },
     {
       "id": 93,
@@ -1209,7 +1251,10 @@ window.APP_DATA = {
       "tip": "Use base ampla, pontas dos pés levemente para fora e coluna neutra.",
       "avoid": "Não deixe os joelhos fecharem para dentro durante a subida.",
       "mediaKey": "agachamento-sumo",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/agachamento-sumo.mp4?v=677232",
+      "videoPoster": "assets/exercises/posters/agachamento-sumo.webp"
     },
     {
       "id": 52,
