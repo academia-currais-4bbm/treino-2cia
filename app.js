@@ -1051,6 +1051,31 @@ function toggleCardioWatchFields(){
   const checked=!!byId('cardioBikeWatch')?.checked; const box=byId('cardioBikeWatchFields'); if(box)box.style.display=checked?'block':'none';
   saveNavigationState('cardioWorkout');
 }
+function cardioRenderDemoMedia(machine){
+  const wrap=byId('cardioDemoMedia'),video=byId('cardioDemoVideo'),image=byId('cardioDemoImage');
+  if(!wrap||!video||!image)return;
+  const videos={
+    run:'assets/cardio/corrida-ao-ar-livre.mp4',
+    treadmill:'assets/cardio/esteira.mp4',
+    bike:'assets/cardio/bicicleta.mp4',
+    rower:'assets/cardio/simulador-de-remo.mp4'
+  };
+  const imageSrc=machine==='swim'?'assets/cardio/natacao.png':'';
+  video.pause();
+  video.removeAttribute('src');
+  video.load();
+  image.removeAttribute('src');
+  video.hidden=!videos[machine];
+  image.hidden=!imageSrc;
+  if(videos[machine]){
+    video.src=videos[machine]+'?v=677237';
+    video.loop=true;video.muted=true;video.autoplay=true;video.playsInline=true;
+    video.load();
+    const playPromise=video.play();
+    if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(()=>{});
+  }else if(imageSrc){image.src=imageSrc+'?v=677237';}
+  wrap.hidden=!(videos[machine]||imageSrc);
+}
 function selectCardioMachine(machine,restoring=false){
   v67670RenderLocationHosts();
   if(!CARDIO_MACHINE_META[machine])return;
@@ -1059,6 +1084,7 @@ function selectCardioMachine(machine,restoring=false){
   const meta=CARDIO_MACHINE_META[machine];
   const form=byId('cardioFormCard'); if(form)form.style.display='block';
   const title=byId('cardioFormTitle'); if(title)title.textContent=`${meta.icon} ${meta.label}`;
+  cardioRenderDemoMedia(machine);
   const treadmill=byId('cardioTreadmillFields'); if(treadmill)treadmill.style.display=machine==='treadmill'?'block':'none';
   const bike=byId('cardioBikeFields'); if(bike)bike.style.display=machine==='bike'?'block':'none';
   const rower=byId('cardioRowerFields'); if(rower)rower.style.display=machine==='rower'?'block':'none';
