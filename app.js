@@ -1055,10 +1055,10 @@ function cardioRenderDemoMedia(machine){
   const wrap=byId('cardioDemoMedia'),video=byId('cardioDemoVideo'),image=byId('cardioDemoImage');
   if(!wrap||!video||!image)return;
   const videos={
-    run:'assets/cardio/corrida-ao-ar-livre.mp4',
-    treadmill:'assets/cardio/esteira.mp4',
-    bike:'assets/cardio/bicicleta.mp4',
-    rower:'assets/cardio/simulador-de-remo.mp4'
+    run:'assets/cardio/corrida-ao-ar-livre.webm',
+    treadmill:'assets/cardio/esteira.webm',
+    bike:'assets/cardio/bicicleta.webm',
+    rower:'assets/cardio/simulador-de-remo.webm'
   };
   const imageSrc=machine==='swim'?'assets/cardio/natacao.png':'';
   video.pause();
@@ -1068,12 +1068,12 @@ function cardioRenderDemoMedia(machine){
   video.hidden=!videos[machine];
   image.hidden=!imageSrc;
   if(videos[machine]){
-    video.src=videos[machine]+'?v=677237';
+    video.src=videos[machine]+'?v=677238';
     video.loop=true;video.muted=true;video.autoplay=true;video.playsInline=true;
     video.load();
     const playPromise=video.play();
     if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(()=>{});
-  }else if(imageSrc){image.src=imageSrc+'?v=677237';}
+  }else if(imageSrc){image.src=imageSrc+'?v=677238';}
   wrap.hidden=!(videos[machine]||imageSrc);
 }
 function selectCardioMachine(machine,restoring=false){
