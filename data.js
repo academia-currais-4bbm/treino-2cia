@@ -1268,7 +1268,10 @@ window.APP_DATA = {
       "avoid": "Não use as mãos para puxar a cabeça.",
       "mediaKey": "crunch-tradicional",
       "mediaStatus": "static",
-      "visualAssetKey": "crunch-tradicional"
+      "visualAssetKey": "crunch-tradicional",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/crunch-tradicional.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/crunch-tradicional.webp"
     },
     {
       "id": 53,
@@ -1282,7 +1285,10 @@ window.APP_DATA = {
       "avoid": "Não puxe apenas com os braços.",
       "mediaKey": "crunch-na-polia",
       "mediaStatus": "static",
-      "visualAssetKey": "crunch-polia"
+      "visualAssetKey": "crunch-polia",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/crunch-na-polia.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/crunch-na-polia.webp"
     },
     {
       "id": 54,
@@ -1296,7 +1302,10 @@ window.APP_DATA = {
       "avoid": "Não deixe o quadril cair.",
       "mediaKey": "prancha-frontal",
       "mediaStatus": "static",
-      "visualAssetKey": "prancha-frontal"
+      "visualAssetKey": "prancha-frontal",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/prancha-frontal.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/prancha-frontal.webp"
     },
     {
       "id": 55,
@@ -1310,7 +1319,10 @@ window.APP_DATA = {
       "avoid": "Não deixe o ombro afundar.",
       "mediaKey": "prancha-lateral",
       "mediaStatus": "static",
-      "visualAssetKey": "prancha-lateral"
+      "visualAssetKey": "prancha-lateral",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/prancha-lateral.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/prancha-lateral.webp"
     },
     {
       "id": 56,
@@ -1324,7 +1336,10 @@ window.APP_DATA = {
       "avoid": "Não balance as pernas.",
       "mediaKey": "elevacao-de-pernas",
       "mediaStatus": "static",
-      "visualAssetKey": "elevacao-pernas"
+      "visualAssetKey": "elevacao-pernas",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/elevacao-de-pernas.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/elevacao-de-pernas.webp"
     },
     {
       "id": 57,
@@ -1338,7 +1353,10 @@ window.APP_DATA = {
       "avoid": "Não puxe o pescoço.",
       "mediaKey": "abdominal-bicicleta",
       "mediaStatus": "static",
-      "visualAssetKey": "abdominal-bicicleta"
+      "visualAssetKey": "abdominal-bicicleta",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/abdominal-bicicleta.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/abdominal-bicicleta.webp"
     },
     {
       "id": 58,
@@ -1352,7 +1370,10 @@ window.APP_DATA = {
       "avoid": "Não transforme em rotação brusca.",
       "mediaKey": "abdominal-obliquo",
       "mediaStatus": "static",
-      "visualAssetKey": "abdominal-obliquo"
+      "visualAssetKey": "abdominal-obliquo",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/abdominal-obliquo.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/abdominal-obliquo.webp"
     },
     {
       "id": 59,
@@ -1366,7 +1387,10 @@ window.APP_DATA = {
       "avoid": "Não acelere o movimento.",
       "mediaKey": "dead-bug",
       "mediaStatus": "static",
-      "visualAssetKey": "dead-bug"
+      "visualAssetKey": "dead-bug",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/dead-bug.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/dead-bug.webp"
     },
     {
       "id": 94,
@@ -1379,7 +1403,10 @@ window.APP_DATA = {
       "tip": "Aproxime a pelve das costelas elevando levemente o quadril.",
       "avoid": "Não use balanço das pernas para criar impulso.",
       "mediaKey": "crunch-invertido",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/crunch-invertido.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/crunch-invertido.webp"
     },
     {
       "id": 95,
@@ -1393,7 +1420,10 @@ window.APP_DATA = {
       "avoid": "Não puxe apenas com os braços nem use carga excessiva.",
       "mediaKey": "abdominal-na-maquina",
       "mediaStatus": "static",
-      "visualAssetKey": "abdominal-maquina"
+      "visualAssetKey": "abdominal-maquina",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/abdominal-na-maquina.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/abdominal-na-maquina.webp"
     },
     {
       "id": 96,
@@ -1406,7 +1436,10 @@ window.APP_DATA = {
       "tip": "Mantenha quadril e costelas controlados e avance apenas até preservar a posição lombar.",
       "avoid": "Não deixe a lombar afundar durante a extensão.",
       "mediaKey": "ab-wheel",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/ab-wheel.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/ab-wheel.webp"
     },
     {
       "id": 97,
@@ -1419,7 +1452,10 @@ window.APP_DATA = {
       "tip": "Pressione a lombar contra o solo e mantenha braços e pernas na altura que consiga controlar.",
       "avoid": "Não aumente a alavanca se a lombar perder contato com o chão.",
       "mediaKey": "hollow-body",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/hollow-body.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/hollow-body.webp"
     },
     {
       "id": 98,
@@ -1432,7 +1468,10 @@ window.APP_DATA = {
       "tip": "Gire o tronco com controle mantendo o peito aberto e o abdômen ativo.",
       "avoid": "Não faça rotações rápidas usando apenas os braços.",
       "mediaKey": "russian-twist",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/russian-twist.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/russian-twist.webp"
     },
     {
       "id": 99,
@@ -1445,7 +1484,10 @@ window.APP_DATA = {
       "tip": "Afaste as mãos do peito sem permitir que o tronco gire em direção à polia.",
       "avoid": "Não incline ou rode o corpo para vencer a resistência.",
       "mediaKey": "pallof-press",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/pallof-press.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/pallof-press.webp"
     },
     {
       "id": 100,
@@ -1458,7 +1500,10 @@ window.APP_DATA = {
       "tip": "Estenda braço e perna opostos mantendo quadril e tronco estáveis.",
       "avoid": "Não arqueie a lombar nem rode a pelve.",
       "mediaKey": "bird-dog",
-      "mediaStatus": "pending"
+      "mediaStatus": "pending",
+      "videoStatus": "ready",
+      "videoSrc": "assets/exercises/videos/bird-dog.mp4?v=677233",
+      "videoPoster": "assets/exercises/posters/bird-dog.webp"
     },
     {
       "id": 60,
