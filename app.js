@@ -8074,8 +8074,9 @@ function v67382RenderNotifications(rows){
   const list=Array.isArray(rows)?rows:[];const unread=list.filter(x=>x.lida!==true).length;
   if(badge){badge.textContent=unread>99?'99+':String(unread);badge.hidden=unread<1}
   if(!panel)return;
-  if(!list.length){panel.innerHTML='<div class="feed-notification-empty">Nenhuma notificação por enquanto.</div>';return}
-  panel.innerHTML=list.slice(0,30).map(n=>{const comment=n.tipo==='comentario';const feedId=Number(n.feed_id??n.feedId??0)||0;return `<div class="feed-notification-item ${n.lida===true?'':'unread'}${feedId?' clickable':''}" ${feedId?`role="button" tabindex="0" onclick="v67595OpenNotificationFeed(${feedId})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();v67595OpenNotificationFeed(${feedId})}"`:''}><span class="feed-notification-icon">${comment?'💬':'💪'}</span><div><b>${v6738FeedEsc(n.ator_graduacao||'BM')} ${v6738FeedEsc(n.ator_nome||'Militar')}</b><p>${comment?'comentou na sua atividade.':'apoiou sua atividade.'}</p><small>${v6738FeedEsc(v67382NotificationWhen(n.criado_em))}</small></div></div>`}).join('');
+  const header='<div class="feed-notifications-popup-head"><strong>Notificações</strong><button type="button" class="feed-notifications-close" aria-label="Fechar notificações" onclick="v67382CloseNotifications()">×</button></div>';
+  if(!list.length){panel.innerHTML=header+'<div class="feed-notification-empty">Nenhuma notificação por enquanto.</div>';return}
+  panel.innerHTML=header+list.slice(0,30).map(n=>{const comment=n.tipo==='comentario';const feedId=Number(n.feed_id??n.feedId??0)||0;const commentId=Number(n.comentario_id??n.comentarioId??0)||0;return `<div class="feed-notification-item ${n.lida===true?'':'unread'}${feedId?' clickable':''}" ${feedId?`role="button" tabindex="0" onclick="v67595OpenNotificationFeed(${feedId},${comment?'true':'false'},${commentId})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();v67595OpenNotificationFeed(${feedId},${comment?'true':'false'},${commentId})}"`:''}><span class="feed-notification-icon">${comment?'💬':'💪'}</span><div><b>${v6738FeedEsc(n.ator_graduacao||'BM')} ${v6738FeedEsc(n.ator_nome||'Militar')}</b><p>${comment?'comentou na sua atividade.':'apoiou sua atividade.'}</p><small>${v6738FeedEsc(v67382NotificationWhen(n.criado_em))}</small></div></div>`}).join('');
 }
 async function v67382LoadNotifications(markRead=false){
   if(!cloudSession?.token||!navigator.onLine)return [];
@@ -8092,12 +8093,24 @@ async function v67382LoadNotifications(markRead=false){
     return rows;
   }catch(e){console.warn('Falha ao carregar notificações do feed:',e);return []}
 }
+function v67382CloseNotifications(){
+  const panel=byId('feedNotificationsPanel');if(panel)panel.hidden=true;
+  const bell=document.querySelector('.sports-feed-notifications');if(bell)bell.setAttribute('aria-expanded','false');
+}
 async function v67382ToggleNotifications(button){
   const panel=byId('feedNotificationsPanel');if(!panel)return;
   const opening=panel.hidden;
   panel.hidden=!opening;
   if(button)button.setAttribute('aria-expanded',opening?'true':'false');
-  if(opening){panel.innerHTML='<div class="feed-notification-empty">Carregando notificações…</div>';await v67382LoadNotifications(true)}
+  if(opening){panel.innerHTML='<div class="feed-notifications-popup-head"><strong>Notificações</strong><button type="button" class="feed-notifications-close" aria-label="Fechar notificações" onclick="v67382CloseNotifications()">×</button></div><div class="feed-notification-empty">Carregando notificações…</div>';await v67382LoadNotifications(true)}
+}
+if(!window.v67382NotificationsOutsideBound){
+  window.v67382NotificationsOutsideBound=true;
+  document.addEventListener('click',event=>{
+    const panel=byId('feedNotificationsPanel'),bell=document.querySelector('.sports-feed-notifications');
+    if(panel&&!panel.hidden&&!panel.contains(event.target)&&!bell?.contains(event.target))v67382CloseNotifications();
+  });
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')v67382CloseNotifications()});
 }
 async function v67382RefreshFeed(button){
   const btn=button||document.querySelector('.sports-feed-refresh');
@@ -10960,11 +10973,22 @@ async function v67597OpenFeedTarget(feedId){
   finally{v67597FeedTargetRunning=false}
 }
 
-async function v67595OpenNotificationFeed(feedId){
+async function v67595OpenNotificationFeed(feedId,openComments=false,commentId=0){
   const id=Number(feedId)||0;if(id<=0)return;
-  const panel=byId('feedNotificationsPanel');if(panel)panel.hidden=true;
-  const bell=document.querySelector('.sports-feed-notifications');if(bell)bell.setAttribute('aria-expanded','false');
-  await v67597OpenFeedTarget(id);
+  v67382CloseNotifications();
+  const opened=await v67597OpenFeedTarget(id);
+  if(opened&&openComments){
+    const card=document.querySelector(`.sports-feed-card[data-feed-id="${id}"]`);
+    const button=card?.querySelector('.feed-comments-toggle');
+    const panel=card?.querySelector('.feed-comments-panel');
+    if(button&&panel&&panel.hidden)await v6740ToggleComments(id,button);
+    if(commentId){
+      setTimeout(()=>{
+        const target=document.querySelector(`[data-comment-id="${commentId}"],#feed-comment-${commentId}`);
+        if(target){target.scrollIntoView({behavior:'smooth',block:'center'});target.classList.add('v67594-push-target');setTimeout(()=>target.classList.remove('v67594-push-target'),4200)}
+      },250);
+    }
+  }
 }
 
 // Mantém compatibilidade com chamadas das versões anteriores.
