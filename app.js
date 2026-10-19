@@ -8524,6 +8524,73 @@ async function cloudRpc(fn,payload={}){
   if(!r.ok) throw new Error((data&&(data.message||data.details||data.hint))||'Falha no servidor');
   return Array.isArray(data)?data[0]:data;
 }
+
+/* V67.72.34 — avisos de atualização individualizados por matrícula no Supabase. */
+let v677234NoticeCheckPromise=null;
+let v677234NoticeShownThisPage=false;
+let v677234NoticeTimer=null;
+let v677234NoticeScheduleTimer=null;
+function v677234CloseUpdateNotice(){
+  const toast=document.getElementById('appUpdateToast');
+  if(!toast)return;
+  toast.classList.remove('show');
+  toast.setAttribute('aria-hidden','true');
+  if(v677234NoticeTimer){clearTimeout(v677234NoticeTimer);v677234NoticeTimer=null;}
+}
+function v677234IsWorkoutBusy(){
+  try{
+    const activeView=document.querySelector('.view.active')?.id||'';
+    if(['exercise','cardioWorkout','freeWorkout','workoutDone'].includes(activeView))return true;
+    if(typeof v67621WorkoutActive==='function'&&v67621WorkoutActive())return true;
+  }catch(e){}
+  return false;
+}
+// Aguarda a saudação motivacional terminar e não exibe o aviso durante um treino.
+function v677234ScheduleUpdateNotice(delay=0){
+  if(v677234NoticeShownThisPage)return;
+  if(v677234NoticeScheduleTimer)clearTimeout(v677234NoticeScheduleTimer);
+  const waitUntilSafe=()=>{
+    v677234NoticeScheduleTimer=null;
+    if(v677234NoticeShownThisPage)return;
+    const splash=document.getElementById('splash');
+    if(splash?.classList.contains('show')||v677234IsWorkoutBusy()){
+      v677234NoticeScheduleTimer=setTimeout(waitUntilSafe,500);
+      return;
+    }
+    v677234NoticeScheduleTimer=setTimeout(()=>{
+      v677234NoticeScheduleTimer=null;
+      if(!v677234IsWorkoutBusy())v677234CheckUpdateNotice();
+      else v677234ScheduleUpdateNotice(1500);
+    },250);
+  };
+  v677234NoticeScheduleTimer=setTimeout(waitUntilSafe,Math.max(0,Number(delay)||0));
+}
+async function v677234CheckUpdateNotice(){
+  if(v677234NoticeShownThisPage||!cloudSession?.token||!navigator.onLine||!cloudConfigured())return false;
+  if(v677234NoticeCheckPromise)return v677234NoticeCheckPromise;
+  v677234NoticeCheckPromise=(async()=>{
+    let notice=null;
+    try{notice=await cloudRpc('atualizacoes_app_proxima_v1',{p_token:cloudSession.token});}
+    catch(e){console.warn('Avisos de atualização indisponíveis neste momento:',e);return false;}
+    if(!notice||!notice.id||v677234NoticeShownThisPage)return false;
+    const toast=document.getElementById('appUpdateToast');
+    const title=document.getElementById('appUpdateTitle');
+    const message=document.getElementById('appUpdateMessage');
+    if(!toast||!title||!message)return false;
+    title.textContent=String(notice.titulo||'Atualização do Treino 2ª CIA');
+    message.textContent=String(notice.mensagem||'Há uma novidade disponível no aplicativo.');
+    toast.classList.add('show');
+    toast.setAttribute('aria-hidden','false');
+    v677234NoticeShownThisPage=true;
+    if(v677234NoticeTimer)clearTimeout(v677234NoticeTimer);
+    v677234NoticeTimer=setTimeout(v677234CloseUpdateNotice,7000);
+    try{
+      await cloudRpc('atualizacoes_app_marcar_vista_v1',{p_token:cloudSession.token,p_atualizacao_id:String(notice.id)});
+    }catch(e){console.warn('Não foi possível registrar a visualização do aviso:',e);}
+    return true;
+  })().finally(()=>{v677234NoticeCheckPromise=null;});
+  return v677234NoticeCheckPromise;
+}
 function cloudNormalize(v){ return String(v||'').trim().replace(/\s+/g,'').toUpperCase(); }
 function cloudMask(v){ const s=String(v||''); return s.length<=4?s:'••••'+s.slice(-4); }
 function cloudMsg(t,type=''){ const e=document.getElementById('authMessage'); if(e){e.textContent=t||'';e.className='auth-message '+type;} }
@@ -8651,6 +8718,7 @@ async function cloudLogin(){
     await adminRefreshVisibility();
     cloudMsg('');
     cloudHideGate(true);
+    v677234ScheduleUpdateNotice(900);
     setTimeout(v6743SyncExistingPush,250);
   }catch(e){
     console.error(e);
@@ -8857,6 +8925,7 @@ async function cloudInit(){
       await cloudInitialSync(needsFreshRestore);
       await adminRefreshVisibility();
       cloudHideGate();
+      v677234ScheduleUpdateNotice(900);
       setTimeout(v6743SyncExistingPush,250);
       return;
     }
@@ -9636,6 +9705,7 @@ async function v6719ImproveStorageDurability(){
     }
   }catch(e){}
 }
+window.addEventListener('online',()=>{if(cloudSession?.token)v677234ScheduleUpdateNotice(500)});
 window.addEventListener('DOMContentLoaded',()=>{setTimeout(cloudInit,0);setTimeout(v6719ImproveStorageDurability,1200)});
 
 

@@ -4135,3 +4135,14 @@ body.admin-modal-open{overflow:hidden}
 #smartGeneratedResult .v6771-result-choice-actions .v6771-secondary-action small{
   opacity:.78;
 }
+
+
+/* v67.72.34 — aviso discreto de novidades, sem modal e sem bloquear o treino. */
+.app-update-toast{position:fixed;z-index:100001;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translate(-50%,-16px);width:min(92vw,430px);box-sizing:border-box;display:flex;align-items:flex-start;gap:11px;padding:13px 12px;border:1px solid rgba(255,70,80,.65);border-radius:15px;background:rgba(17,17,17,.98);color:#fff;box-shadow:0 12px 36px rgba(0,0,0,.42);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,transform .22s ease,visibility .22s}
+.app-update-toast.show{opacity:1;visibility:visible;transform:translate(-50%,0);pointer-events:auto}
+.app-update-toast-icon{flex:0 0 28px;width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#8b0000;color:#fff;font-size:19px;font-weight:900}
+.app-update-toast-content{min-width:0;flex:1;padding-top:1px}
+.app-update-toast-content b{display:block;color:#ff6b73;font-size:12px;letter-spacing:.035em;line-height:1.35}
+.app-update-toast-content span{display:block;margin-top:4px;color:#f1f1f1;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.app-update-toast-close{flex:0 0 28px;width:28px;height:28px;border:0;border-radius:8px;background:#292929;color:#ddd;font-size:22px;line-height:1;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.app-update-toast{transition:none}}
