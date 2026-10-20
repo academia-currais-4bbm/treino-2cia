@@ -1,0 +1,10 @@
+ATUALIZAÇÃO v67.72.42 — EXERCÍCIOS COM ILUSTRAÇÕES
+
+- A página EXERCÍCIOS passa a exibir os grupos musculares em grade ilustrada compacta.
+- Mantém somente os grupos existentes: Peito, Costas, Ombros, Bíceps, Tríceps, Pernas e Abdômen.
+- Pernas continua abrindo os subgrupos existentes.
+- Ao tocar em cada card, abre a lista de exercícios correspondente.
+- Vídeo da página Treino Livre e demais funcionalidades preservados.
+- Cache atualizado para renovar os arquivos da interface e das imagens.
+
+Arquivos: app.js, styles.css, sw.js.

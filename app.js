@@ -678,6 +678,7 @@ function openLegSubgroups(){
   if(title) title.textContent="Pernas";
   if(back) back.setAttribute("onclick","openGroups()");
 
+  byId('groupGrid').classList.remove('exercise-groups-grid');
   byId('groupGrid').innerHTML=Object.entries(V6770_LEG_SUBGROUPS).map(([key,data])=>{
     const count=data.names.filter(name=>
       DATA.exercises.some(x=>x.group==="Pernas" && x.name===name)
@@ -725,17 +726,24 @@ function openGroups(){
 
   const gs=[...new Set(DATA.exercises.map(x=>x.group))].filter(g=>g!=="Alongamento");
 
+  const groupImages={
+    "Peito":"peito.png",
+    "Costas":"costas.png",
+    "Ombros":"ombros.png",
+    "Bíceps":"biceps.png",
+    "Tríceps":"triceps.png",
+    "Pernas":"pernas.png",
+    "Abdômen":"core.png"
+  };
+
+  byId('groupGrid').classList.add('exercise-groups-grid');
   byId('groupGrid').innerHTML=gs.map(g=>{
     const count=DATA.exercises.filter(x=>x.group===g).length;
+    const image=groupImages[g];
+    const action=g==="Pernas" ? "openLegSubgroups()" : `openGroup('${g.replaceAll("'","\\'")}')`;
 
-    if(g==="Pernas"){
-      return `<button class="rowbtn" onclick="openLegSubgroups()">
-        <b>${g}</b>
-        <span>${count} exercícios</span>
-      </button>`;
-    }
-
-    return `<button class="rowbtn" onclick="openGroup('${g.replaceAll("'","\\'")}')">
+    return `<button class="exercise-group-card" onclick="${action}">
+      ${image ? `<img class="exercise-group-image" src="assets/treino-livre/${image}?v=677242" alt="" loading="eager" decoding="async">` : ''}
       <b>${g}</b>
       <span>${count} exercícios</span>
     </button>`;

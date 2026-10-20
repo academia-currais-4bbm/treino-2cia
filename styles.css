@@ -4173,3 +4173,39 @@ body.admin-modal-open{overflow:hidden}
 #freeMuscleGroups .free-muscle span{display:block;overflow-wrap:anywhere}
 #freeMuscleGroups .free-muscle.selected{background:#7d1114;border-color:#ef2b2d;box-shadow:inset 0 0 0 1px rgba(239,43,45,.18)}
 @media(min-width:600px){#freeMuscleGroups.free-muscle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#freeMuscleGroups .free-muscle-image{width:48px;height:50px}}
+
+/* v67.72.42: grade ilustrada da página Exercícios */
+#groupGrid.exercise-groups-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  align-items:stretch;
+}
+#groupGrid .exercise-group-card{
+  min-width:0;
+  min-height:112px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:10px 6px;
+  border:1px solid #383838;
+  border-radius:13px;
+  background:#151515;
+  color:var(--text,#f5f5f5);
+  text-align:center;
+}
+#groupGrid .exercise-group-image{
+  display:block;
+  width:44px;
+  height:54px;
+  object-fit:contain;
+  flex:0 0 auto;
+}
+#groupGrid .exercise-group-card b{font-size:14px;line-height:1.15}
+#groupGrid .exercise-group-card span{font-size:11px;color:var(--muted);margin:0}
+@media(min-width:760px){
+  #groupGrid .exercise-group-card{min-height:128px}
+  #groupGrid .exercise-group-image{width:48px;height:60px}
+}
