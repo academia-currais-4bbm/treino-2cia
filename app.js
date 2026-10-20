@@ -847,9 +847,14 @@ function restoreFreeWorkoutV667(state){
   const box=byId('freeMuscleGroups');
   const selected=new Set(Array.isArray(state?.freeWorkoutGroups)?state.freeWorkoutGroups:[]);
   if(box){
-    box.innerHTML=V66_FREE_GROUPS.map(g=>
-      `<button type="button" class="free-muscle${selected.has(g)?' selected':''}" data-group="${g}" onclick="toggleFreeMuscle(this)">${g}</button>`
-    ).join('');
+    const freeMuscleImages={
+    'Peito':'peito.png','Costas':'costas.png','Ombros':'ombros.png','Bíceps':'biceps.png',
+    'Tríceps':'triceps.png','Pernas':'pernas.png','Glúteos':'gluteos.png','Core':'core.png','Corpo inteiro':'corpo-inteiro.png'
+  };
+  box.innerHTML=V66_FREE_GROUPS.map(g=>{
+    const img=freeMuscleImages[g];
+    return `<button type="button" class="free-muscle${selected.has(g)?' selected':''}" data-group="${g}" onclick="toggleFreeMuscle(this)"><img class="free-muscle-image" src="assets/treino-livre/${img}?v=677240" alt="" loading="lazy" decoding="async"><span>${g}</span></button>`;
+  }).join('');
   }
   freeWorkoutExerciseState=state?.freeWorkoutExercises&&typeof state.freeWorkoutExercises==='object'?state.freeWorkoutExercises:{};
   renderFreeExercises();

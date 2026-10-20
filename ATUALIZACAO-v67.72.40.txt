@@ -1,0 +1,4 @@
+v67.72.40 — Ilustrações compactas dos 9 grupos musculares na página Treino Livre.
+
+Arquivos alterados: app.js, styles.css e sw.js.
+Pré-requisito: os 9 PNGs já publicados em assets/treino-livre/.
