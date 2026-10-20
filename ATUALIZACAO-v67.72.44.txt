@@ -1,0 +1,6 @@
+v67.72.44 — Subdivisões de Pernas ilustradas
+
+- Adicionadas seis ilustrações compactas aos cards das subdivisões de Pernas.
+- Mantidos os nomes, as quantidades de exercícios e a navegação existente.
+- Atualizado o cache do Service Worker e as referências de app.js/styles.css.
+- Não foram alteradas as funções de treino, vídeos dos exercícios, pontuação ou Supabase.

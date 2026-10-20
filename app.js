@@ -678,14 +678,26 @@ function openLegSubgroups(){
   if(title) title.textContent="Pernas";
   if(back) back.setAttribute("onclick","openGroups()");
 
-  byId('groupGrid').innerHTML=Object.entries(V6770_LEG_SUBGROUPS).map(([key,data])=>{
+  const subgroupImages={
+    quadriceps:'quadriceps.png',
+    posterior:'posterior-coxa.png',
+    gluteos:'gluteos.png',
+    adutores:'adutores.png',
+    abdutores:'abdutores.png',
+    panturrilhas:'panturrilhas.png'
+  };
+  const grid=byId('groupGrid');
+  grid.classList.remove('exercise-group-illustrated-grid');
+  grid.classList.add('leg-subgroup-illustrated-grid');
+  grid.innerHTML=Object.entries(V6770_LEG_SUBGROUPS).map(([key,data])=>{
     const count=data.names.filter(name=>
       DATA.exercises.some(x=>x.group==="Pernas" && x.name===name)
     ).length;
-
-    return `<button class="rowbtn" onclick="openLegSubgroup('${key}')">
-      <b>${data.title}</b>
-      <span>${count} exercícios</span>
+    const image=subgroupImages[key];
+    return `<button type="button" class="leg-subgroup-card" onclick="openLegSubgroup('${key}')">
+      <img class="leg-subgroup-illustration" src="assets/treino-livre/pernas/${image}?v=677244" alt="" loading="eager" decoding="async" onerror="this.style.display='none'">
+      <span class="leg-subgroup-card-name">${data.title}</span>
+      <small>${count} exercícios</small>
     </button>`;
   }).join('');
 
@@ -731,6 +743,7 @@ function openGroups(){
   const gs=preferred.filter(g=>available.includes(g));
   available.filter(g=>!gs.includes(g)).forEach(g=>gs.push(g));
   const grid=byId('groupGrid');
+  grid.classList.remove('leg-subgroup-illustrated-grid');
   grid.classList.add('exercise-group-illustrated-grid');
   grid.innerHTML=gs.map(g=>{
     const count=DATA.exercises.filter(x=>x.group===g).length;

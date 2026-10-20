@@ -4183,3 +4183,13 @@ body.admin-modal-open{overflow:hidden}
 #groupGrid .exercise-group-card small{font-size:10px;line-height:1.2;opacity:.72}
 @media(min-width:600px){#groupGrid .exercise-group-card{min-height:124px}#groupGrid .exercise-group-illustration{width:48px;height:52px}}
 @media(max-width:340px){#groupGrid.exercise-group-illustrated-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* v67.72.44 — cards ilustrados das subdivisões de Pernas */
+#groupGrid.leg-subgroup-illustrated-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+#groupGrid .leg-subgroup-card{min-width:0;min-height:112px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:#151515;color:#fff;text-align:center}
+#groupGrid .leg-subgroup-illustration{display:block;width:42px;height:48px;object-fit:contain;flex:0 0 auto}
+#groupGrid .leg-subgroup-card-name{font-size:12px;font-weight:800;line-height:1.2}
+#groupGrid .leg-subgroup-card small{font-size:10px;line-height:1.2;opacity:.72}
+@media(min-width:600px){#groupGrid .leg-subgroup-card{min-height:124px}#groupGrid .leg-subgroup-illustration{width:48px;height:52px}}
+@media(max-width:340px){#groupGrid.leg-subgroup-illustrated-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
