@@ -1,0 +1,10 @@
+v67.72.45 — Vídeo de fundo na tela inicial
+
+- Adicionado vídeo de fundo apenas na faixa superior (home-hero).
+- Reprodução automática, silenciada, em loop e inline no celular.
+- Vídeo otimizado para 1280 × 720, sem áudio, com aproximadamente 480 KB.
+- Camada escura para preservar a legibilidade do brasão, título e slogan.
+- Atualizados os identificadores do CSS, do HTML e do cache do Service Worker.
+- Preservadas as demais áreas e funcionalidades do aplicativo.
+
+Publicação: substituir index.html, styles.css e sw.js na raiz e adicionar assets/tela-home.mp4, mantendo o caminho exato.
