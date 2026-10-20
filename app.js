@@ -678,7 +678,6 @@ function openLegSubgroups(){
   if(title) title.textContent="Pernas";
   if(back) back.setAttribute("onclick","openGroups()");
 
-  byId('groupGrid').classList.remove('exercise-groups-grid');
   byId('groupGrid').innerHTML=Object.entries(V6770_LEG_SUBGROUPS).map(([key,data])=>{
     const count=data.names.filter(name=>
       DATA.exercises.some(x=>x.group==="Pernas" && x.name===name)
@@ -714,43 +713,35 @@ function openLegSubgroup(key){
 
 function openGroups(){
   currentListMode="group";
-
   currentLegSubgroup=null;
 
   const bar=document.querySelector('#groups .bar');
   const back=bar ? bar.querySelector('button') : null;
   const title=bar ? bar.querySelector('h2') : null;
-
   if(title) title.textContent="Grupos musculares";
   if(back) back.setAttribute("onclick","appBack('home')");
 
-  const gs=[...new Set(DATA.exercises.map(x=>x.group))].filter(g=>g!=="Alongamento");
-
   const groupImages={
-    "Peito":"peito.png",
-    "Costas":"costas.png",
-    "Ombros":"ombros.png",
-    "Bíceps":"biceps.png",
-    "Tríceps":"triceps.png",
-    "Pernas":"pernas.png",
-    "Abdômen":"core.png"
+    'Peito':'peito.png','Costas':'costas.png','Ombros':'ombros.png',
+    'Bíceps':'biceps.png','Tríceps':'triceps.png','Pernas':'pernas.png',
+    'Abdômen':'core.png','Abdomên':'core.png','Abdomen':'core.png'
   };
-
-  byId('groupGrid').classList.add('exercise-groups-grid');
-  byId('groupGrid').innerHTML=gs.map(g=>{
+  const preferred=['Peito','Costas','Ombros','Bíceps','Tríceps','Pernas','Abdômen'];
+  const available=[...new Set(DATA.exercises.map(x=>x.group))].filter(g=>g!=="Alongamento");
+  const gs=preferred.filter(g=>available.includes(g));
+  available.filter(g=>!gs.includes(g)).forEach(g=>gs.push(g));
+  const grid=byId('groupGrid');
+  grid.classList.add('exercise-group-illustrated-grid');
+  grid.innerHTML=gs.map(g=>{
     const count=DATA.exercises.filter(x=>x.group===g).length;
-    const image=groupImages[g];
-    const action=g==="Pernas" ? "openLegSubgroups()" : `openGroup('${g.replaceAll("'","\\'")}')`;
-
-    return `<button class="exercise-group-card" onclick="${action}">
-      ${image ? `<img class="exercise-group-image" src="assets/treino-livre/${image}?v=677242" alt="" loading="eager" decoding="async">` : ''}
-      <b>${g}</b>
-      <span>${count} exercícios</span>
-    </button>`;
+    const img=groupImages[g] || (g==='Abdomen'?'core.png':null);
+    const image=img?`<img class="exercise-group-illustration" src="assets/treino-livre/${img}?v=677243" alt="" loading="eager" decoding="async" onerror="this.style.display='none'">`:'';
+    const click=g==="Pernas"?'openLegSubgroups()':`openGroup('${g.replaceAll("'","\\'")}')`;
+    return `<button type="button" class="exercise-group-card" onclick="${click}">${image}<span class="exercise-group-card-name">${g}</span><small>${count} exercícios</small></button>`;
   }).join('');
-
   showView('groups');
 }
+
 function openGroup(g){
   currentGroup=g;currentListMode="group";byId('listTitle').textContent=g;
   renderExerciseButtons(DATA.exercises.filter(x=>x.group===g));showView('list');

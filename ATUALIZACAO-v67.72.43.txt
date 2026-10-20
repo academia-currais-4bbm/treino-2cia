@@ -1,0 +1,5 @@
+v67.72.43 — Correção de atualização do app instalado e grupos musculares ilustrados.
+
+Arquivos: index.html, app.js, styles.css, sw.js.
+As nove imagens já publicadas permanecem em assets/treino-livre/.
+Preserva o vídeo do Treino Livre e os demais recursos existentes.
