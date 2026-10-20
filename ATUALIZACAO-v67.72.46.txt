@@ -1,0 +1,8 @@
+ATUALIZAÇÃO v67.72.46 — VÍDEO DO TREINO LIVRE
+
+- Substitui o vídeo do topo da página Treino Livre pelo novo vídeo usado na tela inicial.
+- Mantém reprodução automática, silenciosa, sem controles e em loop.
+- Atualiza as referências de cache para o site e o aplicativo instalado.
+- Preserva o vídeo de fundo da tela inicial e as demais funcionalidades.
+
+Publicação: extrair o ZIP e enviar os arquivos mantendo os caminhos. Substituir index.html e sw.js na raiz e o arquivo assets/treino-livre-destaque.mp4.
