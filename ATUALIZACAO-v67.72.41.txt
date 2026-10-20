@@ -1,0 +1,4 @@
+v67.72.41 — Correção das ilustrações do Treino Livre
+
+Corrigido o carregamento inicial dos grupos musculares: openFreeWorkout agora inclui as nove imagens anatômicas, tal como a restauração de estado. Atualizado o cache do Service Worker e a versão das imagens para forçar a atualização dos recursos.
+Preservados o vídeo do Treino Livre, os grupos, a seleção e as demais funcionalidades.

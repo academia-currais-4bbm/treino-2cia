@@ -1357,7 +1357,17 @@ function openFreeWorkout(){
   const savedMsg=byId('freeWorkoutSavedMessage'); if(savedMsg){savedMsg.classList.remove('show');savedMsg.style.display='none';savedMsg.textContent='✓ Treino salvo.'}
   const summary=byId('freeWorkoutSummary'); if(summary){summary.style.display='none';summary.innerHTML=''}
   const saveBtn=byId('saveFreeWorkoutBtn'); if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='SALVAR TREINO LIVRE'}
-  const box=byId('freeMuscleGroups'); if(box)box.innerHTML=V66_FREE_GROUPS.map(g=>`<button type="button" class="free-muscle" data-group="${g}" onclick="toggleFreeMuscle(this)">${g}</button>`).join('');
+  const box=byId('freeMuscleGroups');
+  if(box){
+    const freeMuscleImages={
+      'Peito':'peito.png','Costas':'costas.png','Ombros':'ombros.png','Bíceps':'biceps.png',
+      'Tríceps':'triceps.png','Pernas':'pernas.png','Glúteos':'gluteos.png','Core':'core.png','Corpo inteiro':'corpo-inteiro.png'
+    };
+    box.innerHTML=V66_FREE_GROUPS.map(g=>{
+      const img=freeMuscleImages[g];
+      return `<button type="button" class="free-muscle" data-group="${g}" onclick="toggleFreeMuscle(this)"><img class="free-muscle-image" src="assets/treino-livre/${img}?v=677241" alt="" loading="eager" decoding="async"><span>${g}</span></button>`;
+    }).join('');
+  }
   const mins=byId('freeWorkoutMinutes'); if(mins){mins.value='';mins.oninput=()=>{updateFreeEligibility();saveNavigationState('freeWorkout')}}
   renderFreeExercises(); updateFreeEligibility(); showView('freeWorkout');
 }
