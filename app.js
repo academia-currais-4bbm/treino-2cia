@@ -3887,7 +3887,7 @@ function v676901PosterSrc(ex){
   };
   const base=exact[n]||ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
   const sep=base.includes('?')?'&':'?';
-  return base+sep+'v=67723';
+  return base+sep+'v=677249';
 }
 function v676901ApplyExactPosterCard(){
   const visual=document.querySelector('#exercise .visual');
@@ -4036,7 +4036,7 @@ function v676900VideoData(ex){
   const key=known[norm];
   if(key)return {
     videoStatus:'ready',
-    videoSrc:`assets/exercises/videos/${key}.mp4?v=67740`,
+    videoSrc:`assets/exercises/videos/${key}.mp4?v=677249`,
     videoPoster:`assets/exercises/posters/${key}.webp`
   };
   return ex;
