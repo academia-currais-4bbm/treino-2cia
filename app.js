@@ -3882,7 +3882,8 @@ function v676901PosterSrc(ex){
     'Mesa flexora':'assets/exercises/posters/mesa-flexora.webp',
     'Cadeira flexora':'assets/exercises/posters/cadeira-flexora.webp',
     'Stiff':'assets/exercises/posters/stiff.webp',
-    'Cadeira adutora':'assets/exercises/posters/cadeira-adutora.webp'
+    'Cadeira adutora':'assets/exercises/posters/cadeira-adutora.webp',
+    'Glúteo deitado':'assets/exercises/posters/gluteo-deitado.webp'
   };
   const base=exact[n]||ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
   const sep=base.includes('?')?'&':'?';
@@ -4029,7 +4030,8 @@ function v676900VideoData(ex){
   const known={
     'supino declinado':'supino-declinado',
     'crucifixo com halteres':'crucifixo-com-halteres',
-    'crossover alto':'crossover-alto'
+    'crossover alto':'crossover-alto',
+    'gluteo deitado':'gluteo-deitado'
   };
   const key=known[norm];
   if(key)return {
