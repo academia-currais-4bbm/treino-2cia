@@ -8081,7 +8081,7 @@ function v6738RenderFeed(rows){
     return `<article class="sports-feed-card" data-feed-id="${Number(r.id)}">
       <header class="feed-card-head">${avatar}<div class="feed-author"><b class="v6757-profile-name" role="button" tabindex="0" onclick="v6757OpenProfileByFeedId(${Number(r.id)})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();v6757OpenProfileByFeedId(${Number(r.id)})}">${v6738FeedEsc(r.graduacao||'BM')} ${v6738FeedEsc(r.nome||'Militar')}</b><span class="feed-relative-time">${v6738FeedEsc(relative)}</span><span class="feed-exact-time">${v6738FeedEsc(exact)}</span></div><div class="feed-type-icon">${v6738CategoryIcon(r.categoria)}</div></header>
       <div class="feed-card-body"><h4>${v6738FeedEsc(r.plano||'Atividade concluída')}</h4>${status}${v6850HighlightHtml(r,v6753FeedRows)}<div class="feed-stats">${stats.map(x=>`<span>${v6738FeedEsc(x)}</span>`).join('')}</div>${loc}<div class="feed-rank-row">${rank}</div><div class="feed-temp-photo" data-feed-photo="${Number(r.id)}" hidden></div></div>
-      <footer class="feed-card-actions"><button class="feed-like ${liked?'liked':''}" type="button" onclick="v67597LikeAction(${Number(r.id)},this,event)" aria-expanded="false" aria-pressed="${liked?'true':'false'}"><span class="feed-like-heart">${liked?'💪':'🤍'}</span><b>${likes}</b><small>${likes===1?'apoio':'apoios'}</small></button><button class="feed-comments-toggle" type="button" onclick="v6740ToggleComments(${Number(r.id)},this)" aria-expanded="false"><span>💬</span><b class="feed-comment-count">${v6740CommentCountLabel(comments)}</b></button>${own?`<button class="feed-photo-add" data-feed-photo-btn="${Number(r.id)}" type="button" onclick="v6756ChooseFeedPhoto(${Number(r.id)})"><span>📷</span><small>Foto 24h</small></button>`:''}${statusBtn}</footer>
+      <footer class="feed-card-actions"><button class="feed-like ${liked?'liked':''}" type="button" onclick="v67597LikeAction(${Number(r.id)},this,event)" aria-expanded="false" aria-pressed="${liked?'true':'false'}"><span class="feed-like-heart">${liked?'💪':'🤍'}</span><b>${likes}</b><small>${likes===1?'apoio':'apoios'}</small></button><button class="feed-comments-toggle" type="button" onclick="v6740ToggleComments(${Number(r.id)},this)" aria-expanded="false"><span>💬</span><b class="feed-comment-count">${v6740CommentCountLabel(comments)}</b></button>${own?`<button class="feed-photo-add" data-feed-photo-btn="${Number(r.id)}" type="button" onclick="v6756ChooseFeedPhoto(${Number(r.id)})"><span>📷</span><small>Foto 7 dias</small></button>`:''}${statusBtn}</footer>
       <section class="feed-supporters-panel" hidden></section><section class="feed-comments-panel" hidden></section>
     </article>`;
   }).join('');
@@ -8253,7 +8253,7 @@ function v6756SetPhotoButton(feedId,state){
   if(!btn)return;
   if(state==='loading'){btn.disabled=true;btn.innerHTML='<span>⏳</span><small>Enviando…</small>';return}
   if(state==='active'){btn.disabled=false;btn.classList.add('active');btn.onclick=()=>v67562DeleteFeedPhoto(Number(feedId));btn.innerHTML='<span>🗑️</span><small>Excluir foto</small>';return}
-  btn.disabled=false;btn.classList.remove('active');btn.onclick=()=>v6756ChooseFeedPhoto(Number(feedId));btn.innerHTML='<span>📷</span><small>Foto 24h</small>';
+  btn.disabled=false;btn.classList.remove('active');btn.onclick=()=>v6756ChooseFeedPhoto(Number(feedId));btn.innerHTML='<span>📷</span><small>Foto 7 dias</small>';
 }
 async function v6756UploadFeedPhoto(feedId,file){
   const id=Number(feedId);v6756SetPhotoButton(id,'loading');
@@ -8298,7 +8298,7 @@ function v6756RenderPhoto(feedId,data){
   v6756FeedPhotoState.set(id,{disponivel:available,expira_em:data?.expira_em||null});
   if(!available){slot.hidden=true;slot.innerHTML='';v6756SetPhotoButton(id,'idle');return}
   const expiry=data?.expira_em?new Date(data.expira_em):null;
-  let label='Foto temporária • até 24h';
+  let label='Foto temporária • até 7 dias';
   if(expiry&&Number.isFinite(expiry.getTime()))label=`Foto temporária • expira ${expiry.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}`;
   slot.hidden=false;
   slot.innerHTML=`<img src="${v6738FeedEsc(data.url)}" alt="Foto temporária da atividade" loading="lazy"><small>⏱️ ${v6738FeedEsc(label)}</small>`;
@@ -8308,7 +8308,7 @@ async function v6756LoadFeedPhoto(feedId,force=false){
   const id=Number(feedId);if(!Number.isFinite(id)||!cloudSession?.token||!navigator.onLine)return;
   if(!force&&v6756FeedPhotoState.has(id)){const st=v6756FeedPhotoState.get(id);if(st?.disponivel)v6756SetPhotoButton(id,'active');return}
   try{const data=await v6756Edge({acao:'view',token_militar:cloudSession.token,feed_id:id});v6756RenderPhoto(id,data)}
-  catch(e){console.warn('Foto 24h indisponível no feed',id,e);}
+  catch(e){console.warn('Foto temporária indisponível no feed',id,e);}
 }
 function v6756LoadVisibleFeedPhotos(){
   // V67.56.1 — o cache de fotos pertence à renderização/sessão atual.
