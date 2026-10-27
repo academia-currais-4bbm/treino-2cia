@@ -4012,41 +4012,32 @@ function v676891SupinoFrames(){
   ];
 }
 function v676900NormalizeExerciseName(value){
-  return String(value||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().replace(/^\d+\s+/, '').trim();
 }
 function v676900VideoData(ex){
   if(!ex)return null;
-  const norm=v676900NormalizeExerciseName(ex.name).replace(/^\d+\s+/, '').trim();
+  const norm=v676900NormalizeExerciseName(ex.name||ex.title||ex.exerciseName||'');
   const catalog=Array.isArray(DATA?.exercises)?DATA.exercises:[];
   const match=catalog.find(item=>{
-    const itemName=v676900NormalizeExerciseName(item.name).replace(/^\d+\s+/, '').trim();
-    return itemName===norm || (norm==='gluteo deitado' && itemName.includes('gluteo deitado'));
+    const itemName=v676900NormalizeExerciseName(item.name||item.title||'');
+    return itemName===norm || (norm.includes('gluteo deitado') && itemName.includes('gluteo deitado'));
   });
   const directReady=String(ex.videoStatus||'')==='ready' && !!String(ex.videoSrc||'').trim();
   const catalogReady=match && String(match.videoStatus||'')==='ready' && !!String(match.videoSrc||'').trim();
   const chosen=directReady?ex:(catalogReady?match:null);
-  if(chosen)return {
-    videoStatus:'ready',
-    videoSrc:String(chosen.videoSrc),
-    videoPoster:String(chosen.videoPoster||match?.videoPoster||ex.videoPoster||'')
-  };
+  if(chosen)return {videoStatus:'ready',videoSrc:String(chosen.videoSrc),videoPoster:String(chosen.videoPoster||match?.videoPoster||ex.videoPoster||'')};
   const known={
     'supino declinado':'supino-declinado',
     'crucifixo com halteres':'crucifixo-com-halteres',
-    'crossover alto':'crossover-alto',
-    'gluteo deitado':'gluteo-deitado'
+    'crossover alto':'crossover-alto'
   };
-  const key=known[norm] || (norm.includes('gluteo deitado') ? 'gluteo-deitado' : null);
-  if(key)return {
-    videoStatus:'ready',
-    videoSrc:`assets/exercises/videos/${key}.mp4?v=677250`,
-    videoPoster:`assets/exercises/posters/${key}.webp`
-  };
+  let key=known[norm] || null;
+  if(norm.includes('gluteo deitado'))key='gluteo-deitado';
+  if(key)return {videoStatus:'ready',videoSrc:`assets/exercises/videos/${key}.mp4?v=677251`,videoPoster:`assets/exercises/posters/${key}.webp?v=677251`};
   return ex;
 }
 function v676900VideoReady(ex){
-  const data=v676900VideoData(ex);
-  return String(data?.videoStatus||'pending')==='ready' && !!String(data?.videoSrc||'').trim();
+  return !!ex && String(ex.videoStatus||'')==='ready' && !!String(ex.videoSrc||'').trim();
 }
 function openExerciseMotion(){
   if(!currentExercise)return;
