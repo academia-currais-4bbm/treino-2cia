@@ -3887,7 +3887,7 @@ function v676901PosterSrc(ex){
   };
   const base=exact[n]||ex.posterSrc||`assets/exercises/posters/${ex.posterKey||ex.mediaKey||('exercise-'+ex.id)}.webp`;
   const sep=base.includes('?')?'&':'?';
-  return base+sep+'v=677249';
+  return base+sep+'v=677250';
 }
 function v676901ApplyExactPosterCard(){
   const visual=document.querySelector('#exercise .visual');
@@ -4016,9 +4016,12 @@ function v676900NormalizeExerciseName(value){
 }
 function v676900VideoData(ex){
   if(!ex)return null;
-  const norm=v676900NormalizeExerciseName(ex.name);
+  const norm=v676900NormalizeExerciseName(ex.name).replace(/^\d+\s+/, '').trim();
   const catalog=Array.isArray(DATA?.exercises)?DATA.exercises:[];
-  const match=catalog.find(item=>v676900NormalizeExerciseName(item.name)===norm);
+  const match=catalog.find(item=>{
+    const itemName=v676900NormalizeExerciseName(item.name).replace(/^\d+\s+/, '').trim();
+    return itemName===norm || (norm==='gluteo deitado' && itemName.includes('gluteo deitado'));
+  });
   const directReady=String(ex.videoStatus||'')==='ready' && !!String(ex.videoSrc||'').trim();
   const catalogReady=match && String(match.videoStatus||'')==='ready' && !!String(match.videoSrc||'').trim();
   const chosen=directReady?ex:(catalogReady?match:null);
@@ -4033,10 +4036,10 @@ function v676900VideoData(ex){
     'crossover alto':'crossover-alto',
     'gluteo deitado':'gluteo-deitado'
   };
-  const key=known[norm];
+  const key=known[norm] || (norm.includes('gluteo deitado') ? 'gluteo-deitado' : null);
   if(key)return {
     videoStatus:'ready',
-    videoSrc:`assets/exercises/videos/${key}.mp4?v=677249`,
+    videoSrc:`assets/exercises/videos/${key}.mp4?v=677250`,
     videoPoster:`assets/exercises/posters/${key}.webp`
   };
   return ex;
